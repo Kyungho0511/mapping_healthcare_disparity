@@ -24,12 +24,19 @@ body {
   width: 100%;
   background-color: white;
   margin: auto;
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: 1.2rem;
 
   & a {
-    color: black;
+    color: grey;
     text-align: center;
-    padding: 14px 20px;
+    padding: 1.1rem 1.5rem;
     text-decoration: none;
+  }
+
+  & a:hover {
+    color: black;
   }
 
   & .header__text {
@@ -150,7 +157,6 @@ a:visited {
 .light {
   color: black;
   background-color: #fafafa;
-  border-radius: 10px;
 }
 .dark {
   color: #fafafa;
