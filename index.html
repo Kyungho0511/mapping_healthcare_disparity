@@ -1,11 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Klee Data Visualization</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+    <link rel="stylesheet" href="https://use.typekit.net/uhn7mut.css" />
+    <link
+      href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css"
+      rel="stylesheet"
+    />
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+    <script src="https://unpkg.com/intersection-observer@0.5.1/intersection-observer.js"></script>
+    <script src="https://unpkg.com/scrollama"></script>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="config.js" defer></script>
+    <script type="text/javascript" src="map.js" defer></script>
+    <script src="header.js" defer></script>
+
+    <title>Equitable Healthcare Site Identification</title>
   </head>
+
   <body>
-    <h1>Welcome to Klee's data visualization</h1>
+    <div id="map"></div>
+    <div id="story">
+      <header id="header">
+        <a href="#home">home</a>
+        <a href="#obamacare">obamacare</a>
+        <a href="#discrimination">discrimination</a>
+        <a href="#site">site identification</a>
+      </header>
+
+      <div id="footer">
+        <h1>Methods in the project</h1>
+        <h2>Urban Spatial Analysis</h2>
+        <h2>Social Media Trends Analysis</h2>
+        <h2>Mapping / Data Visualization</h2>
+        <h2>Web FrontEnd Development</h2>
+        <h2>Immersive Media</h2>
+      </div>
+    </div>
   </body>
 </html>
