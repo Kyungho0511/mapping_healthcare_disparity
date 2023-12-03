@@ -46,13 +46,14 @@ body {
 
 #objectives {
   margin: auto;
-  max-width: 1000px;
+  max-width: 800px;
   padding-top: 10vh;
-  padding-bottom: 20vh;
+  padding-bottom: 10vh;
   text-align: left;
 
   & h1 {
     font-size: 2.5rem;
+    margin: 3rem;
     font-weight: 900;
     text-transform: uppercase;
     text-align: center;
@@ -66,14 +67,12 @@ body {
     margin: 1rem auto;
     margin-bottom: 0;
     line-height: 2rem;
-    max-width: 800px;
   }
 
   & p {
     font-weight: 400;
     margin: 1rem auto;
     line-height: 1.5rem;
-    max-width: 800px;
   }
 
   & ul {
@@ -81,7 +80,6 @@ body {
     padding-left: 0;
     margin: 2rem auto;
     line-height: 1.5rem;
-    max-width: 800px;
   }
 }
 
