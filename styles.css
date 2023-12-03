@@ -39,71 +39,73 @@ body {
     color: black;
   }
 
-  & .header__text {
-    & img {
-      display: block;
-      width: 700px;
-      margin: auto;
-    }
+  & a.active {
+    color: black;
   }
+}
+
+#objectives {
+  margin: auto;
+  max-width: 1000px;
+  padding-top: 10vh;
+  padding-bottom: 20vh;
+  text-align: left;
 
   & h1 {
-    font-weight: 700;
+    font-size: 2.5rem;
+    font-weight: 900;
     text-transform: uppercase;
-    text-align: left;
-    margin: auto;
-    max-width: 700px;
-    padding: 30px;
-    line-height: 1.5em;
+    text-align: center;
+    line-height: 3rem;
   }
 
   & h4 {
-    text-transform: uppercase;
-    font-weight: 700;
     font-size: 1.2em;
-    line-height: 1.4em;
-    margin-bottom: 0.5em;
-    margin-left: auto;
-    margin-right: auto;
-    text-align: left;
-    max-width: 700px;
+    font-weight: 900;
+    text-transform: uppercase;
+    margin: 1rem auto;
+    margin-bottom: 0;
+    line-height: 2rem;
+    max-width: 800px;
   }
 
   & p {
     font-weight: 400;
-    text-align: left;
-    font-size: 1.2em;
-    max-width: 700px;
-    margin: 1em auto 1em auto;
-    line-height: 1.5em;
+    margin: 1rem auto;
+    line-height: 1.5rem;
+    max-width: 800px;
+  }
+
+  & ul {
+    list-style: none;
+    padding-left: 0;
+    margin: 2rem auto;
+    line-height: 1.5rem;
+    max-width: 800px;
   }
 }
 
 #features {
-  padding-top: 80vh;
   padding-bottom: 10vh;
   z-index: 100;
 
   & h3 {
-    font-weight: 700;
+    font-weight: 900;
     text-transform: uppercase;
     text-align: left;
-    font-size: 1.5em;
+    font-size: 1.5rem;
+    line-height: 2rem;
     max-width: 50vw;
   }
 
   & p {
     text-align: left;
-    font-size: 1.2em;
+    font-size: 1rem;
     max-width: 50vw;
   }
 }
 
 #footer {
-  min-height: 100vh;
-  text-align: left;
-  line-height: 25px;
-
   & h1 {
     font-weight: 700;
     text-transform: uppercase;
@@ -140,6 +142,7 @@ a,
 a:hover,
 a:visited {
   color: #e96138;
+  text-decoration: none;
 }
 
 .centered {
@@ -152,11 +155,12 @@ a:visited {
 }
 .righty {
   width: 33vw;
+  padding-top: 25vh;
   margin-left: 60vw;
 }
 .light {
   color: black;
-  background-color: #fafafa;
+  background-color: #ffffff;
 }
 .dark {
   color: #fafafa;

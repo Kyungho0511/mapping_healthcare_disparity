@@ -4,6 +4,7 @@ const layerTypes = {
   circle: ["circle-opacity", "circle-stroke-opacity"],
   symbol: ["icon-opacity", "text-opacity"],
   raster: ["raster-opacity"],
+  background: ["background-opacity"],
   "fill-extrusion": ["fill-extrusion-opacity"],
 };
 const alignments = {
@@ -24,8 +25,7 @@ footer.classList.add(config.theme);
 /**
  * Features
  */
-const features = document.createElement("div");
-features.classList.add(alignments[config.alignment]);
+const features = document.createElement("section");
 features.setAttribute("id", "features");
 
 config.chapters.forEach((record, idx) => {
@@ -51,6 +51,7 @@ config.chapters.forEach((record, idx) => {
   }
   // Sets the id for the vignette and adds the step css attribute
   container.setAttribute("id", record.id);
+  container.setAttribute("data-category", record.data);
   container.classList.add(alignments[record.alignment]);
   container.classList.add("step");
   if (idx === 0) {
@@ -89,172 +90,33 @@ const map = new mapboxgl.Map({
   transformRequest: transformRequest,
 });
 
+// Header interaction: turn on background-white on click header objectives
+const objectives = header.querySelector("a[href='#objectives']");
+objectives.addEventListener("click", () => {
+  const layer = { layer: "background-white", opacity: 1.0 };
+  setLayerOpacity(layer);
+});
+
 // Instantiates the scrollama function
 const scroller = scrollama();
 
 map.on("load", function () {
   // This is the function that finds the first symbol layer
   const layers = map.getStyle().layers;
-  var firstSymbolId;
+  let firstSymbolId;
   for (let i = 0; i < layers.length; i++) {
     // console.log(layers[i].id);
-    if (layers[i].type === "symbol") {
-      firstSymbolId = layers[i].id;
-      break;
-    }
+    // if (layers[i].type === "symbol") {
+    //   firstSymbolId = layers[i].id;
+    //   break;
+    // }
   }
-
-  map.addLayer({
-    id: "places_reviews",
-    type: "circle",
-    source: {
-      type: "geojson",
-      data: "data/places_reviews.geojson",
-    },
-    paint: {
-      "circle-stroke-color": "#4d4d4d",
-      "circle-stroke-width": 0.5,
-      "circle-color": [
-        "step",
-        ["get", "user_ratings_total"],
-        "#ffee78",
-        15,
-        "#ffd458",
-        30,
-        "#ffb93c",
-        60,
-        "#ff9b27",
-        90,
-        "#ff7a1d",
-        120,
-        "#ff5220",
-        150,
-        "#ff002a",
-      ],
-      "circle-radius": [
-        "step",
-        ["get", "user_ratings_total"],
-        5,
-        15,
-        10,
-        30,
-        15,
-        60,
-        20,
-        90,
-        30,
-        120,
-        40,
-        150,
-        50,
-      ],
-      "circle-opacity": 0,
-      "circle-stroke-opacity": 0,
-    },
-  });
-
-  map.addLayer(
-    {
-      id: "priceData_2016",
-      type: "fill",
-      source: {
-        type: "geojson",
-        data: "data/land_price.geojson",
-      },
-      paint: {
-        "fill-color": [
-          "step",
-          ["get", "Price_2016"],
-          "#ebffd7",
-          2000,
-          "#e0e49d",
-          5000,
-          "#e3c464",
-          8000,
-          "#ed9d35",
-          11000,
-          "#f86c1e",
-          14000,
-          "#ff002a",
-        ],
-        "fill-opacity": ["case", ["==", ["get", "Price_2016"], null], 0, 0],
-      },
-    },
-    "waterway"
-  );
-
-  map.addLayer(
-    {
-      id: "gyeonglidan_gil",
-      type: "line",
-      source: {
-        type: "geojson",
-        data: "data/gyeonglidan_gil.geojson",
-      },
-      paint: {
-        "line-color": "#666666",
-        "line-width": 2,
-        "line-opacity": 0,
-      },
-    },
-    "road-rail"
-  );
-
-  map.addLayer(
-    {
-      id: "streets_distance_attractions",
-      type: "line",
-      source: {
-        type: "geojson",
-        data: "data/streets_distance_attractions.geojson",
-      },
-      paint: {
-        "line-color": [
-          "step",
-          ["get", "distance_attractions"],
-          "#25b72b",
-          2350,
-          "#74a800",
-          2900,
-          "#a39400",
-          3450,
-          "#ca7900",
-          4000,
-          "#ea5400",
-          4550,
-          "#ff002a",
-        ],
-        "line-width": [
-          "step",
-          ["get", "distance_attractions"],
-          2,
-          2350,
-          1.8,
-          2900,
-          1.6,
-          3450,
-          1.4,
-          4000,
-          1.2,
-          4550,
-          1,
-        ],
-        "line-opacity": [
-          "case",
-          ["==", ["get", "distance_attractions"], null],
-          0,
-          0,
-        ],
-      },
-    },
-    "road-rail"
-  );
 
   // Setup the instance, pass callback functions
   scroller
     .setup({
       step: ".step",
-      offset: 0.5,
+      offset: 0.2,
       progress: true,
       preventDefault: true,
     })
@@ -262,23 +124,31 @@ map.on("load", function () {
       let chapter = config.chapters.find(
         (chap) => chap.id === response.element.id
       );
-      map.flyTo(chapter.location);
-      if (chapter.onChapterEnter.length > 0) {
-        chapter.onChapterEnter.forEach(setLayerOpacity);
+      if (chapter) {
+        map.flyTo(chapter.location);
+        if (chapter.onChapterEnter.length > 0) {
+          chapter.onChapterEnter.forEach(setLayerOpacity);
+        }
+        if (chapter.legend) {
+          chapter.legend.classList.remove("invisible");
+        }
       }
-      if (chapter.legend) {
-        chapter.legend.classList.remove("invisible");
-      }
+      const selected = document.querySelector(
+        `#header_${response.element.dataset.category}`
+      );
+      selectNavItem(selected);
     })
     .onStepExit((response) => {
       let chapter = config.chapters.find(
         (chap) => chap.id === response.element.id
       );
-      if (chapter.onChapterExit.length > 0) {
-        chapter.onChapterExit.forEach(setLayerOpacity);
-      }
-      if (chapter.legend) {
-        chapter.legend.classList.add("invisible");
+      if (chapter) {
+        if (chapter.onChapterExit.length > 0) {
+          chapter.onChapterExit.forEach(setLayerOpacity);
+        }
+        if (chapter.legend) {
+          chapter.legend.classList.add("invisible");
+        }
       }
     });
 });
@@ -286,6 +156,14 @@ map.on("load", function () {
 /* Here we watch for any resizing of the screen to
 adjust our scrolling setup */
 window.addEventListener("resize", scroller.resize);
+
+function selectNavItem(selected) {
+  navItems = header.children;
+  for (let i = 0; i < navItems.length; i++) {
+    navItems[i].classList.remove("active");
+  }
+  selected.classList.add("active");
+}
 
 function getLayerPaintType(layer) {
   const layerType = map.getLayer(layer).type;

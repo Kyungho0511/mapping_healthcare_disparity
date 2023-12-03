@@ -3,41 +3,50 @@ const legendPrice = document.querySelector("#legend_price");
 const config = {
   accessToken:
     "pk.eyJ1Ijoia2xlZTA1MTEiLCJhIjoiY2xrYnFibnNjMGV4cjNrbzRqdGg1d21sYiJ9.nN0pE1qocGhTLnD_xPuYdg",
-  style: "mapbox://styles/klee0511/clpnkhzap00lo01p85s0a98qy",
+  style: "mapbox://styles/klee0511/clpp2b3l300mg01p6h8z59wrw",
   theme: "light",
   chapters: [
     {
-      id: "low_land_price",
-      title: "2015 | low land price",
+      id: "background",
+      data: "background",
+      title: "obamacare has reduced uninsured rate",
       image: "",
-      description: `Gyeonglidan-gil is situated near the Itaewon area, which is known for its international and multicultural atmosphere. Since the rent fee was relatively cheap compared to Itaewon, Gyeonglidan-gil attracted many young enterpreneurs and creative individuals who opened businesses catering to modern tastes. This way, the area underwent a transformation from a more traditional neighborhood to a trendy and stylish corridor.<br><br>
-          <div id="legend_price" class="legend">
-            <h4>Land Price per m2</h4>
-            <div><span style="background-color: #ff002a"></span>$14,000 +</div>
-            <div><span style="background-color: #f86c1e"></span>$11,000 - $14,000</div>
-            <div><span style="background-color: #ed9d35"></span>$8,000 - $11,000</div>
-            <div><span style="background-color: #e3c464"></span>$5,000 - $8,000</div>
-            <div><span style="background-color: #e0e49d"></span>$2,000 - $5,000</div>
-            <div><span style="background-color: #ebffd7"></span>Less than $2,000</div>
-          </div>`,
+      description: `The Affordable Care Act (Obama Care) became law on March 23, 2010. In the decade before the enactment of the Affordable Care Act (ACA) in 2010, the uninsured rate averaged 15.0 percent. In 2014, provisions of the ACA went into effect that enabled states to expand Medicaid eligibility. As the ACA expanded Medicaid coverage to nearly all adults with incomes up to 138% of the Federal Poverty Level, the uninsured rate continued to drop, falling below 9.0 percent. So are the Medicaid beneficiaries getting equitable treatment ever since then?<br><br>`,
       location: {
-        center: [-81.026992, 38.034694],
+        center: [-70.026992, 38.034694],
         zoom: 3.33,
         pitch: 10.0,
         bearing: 0,
       },
       alignment: "right",
       onChapterEnter: [
-        { layer: "priceData_2016", opacity: 0.7 },
-        { layer: "gyeonglidan_gil", opacity: 1 },
+        { layer: "uninsured-percent-simple-2010", opacity: 1.0 },
+        { layer: "background-white", opacity: 1.0 },
       ],
-      onChapterExit: [
-        { layer: "priceData_2016", opacity: 0 },
-        { layer: "gyeonglidan_gil", opacity: 0 },
-      ],
+      onChapterExit: [{ layer: "uninsured-percent-simple-2010", opacity: 0 }],
     },
     {
-      id: "street_network",
+      id: "background-2",
+      data: "background",
+      title: "Discrimination against Medicaid Enrollees has Increased",
+      image: "",
+      description: `As of 2023, only 49% of the population is under employer-based insurance and 44% of the population is either enrolled in medicaid / medicare or uninsured. Unfortunately, insurance-based discrimination in healthcare system has been reported. Medicaid beneficiaries and the uninsured often get delayed or rejected by physicians. In my site selection tool, I will try to give equitable access to healthcare by targeting the Medicaid enrollees.`,
+      location: {
+        center: [-73.244583, 42.901394],
+        zoom: 6.3,
+        pitch: 10.0,
+        bearing: 0,
+      },
+      alignment: "right",
+      onChapterEnter: [
+        { layer: "uninsured-percent-simple-2022", opacity: 1.0 },
+        { layer: "background-white", opacity: 1.0 },
+      ],
+      onChapterExit: [{ layer: "uninsured-percent-simple-2022", opacity: 0 }],
+    },
+    {
+      id: "site",
+      data: "site",
       title: "2015 | proximity to attractions and subway",
       image: "",
       description: `the convenient subway access and its adjacency to urban attractions create a symbiotic relationship that propels Gyeonglidan-gil's popularity, making it a vibrant and sought-after location for both local residents and tourists.
@@ -57,11 +66,12 @@ const config = {
         bearing: 0,
       },
       alignment: "right",
-      onChapterEnter: [{ layer: "streets_distance_attractions", opacity: 0.7 }],
-      onChapterExit: [{ layer: "streets_distance_attractions", opacity: 0 }],
+      onChapterEnter: [{ layer: "background-white", opacity: 0 }],
+      onChapterExit: [],
     },
     {
-      id: "social_media_rise",
+      id: "typology",
+      data: "typology",
       title: "2015 | rise in social media trends",
       image: "images/trends00.png",
       description: `the proximity to subways and urban attractions has likely led to increased exposure on platforms like Instagram and other social media. As visitors share their experiences online, the area gains visibility and reputation, attracting even more attention and footfall.
@@ -82,14 +92,8 @@ const config = {
         bearing: 0,
       },
       alignment: "right",
-      onChapterEnter: [
-        { layer: "gyeonglidan_gil", opacity: 0.5 },
-        { layer: "places_reviews", opacity: 1 },
-      ],
-      onChapterExit: [
-        { layer: "gyeonglidan_gil", opacity: 0 },
-        { layer: "places_reviews", opacity: 0 },
-      ],
+      onChapterEnter: [{ layer: "background-white", opacity: 0 }],
+      onChapterExit: [],
     },
   ],
 };
