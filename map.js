@@ -98,7 +98,7 @@ map.on("load", function () {
   const layers = map.getStyle().layers;
   let firstSymbolId;
   for (let i = 0; i < layers.length; i++) {
-    console.log(layers[i].id);
+    // console.log(layers[i].id);
     // if (layers[i].type === "symbol") {
     //   firstSymbolId = layers[i].id;
     //   break;
