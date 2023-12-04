@@ -90,13 +90,6 @@ const map = new mapboxgl.Map({
   transformRequest: transformRequest,
 });
 
-// Header interaction: turn on background-white on click header objectives
-const objectives = header.querySelector("a[href='#objectives']");
-objectives.addEventListener("click", () => {
-  const layer = { layer: "background-white", opacity: 1.0 };
-  setLayerOpacity(layer);
-});
-
 // Instantiates the scrollama function
 const scroller = scrollama();
 
@@ -105,7 +98,7 @@ map.on("load", function () {
   const layers = map.getStyle().layers;
   let firstSymbolId;
   for (let i = 0; i < layers.length; i++) {
-    // console.log(layers[i].id);
+    console.log(layers[i].id);
     // if (layers[i].type === "symbol") {
     //   firstSymbolId = layers[i].id;
     //   break;
@@ -121,16 +114,19 @@ map.on("load", function () {
       preventDefault: true,
     })
     .onStepEnter((response) => {
+      // interaction for objectives section
+      if (response.element.dataset.category === "objectives") {
+        setLayerOpacity({ layer: "background-white", opacity: 1.0 });
+      }
+
       let chapter = config.chapters.find(
         (chap) => chap.id === response.element.id
       );
+
       if (chapter) {
         map.flyTo(chapter.location);
         if (chapter.onChapterEnter.length > 0) {
           chapter.onChapterEnter.forEach(setLayerOpacity);
-        }
-        if (chapter.legend) {
-          chapter.legend.classList.remove("invisible");
         }
       }
       const selected = document.querySelector(
@@ -145,9 +141,6 @@ map.on("load", function () {
       if (chapter) {
         if (chapter.onChapterExit.length > 0) {
           chapter.onChapterExit.forEach(setLayerOpacity);
-        }
-        if (chapter.legend) {
-          chapter.legend.classList.add("invisible");
         }
       }
     });
