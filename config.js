@@ -3,7 +3,7 @@ const legendPrice = document.querySelector("#legend_price");
 const config = {
   accessToken:
     "pk.eyJ1Ijoia2xlZTA1MTEiLCJhIjoiY2xrYnFibnNjMGV4cjNrbzRqdGg1d21sYiJ9.nN0pE1qocGhTLnD_xPuYdg",
-  style: "mapbox://styles/klee0511/clpso0bt000t701qm42bg6n2n",
+  style: "mapbox://styles/klee0511/clpstczaw00sv01qma38t0acp",
   theme: "light",
   chapters: [
     {
@@ -161,32 +161,32 @@ const config = {
         <br /><br />
         <section class="toggle_datasets">
           <input type="radio" class="btn-check" name="metrics" id="shortage_2021" autocomplete="off" checked>
-          <label class="btn" for="shortage_2021"><b>A</b></label>
-          = &nbsp&nbsp Providers / 100 Residents 
+          <label class="btn" for="shortage_2021"><b>P</b></label>
+          = &nbsp&nbsp Providers / 100 Insrued
           <br />
           <input type="radio" class="btn-check" name="metrics" id="shortageM_2021" autocomplete="off" checked>
-          <label class="btn" for="shortageM_2021"><b>B</b></label>
+          <label class="btn" for="shortageM_2021"><b>PM</b></label>
           = &nbsp&nbsp Providers with Medicaid / 100 Medicaids 
           <br />
           <input type="radio" class="btn-check" name="metrics" id="disparity_2021" autocomplete="off">
           <label class="btn" for="disparity_2021"><b>Disparity in Medicaid</b></label>
-          = &nbsp&nbsp A / B
+          = &nbsp&nbsp P / PM
         </section>
 
         <section id="shortage_legend_counties">
           <h4 class="legend_title"></h4>
           <section class="legend">
             <div>
-              <div><span style="background-color: #000094"></span>0.25 - 0.67</div>
-              <div><span style="background-color: #0000d6"></span>0.67 - 1.46</div>
-              <div><span style="background-color: #2424eb"></span>1.46 - 2.01</div>
-              <div><span style="background-color: #4848eb"></span>2.01 - 2.51</div>
+              <div><span style="background-color: #000094"></span>4.37 - 5.01</div>
+              <div><span style="background-color: #0000d6"></span>3.73 - 4.37</div>
+              <div><span style="background-color: #2424eb"></span>2.92 - 3.73</div>
+              <div><span style="background-color: #4848eb"></span>2.51 - 2.92</div>
             </div>
             <div>
-              <div><span style="background-color: #6c6ce9"></span>2.51 - 2.92</div>
-              <div><span style="background-color: #9090eb"></span>2.92 - 3.73</div>
-              <div><span style="background-color: #b4b4eb"></span>3.73 - 4.37</div>
-              <div><span style="background-color: #d8d8eb"></span>4.37 - 5.01</div>
+              <div><span style="background-color: #6c6ce9"></span>2.01 - 2.51</div>
+              <div><span style="background-color: #9090eb"></span>1.46 - 2.01</div>
+              <div><span style="background-color: #b4b4eb"></span>0.67 - 1.46</div>
+              <div><span style="background-color: #d8d8eb"></span>0.25 - 0.67</div>
             </div>
           </section>
         </section>
@@ -231,8 +231,8 @@ const config = {
       data: "site",
       title: "counties with health disparity",
       image: "",
-      description: `I will use two datasets to choose counties vulnerable to insurance-based discrimination. One is the number of Medicaid Enrollments and the two is the ratio of health professionals who accept Medicaid insurance plans. Counties with high number of Medicaid Enrollments and low Medicaid acceptance rate are more likely to have insurance-based medical discrimination. 
-        <img src="./images/site01.JPG" style="width: 400px;"/>
+      description: `I chose seven counties with high healthcare diparity index and sorted them with the rural classification. I chose the Montgomery county here to demonstrate site identification methodology in suburban regions with high healthcare disparities.
+        <img src="./images/vulnerable_counties.png"/>
       `,
       location: {
         center: [-72.300583, 42.901394],
@@ -268,7 +268,7 @@ const config = {
     {
       id: "site3",
       data: "site",
-      title: "montgomery county",
+      title: "montgomery county (suburban)",
       image: "",
       description: `the convenient subway access and its adjacency to urban attractions create a symbiotic relationship that propels Gyeonglidan-gil's popularity, making it a vibrant and sought-after location for both local residents and tourists.`,
       location: {
