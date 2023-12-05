@@ -45,7 +45,7 @@ function offLayersBackground() {
 }
 
 /**
- * Toggle discrimanation datasets
+ * Toggle background2 datasets
  */
 const medicaid_2012 = document.querySelector("#medicaid_2012");
 const medicaid_2021 = document.querySelector("#medicaid_2021");
@@ -89,3 +89,28 @@ function offLayersBackground2() {
   setLayerOpacity({ layer: "medicaid-accept-counties-2012", opacity: 0 });
   setLayerOpacity({ layer: "medicaid-accept-counties-2021", opacity: 0 });
 }
+
+/**
+ * Toggle site datasets
+ */
+const shortage_2021 = document.querySelector("#shortage_2021");
+const disparity_2021 = document.querySelector("#disparity_2021");
+const shortage_legend_counties = document.querySelector(
+  "#shortage_legend_counties"
+);
+const disparity_legend_counties = document.querySelector(
+  "#disparity_legend_counties"
+);
+
+shortage_2021.addEventListener("click", () => {
+  setLayerOpacity({ layer: "medicaid-disparity-counties-2021", opacity: 0 });
+  setLayerOpacity({ layer: "medicaid-shortage-counties-2021", opacity: 1.0 });
+  shortage_legend_counties.classList.remove("invisible");
+  disparity_legend_counties.classList.add("invisible");
+});
+disparity_2021.addEventListener("click", () => {
+  setLayerOpacity({ layer: "medicaid-shortage-counties-2021", opacity: 0 });
+  setLayerOpacity({ layer: "medicaid-disparity-counties-2021", opacity: 1.0 });
+  shortage_legend_counties.classList.add("invisible");
+  disparity_legend_counties.classList.remove("invisible");
+});
