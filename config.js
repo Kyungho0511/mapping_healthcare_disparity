@@ -268,9 +268,24 @@ const config = {
     {
       id: "site3",
       data: "site",
-      title: "montgomery county (suburban)",
+      title: "montgomery county",
       image: "",
-      description: `the convenient subway access and its adjacency to urban attractions create a symbiotic relationship that propels Gyeonglidan-gil's popularity, making it a vibrant and sought-after location for both local residents and tourists.`,
+      description: `
+      <h5>
+      <b>Population : 49,532</b><br />
+      <b>Insured total : 28,025</b><br />
+      <b>Medicaid Enrollments : 7,819</b><br />
+      <b>Medicaid Enrollments ratio : 27.9 %</b><br />
+      <br />
+      <b>Providers (P) : 1,260</b><br />
+      <b>Providers accepting Medicaid (PM) : 149</b><br />
+      <b>Medicaid acceptance rate : 11.8 %</b><br />
+      <br />
+      <b>Disparity index : 2.88</b><br />
+      <b>P / 100 Insrued : 11.8 %</b><br /> 
+      <b>PM / 100 Medicaids : 11.8 %</b><br /> 
+      </h5>
+      `,
       location: {
         center: [-74.103722, 42.920529],
         zoom: 9.6,
