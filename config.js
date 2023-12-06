@@ -3,7 +3,7 @@ const legendPrice = document.querySelector("#legend_price");
 const config = {
   accessToken:
     "pk.eyJ1Ijoia2xlZTA1MTEiLCJhIjoiY2xrYnFibnNjMGV4cjNrbzRqdGg1d21sYiJ9.nN0pE1qocGhTLnD_xPuYdg",
-  style: "mapbox://styles/klee0511/clptl34u800uk01p8ethz5j7t",
+  style: "mapbox://styles/klee0511/clptmsn3c00u201p75g0r0vyo",
   theme: "light",
   chapters: [
     {
@@ -302,6 +302,7 @@ const config = {
           opacity: 1.0,
         },
         { layer: "areawater-montgomery", opacity: 0 },
+        { layer: "montgomery-filter-outline", opacity: 0 },
       ],
       onChapterExit: [
         {
@@ -346,13 +347,14 @@ const config = {
         { layer: "background-white", opacity: 0.5 },
         { layer: "medicaid-density-montgomery", opacity: 1 },
         { layer: "areawater-montgomery", opacity: 1 },
+        { layer: "montgomery-filter-outline", opacity: 1 },
       ],
       onChapterExit: [{ layer: "medicaid-density-montgomery", opacity: 0 }],
     },
     {
       id: "site5",
       data: "site",
-      title: "towns with high health disparity",
+      title: "neighbors with high health disparity",
       image: "",
       description: `Health providers within 5miles distance from each neighbor are counted as available health providers for the neighbor. Then the down selection process with disparity index is repeated in towns scale.
       <br /><br />
@@ -384,26 +386,30 @@ const config = {
         { layer: "background-white", opacity: 0.5 },
         { layer: "areawater-montgomery", opacity: 1 },
         { layer: "montgomery-cbg-outline", opacity: 1 },
+        { layer: "montgomery-filter-outline", opacity: 1 },
         { layer: "montgomery-shortage", opacity: 1 },
-        { layer: "montgomery-shortage-label", opacity: 1 },
+        { layer: "montgomery-provider", opacity: 1 },
+        { layer: "montgomery-provider-medicaid-big", opacity: 0 },
       ],
       onChapterExit: [
         { layer: "montgomery-cbg-outline", opacity: 0 },
         { layer: "montgomery-shortage", opacity: 0 },
         { layer: "montgomery-shortageM", opacity: 0 },
         { layer: "montgomery-disparity", opacity: 0 },
+        { layer: "montgomery-provider", opacity: 0 },
+        { layer: "montgomery-provider-medicaid", opacity: 0 },
       ],
     },
     {
       id: "site6",
       data: "site",
-      title: "repeat the down selection process",
+      title: "St Johnsville village",
       image: "",
       description: `Even though the county is classified as suburban area, large area of the montgomery county is used as farming lands. So I filtered out areas with extremely low medicaid enrollees density. 19 out of 43 census block groups are filtered after the operation. 
       `,
       location: {
-        center: [-74.163722, 42.944529],
-        zoom: 13,
+        center: [-74.674895, 43.020729],
+        zoom: 12.6,
         pitch: 0,
         bearing: 0,
       },
@@ -412,13 +418,15 @@ const config = {
         { layer: "mapbox-satellite", opacity: 1.0 },
         { layer: "background-white", opacity: 0.1 },
         { layer: "areawater-montgomery", opacity: 0 },
+        { layer: "montgomery-filter-outline", opacity: 1 },
+        { layer: "montgomery-provider-medicaid-big", opacity: 1 },
       ],
       onChapterExit: [],
     },
     {
       id: "site7",
       data: "site",
-      title: "repeat the down selection process",
+      title: "amsterdam city",
       image: "",
       description: `Even though the county is classified as suburban area, large area of the montgomery county is used as farming lands. So I filtered out areas with extremely low medicaid enrollees density. 19 out of 43 census block groups are filtered after the operation. 
       `,
@@ -433,6 +441,8 @@ const config = {
         { layer: "mapbox-satellite", opacity: 1.0 },
         { layer: "background-white", opacity: 0.1 },
         { layer: "areawater-montgomery", opacity: 0 },
+        { layer: "montgomery-filter-outline", opacity: 1 },
+        { layer: "montgomery-provider-medicaid-big", opacity: 1 },
       ],
       onChapterExit: [],
     },
@@ -443,29 +453,17 @@ const config = {
       image: "",
       description: `the proximity to subways and urban attractions has likely led to increased exposure on platforms like Instagram and other social media. As visitors share their experiences online, the area gains visibility and reputation, attracting even more attention and footfall.`,
       location: {
-        center: [-74.664895, 43.018729],
-        zoom: 12.4,
-        pitch: 0,
-        bearing: 0,
-      },
-      alignment: "right",
-      onChapterEnter: [{ layer: "background-white", opacity: 0.95 }],
-      onChapterExit: [],
-    },
-    {
-      id: "typology2",
-      data: "typology",
-      title: "next steps",
-      image: "",
-      description: `the proximity to subways and urban attractions has likely led to increased exposure on platforms like Instagram and other social media. As visitors share their experiences online, the area gains visibility and reputation, attracting even more attention and footfall.`,
-      location: {
         center: [-74.163722, 42.944529],
         zoom: 13,
         pitch: 0,
         bearing: 0,
       },
       alignment: "right",
-      onChapterEnter: [{ layer: "background-white", opacity: 0.95 }],
+      onChapterEnter: [
+        { layer: "background-white", opacity: 0.1 },
+        { layer: "montgomery-filter-outline", opacity: 0 },
+        { layer: "montgomery-provider-medicaid-big", opacity: 0 },
+      ],
       onChapterExit: [],
     },
   ],
