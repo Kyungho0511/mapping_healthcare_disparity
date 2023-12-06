@@ -3,7 +3,7 @@ const legendPrice = document.querySelector("#legend_price");
 const config = {
   accessToken:
     "pk.eyJ1Ijoia2xlZTA1MTEiLCJhIjoiY2xrYnFibnNjMGV4cjNrbzRqdGg1d21sYiJ9.nN0pE1qocGhTLnD_xPuYdg",
-  style: "mapbox://styles/klee0511/clpstczaw00sv01qma38t0acp",
+  style: "mapbox://styles/klee0511/clpt5kwvm00tw01pg3iy5f60p",
   theme: "light",
   chapters: [
     {
@@ -164,7 +164,7 @@ const config = {
           <label class="btn" for="shortage_2021"><b>P</b></label>
           = &nbsp&nbsp Providers / 100 Insrued
           <br />
-          <input type="radio" class="btn-check" name="metrics" id="shortageM_2021" autocomplete="off" checked>
+          <input type="radio" class="btn-check" name="metrics" id="shortageM_2021" autocomplete="off">
           <label class="btn" for="shortageM_2021"><b>PM</b></label>
           = &nbsp&nbsp Providers with Medicaid / 100 Medicaids 
           <br />
@@ -287,8 +287,8 @@ const config = {
       </h5>
       `,
       location: {
-        center: [-74.103722, 42.920529],
-        zoom: 9.6,
+        center: [-74.153722, 42.920529],
+        zoom: 9.8,
         pitch: 0,
         bearing: 0,
       },
@@ -300,6 +300,7 @@ const config = {
           layer: "medicaid-disparity-counties-filter-line-dotted-2021",
           opacity: 1.0,
         },
+        { layer: "areawater-montgomery", opacity: 0 },
       ],
       onChapterExit: [
         { layer: "mapbox-satellite", opacity: 0 },
@@ -312,18 +313,80 @@ const config = {
     {
       id: "site4",
       data: "site",
-      title: "filter medicaid enrollees outliers",
+      title: "filter medicaid density outliers",
       image: "",
-      description: `the convenient subway access and its adjacency to urban attractions create a symbiotic relationship that propels Gyeonglidan-gil's popularity, making it a vibrant and sought-after location for both local residents and tourists.`,
+      description: `Even though the county is classified as suburban area, large area of the montgomery county is used as farming lands. So I filtered out areas with extremely low medicaid enrollees density. 15 out of 43 census block groups are filtered after the operation. 
+        <section id="disparity_legend_counties">
+          <h4 class="legend_title">Medicaid Enrollments / km2</h4>
+          <section class="legend">
+            <div>
+              <div><span style="background-color: #008f32"></span>1205 - 1962</div>
+              <div><span style="background-color: #459a33"></span>783 - 1205</div>
+              <div><span style="background-color: #8ab03f"></span>614 - 783</div>
+              <div><span style="background-color: #8ab03f"></span>369 - 614</div>
+            </div>
+            <div>
+              <div><span style="background-color: #a9bb49"></span>166 - 369</div>
+              <div><span style="background-color: #c6c555"></span>60 - 166</div>
+              <div><span style="background-color: #e3cf65"></span>20 - 50</div>
+              <div><span style="background-color: #f7efc5"></span>0.37 - 20</div>
+            </div>
+          </section>
+        </section>  
+      `,
       location: {
-        center: [-74.103722, 42.920529],
-        zoom: 9.6,
+        center: [-74.153722, 42.920529],
+        zoom: 9.8,
         pitch: 0,
         bearing: 0,
       },
       alignment: "right",
-      onChapterEnter: [{ layer: "background-white", opacity: 0.95 }],
-      onChapterExit: [],
+      onChapterEnter: [
+        { layer: "background-white", opacity: 0.95 },
+        { layer: "united-states-counties-outline", opacity: 1 },
+        { layer: "medicaid-density-montgomery", opacity: 1 },
+        { layer: "areawater-montgomery", opacity: 1 },
+      ],
+      onChapterExit: [{ layer: "medicaid-density-montgomery", opacity: 0 }],
+    },
+    {
+      id: "site5",
+      data: "site",
+      title: "repeat the process in census block groups",
+      image: "",
+      description: `Even though the county is classified as suburban area, large area of the montgomery county is used as farming lands. So I filtered out areas with extremely low medicaid enrollees density. 19 out of 43 census block groups are filtered after the operation. 
+      <br /><br />
+      <section class="toggle_datasets">
+        <input type="radio" class="btn-check" name="metrics_cbg" id="shortage_cbg_2021" autocomplete="off" checked>
+        <label class="btn" for="shortage_cbg_2021"><b>P</b></label>
+        = &nbsp&nbsp Providers / 100 Insrued
+        <br />
+        <input type="radio" class="btn-check" name="metrics_cbg" id="shortageM_cbg_2021" autocomplete="off">
+        <label class="btn" for="shortageM_cbg_2021"><b>PM</b></label>
+        = &nbsp&nbsp Providers with Medicaid / 100 Medicaids 
+        <br />
+        <input type="radio" class="btn-check" name="metrics_cbg" id="disparity_cbg_2021" autocomplete="off">
+        <label class="btn" for="disparity_cbg_2021"><b>Disparity in Medicaid</b></label>
+        = &nbsp&nbsp P / PM
+      </section>
+      `,
+      location: {
+        center: [-74.153722, 42.945529],
+        zoom: 12.5,
+        pitch: 0,
+        bearing: 0,
+      },
+      alignment: "right",
+      onChapterEnter: [
+        { layer: "background-white", opacity: 0.95 },
+        { layer: "united-states-counties-outline", opacity: 1 },
+        { layer: "montgomery-outline", opacity: 1.0 },
+        { layer: "medicaid-density-filter-montgomery", opacity: 1 },
+      ],
+      onChapterExit: [
+        { layer: "medicaid-density-filter-montgomery", opacity: 0 },
+        { layer: "montgomery-outline", opacity: 0 },
+      ],
     },
     {
       id: "typology",
@@ -332,8 +395,8 @@ const config = {
       image: "",
       description: `the proximity to subways and urban attractions has likely led to increased exposure on platforms like Instagram and other social media. As visitors share their experiences online, the area gains visibility and reputation, attracting even more attention and footfall.`,
       location: {
-        center: [-74.103722, 42.920529],
-        zoom: 9.6,
+        center: [-74.153722, 42.920529],
+        zoom: 9.8,
         pitch: 0,
         bearing: 0,
       },
