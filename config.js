@@ -62,8 +62,8 @@ const config = {
         </section>
         `,
       location: {
-        center: [-75.026992, 39.534694],
-        zoom: 3.6,
+        center: [-77.526992, 39.534694],
+        zoom: 3.5,
         pitch: 0,
         bearing: 0,
       },
@@ -273,18 +273,18 @@ const config = {
       image: "",
       description: `
       <h5>
-      <b>Population : 49,532</b><br />
-      <b>Insured total : 28,025</b><br />
-      <b>Medicaid Enrollments : 7,819</b><br />
-      <b>Medicaid Enrollments ratio : 27.9 %</b><br />
+      Population : 49,532<br />
+      Insured total : 28,025<br />
+      Medicaid Enrollments : 7,819<br />
+      Medicaid Enrollments ratio : 27.9 %<br />
       <br />
-      <b>Providers (P) : 1,260</b><br />
-      <b>Providers accepting Medicaid (PM) : 149</b><br />
-      <b>Medicaid acceptance rate : 11.8 %</b><br />
+      Providers : 1,260<br />
+      Providers accepting Medicaid : 149<br />
+      Medicaid acceptance rate : 11.8 %<br />
       <br />
       <b>Disparity index : 2.88</b><br />
-      <b>P / 100 Insrued : 11.8 %</b><br /> 
-      <b>PM / 100 Medicaids : 11.8 %</b><br /> 
+      <b>Providers / 100 Insrued : 2.62</b><br /> 
+      <b>Providers with Medicaid / 100 Medicaids : 0.91</b><br /> 
       </h5>
       `,
       location: {
@@ -405,7 +405,23 @@ const config = {
       data: "site",
       title: "St Johnsville village",
       image: "",
-      description: `Even though the county is classified as suburban area, large area of the montgomery county is used as farming lands. So I filtered out areas with extremely low medicaid enrollees density. 19 out of 43 census block groups are filtered after the operation. 
+      description: ` 
+      <h5>
+        Insured total : 1,167<br />
+        Medicaid Enrollments : 504<br />
+        Medicaid Enrollments ratio : 43.2 %<br />
+        <br />
+        Providers : 12<br />
+        Providers accepting Medicaid : 1<br />
+        Medicaid acceptance rate : 8.3 %<br />
+        <br />
+        <b>Disparity index : 6.36</b><br />
+        <b>Providers / 100 Insrued : 1.01</b><br /> 
+        <b>Providers with Medicaid / 100 Medicaids : 0.16</b><br /> 
+      </h5>
+      <br />
+      <img src="./images/stjohns_health_facility.jpg">
+      <h5>Healthcare Facilities in the village</h5>
       `,
       location: {
         center: [-74.674895, 43.020729],
@@ -428,7 +444,23 @@ const config = {
       data: "site",
       title: "amsterdam city",
       image: "",
-      description: `Even though the county is classified as suburban area, large area of the montgomery county is used as farming lands. So I filtered out areas with extremely low medicaid enrollees density. 19 out of 43 census block groups are filtered after the operation. 
+      description: `
+      <h5>
+        Insured total : 14,958<br />
+        Medicaid Enrollments : 6,086<br />
+        Medicaid Enrollments ratio : 40.7 %<br />
+        <br />
+        Providers : 447<br />
+        Providers accepting Medicaid : 48<br />
+        Medicaid acceptance rate : 10.7 %<br />
+        <br />
+        <b>Disparity index : 3.79</b><br />
+        <b>Providers / 100 Insrued : 2.99</b><br /> 
+        <b>Providers with Medicaid / 100 Medicaids : 0.79</b><br /> 
+      </h5>
+      <br />
+      <img src="./images/amsterdam_health_facility.jpg">
+      <h5>Healthcare Facilities in the city</h5>
       `,
       location: {
         center: [-74.163722, 42.944529],
@@ -447,11 +479,66 @@ const config = {
       onChapterExit: [],
     },
     {
+      id: "site8",
+      data: "site",
+      title: "amsterdam city",
+      image: "",
+      description: `
+      <h5>
+        Insured total : 14,958<br />
+        Medicaid Enrollments : 6,086<br />
+        Medicaid Enrollments ratio : 40.7 %<br />
+        <br />
+        Providers : 447<br />
+        Providers accepting Medicaid : 48<br />
+        Medicaid acceptance rate : 10.7 %<br />
+        <br />
+        <b>Disparity index : 3.79</b><br />
+        <b>Providers / 100 Insrued : 2.99</b><br /> 
+        <b>Providers with Medicaid / 100 Medicaids : 0.79</b><br /> 
+      </h5>
+
+      <h4 class="legend_title">Medicaid Enrollments / km2</h4>
+      <section class="legend">
+        <div>
+          <div><span style="background-color: #008f32"></span>1205 - 1962</div>
+          <div><span style="background-color: #459a33"></span>783 - 1205</div>
+          <div><span style="background-color: #8ab03f"></span>614 - 783</div>
+          <div><span style="background-color: #8ab03f"></span>369 - 614</div>
+        </div>
+        <div>
+          <div><span style="background-color: #a9bb49"></span>166 - 369</div>
+          <div><span style="background-color: #c6c555"></span>60 - 166</div>
+          <div><span style="background-color: #e3cf65"></span>20 - 50</div>
+          <div><span style="background-color: #f7efc5"></span>0.37 - 20</div>
+        </div>
+      </section>
+      `,
+      location: {
+        center: [-74.163722, 42.944529],
+        zoom: 13,
+        pitch: 0,
+        bearing: 0,
+      },
+      alignment: "right",
+      onChapterEnter: [
+        { layer: "mapbox-satellite", opacity: 1.0 },
+        { layer: "background-white", opacity: 0.5 },
+        { layer: "areawater-montgomery", opacity: 0 },
+        { layer: "montgomery-filter-outline", opacity: 1 },
+        { layer: "montgomery-provider-medicaid-big", opacity: 1 },
+        { layer: "medicaid-density-filter-montgomery", opacity: 1 },
+      ],
+      onChapterExit: [
+        { layer: "medicaid-density-filter-montgomery", opacity: 0 },
+      ],
+    },
+    {
       id: "typology",
       data: "typology",
       title: "next steps",
       image: "",
-      description: `the proximity to subways and urban attractions has likely led to increased exposure on platforms like Instagram and other social media. As visitors share their experiences online, the area gains visibility and reputation, attracting even more attention and footfall.`,
+      description: ``,
       location: {
         center: [-74.163722, 42.944529],
         zoom: 13,
