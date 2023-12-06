@@ -91,7 +91,7 @@ function offLayersBackground2() {
 }
 
 /**
- * Toggle site datasets
+ * Toggle site datasets (title: metrics for equitable site identification)
  */
 const shortage_2021 = document.querySelector("#shortage_2021");
 const shortageM_2021 = document.querySelector("#shortageM_2021");
@@ -126,4 +126,31 @@ function offLayersSite() {
   setLayerOpacity({ layer: "medicaid-disparity-counties-2021", opacity: 0 });
   setLayerOpacity({ layer: "medicaid-shortage-counties-2021", opacity: 0 });
   setLayerOpacity({ layer: "medicaid-shortageM-counties-2021", opacity: 0 });
+}
+
+/**
+ * Toggle site5 datasets (title: repeat the down selection process)
+ */
+const shortage_cbg_2021 = document.querySelector("#montgomery-shortage");
+const shortageM_cbg_2021 = document.querySelector("#montgomery-shortageM");
+const disparity_cbg_2021 = document.querySelector("#montgomery-disparity");
+
+shortage_cbg_2021.addEventListener("click", () => {
+  offLayersSite5();
+  setLayerOpacity({ layer: "montgomery-shortage", opacity: 1.0 });
+  setLayerOpacity({ layer: "montgomery-shortage-label", opacity: 1.0 });
+});
+shortageM_cbg_2021.addEventListener("click", () => {
+  offLayersSite5();
+  setLayerOpacity({ layer: "montgomery-shortageM", opacity: 1.0 });
+});
+disparity_cbg_2021.addEventListener("click", () => {
+  offLayersSite5();
+  setLayerOpacity({ layer: "montgomery-disparity", opacity: 1.0 });
+});
+
+function offLayersSite5() {
+  setLayerOpacity({ layer: "montgomery-disparity", opacity: 0 });
+  setLayerOpacity({ layer: "montgomery-shortage", opacity: 0 });
+  setLayerOpacity({ layer: "montgomery-shortageM", opacity: 0 });
 }

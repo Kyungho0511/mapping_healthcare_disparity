@@ -3,7 +3,7 @@ const legendPrice = document.querySelector("#legend_price");
 const config = {
   accessToken:
     "pk.eyJ1Ijoia2xlZTA1MTEiLCJhIjoiY2xrYnFibnNjMGV4cjNrbzRqdGg1d21sYiJ9.nN0pE1qocGhTLnD_xPuYdg",
-  style: "mapbox://styles/klee0511/clpt5kwvm00tw01pg3iy5f60p",
+  style: "mapbox://styles/klee0511/clptl34u800uk01p8ethz5j7t",
   theme: "light",
   chapters: [
     {
@@ -229,7 +229,7 @@ const config = {
     {
       id: "site2",
       data: "site",
-      title: "counties with health disparity",
+      title: "counties with high health disparity",
       image: "",
       description: `I chose seven counties with high healthcare diparity index and sorted them with the rural classification. I chose the Montgomery county here to demonstrate site identification methodology in suburban regions with high healthcare disparities.
         <img src="./images/vulnerable_counties.png"/>
@@ -252,6 +252,7 @@ const config = {
           opacity: 1.0,
         },
         { layer: "background-white", opacity: 0.95 },
+        { layer: "mapbox-satellite", opacity: 0 },
       ],
       onChapterExit: [
         { layer: "medicaid-disparity-counties-filter-2021", opacity: 0 },
@@ -294,7 +295,7 @@ const config = {
       },
       alignment: "right",
       onChapterEnter: [
-        { layer: "background-white", opacity: 0 },
+        { layer: "background-white", opacity: 0.1 },
         { layer: "mapbox-satellite", opacity: 1.0 },
         {
           layer: "medicaid-disparity-counties-filter-line-dotted-2021",
@@ -303,7 +304,6 @@ const config = {
         { layer: "areawater-montgomery", opacity: 0 },
       ],
       onChapterExit: [
-        { layer: "mapbox-satellite", opacity: 0 },
         {
           layer: "medicaid-disparity-counties-filter-line-dotted-2021",
           opacity: 0,
@@ -315,7 +315,7 @@ const config = {
       data: "site",
       title: "filter medicaid density outliers",
       image: "",
-      description: `Even though the county is classified as suburban area, large area of the montgomery county is used as farming lands. So I filtered out areas with extremely low medicaid enrollees density. 15 out of 43 census block groups are filtered after the operation. 
+      description: `Even though the county is classified as suburban area, large area of the montgomery county is used as farming lands. So I filtered out census block groups with extremely low medicaid enrollees density. Then I grouped the adjacent census block groups to get distinct neighbors with enough medicaid enrollees.
         <section id="disparity_legend_counties">
           <h4 class="legend_title">Medicaid Enrollments / km2</h4>
           <section class="legend">
@@ -342,8 +342,8 @@ const config = {
       },
       alignment: "right",
       onChapterEnter: [
-        { layer: "background-white", opacity: 0.95 },
-        { layer: "united-states-counties-outline", opacity: 1 },
+        { layer: "mapbox-satellite", opacity: 1.0 },
+        { layer: "background-white", opacity: 0.5 },
         { layer: "medicaid-density-montgomery", opacity: 1 },
         { layer: "areawater-montgomery", opacity: 1 },
       ],
@@ -352,41 +352,89 @@ const config = {
     {
       id: "site5",
       data: "site",
-      title: "repeat the process in census block groups",
+      title: "towns with high health disparity",
       image: "",
-      description: `Even though the county is classified as suburban area, large area of the montgomery county is used as farming lands. So I filtered out areas with extremely low medicaid enrollees density. 19 out of 43 census block groups are filtered after the operation. 
+      description: `Health providers within 5miles distance from each neighbor are counted as available health providers for the neighbor. Then the down selection process with disparity index is repeated in towns scale.
+      <br /><br />
+      <img src="./images/neighbors_buffer.png">
       <br /><br />
       <section class="toggle_datasets">
-        <input type="radio" class="btn-check" name="metrics_cbg" id="shortage_cbg_2021" autocomplete="off" checked>
-        <label class="btn" for="shortage_cbg_2021"><b>P</b></label>
+        <input type="radio" class="btn-check" name="metrics_cbg" id="montgomery-shortage" autocomplete="off" checked>
+        <label class="btn" for="montgomery-shortage"><b>P</b></label>
         = &nbsp&nbsp Providers / 100 Insrued
         <br />
-        <input type="radio" class="btn-check" name="metrics_cbg" id="shortageM_cbg_2021" autocomplete="off">
-        <label class="btn" for="shortageM_cbg_2021"><b>PM</b></label>
+        <input type="radio" class="btn-check" name="metrics_cbg" id="montgomery-shortageM" autocomplete="off">
+        <label class="btn" for="montgomery-shortageM"><b>PM</b></label>
         = &nbsp&nbsp Providers with Medicaid / 100 Medicaids 
         <br />
-        <input type="radio" class="btn-check" name="metrics_cbg" id="disparity_cbg_2021" autocomplete="off">
-        <label class="btn" for="disparity_cbg_2021"><b>Disparity in Medicaid</b></label>
+        <input type="radio" class="btn-check" name="metrics_cbg" id="montgomery-disparity" autocomplete="off">
+        <label class="btn" for="montgomery-disparity"><b>Disparity in Medicaid</b></label>
         = &nbsp&nbsp P / PM
       </section>
       `,
       location: {
-        center: [-74.153722, 42.945529],
-        zoom: 12.5,
+        center: [-74.153722, 42.920529],
+        zoom: 9.8,
         pitch: 0,
         bearing: 0,
       },
       alignment: "right",
       onChapterEnter: [
-        { layer: "background-white", opacity: 0.95 },
-        { layer: "united-states-counties-outline", opacity: 1 },
-        { layer: "montgomery-outline", opacity: 1.0 },
-        { layer: "medicaid-density-filter-montgomery", opacity: 1 },
+        { layer: "mapbox-satellite", opacity: 1.0 },
+        { layer: "background-white", opacity: 0.5 },
+        { layer: "areawater-montgomery", opacity: 1 },
+        { layer: "montgomery-cbg-outline", opacity: 1 },
+        { layer: "montgomery-shortage", opacity: 1 },
+        { layer: "montgomery-shortage-label", opacity: 1 },
       ],
       onChapterExit: [
-        { layer: "medicaid-density-filter-montgomery", opacity: 0 },
-        { layer: "montgomery-outline", opacity: 0 },
+        { layer: "montgomery-cbg-outline", opacity: 0 },
+        { layer: "montgomery-shortage", opacity: 0 },
+        { layer: "montgomery-shortageM", opacity: 0 },
+        { layer: "montgomery-disparity", opacity: 0 },
       ],
+    },
+    {
+      id: "site6",
+      data: "site",
+      title: "repeat the down selection process",
+      image: "",
+      description: `Even though the county is classified as suburban area, large area of the montgomery county is used as farming lands. So I filtered out areas with extremely low medicaid enrollees density. 19 out of 43 census block groups are filtered after the operation. 
+      `,
+      location: {
+        center: [-74.163722, 42.944529],
+        zoom: 13,
+        pitch: 0,
+        bearing: 0,
+      },
+      alignment: "right",
+      onChapterEnter: [
+        { layer: "mapbox-satellite", opacity: 1.0 },
+        { layer: "background-white", opacity: 0.1 },
+        { layer: "areawater-montgomery", opacity: 0 },
+      ],
+      onChapterExit: [],
+    },
+    {
+      id: "site7",
+      data: "site",
+      title: "repeat the down selection process",
+      image: "",
+      description: `Even though the county is classified as suburban area, large area of the montgomery county is used as farming lands. So I filtered out areas with extremely low medicaid enrollees density. 19 out of 43 census block groups are filtered after the operation. 
+      `,
+      location: {
+        center: [-74.163722, 42.944529],
+        zoom: 13,
+        pitch: 0,
+        bearing: 0,
+      },
+      alignment: "right",
+      onChapterEnter: [
+        { layer: "mapbox-satellite", opacity: 1.0 },
+        { layer: "background-white", opacity: 0.1 },
+        { layer: "areawater-montgomery", opacity: 0 },
+      ],
+      onChapterExit: [],
     },
     {
       id: "typology",
@@ -395,13 +443,29 @@ const config = {
       image: "",
       description: `the proximity to subways and urban attractions has likely led to increased exposure on platforms like Instagram and other social media. As visitors share their experiences online, the area gains visibility and reputation, attracting even more attention and footfall.`,
       location: {
-        center: [-74.153722, 42.920529],
-        zoom: 9.8,
+        center: [-74.664895, 43.018729],
+        zoom: 12.4,
         pitch: 0,
         bearing: 0,
       },
       alignment: "right",
-      onChapterEnter: [{ layer: "background-white", opacity: 0 }],
+      onChapterEnter: [{ layer: "background-white", opacity: 0.95 }],
+      onChapterExit: [],
+    },
+    {
+      id: "typology2",
+      data: "typology",
+      title: "next steps",
+      image: "",
+      description: `the proximity to subways and urban attractions has likely led to increased exposure on platforms like Instagram and other social media. As visitors share their experiences online, the area gains visibility and reputation, attracting even more attention and footfall.`,
+      location: {
+        center: [-74.163722, 42.944529],
+        zoom: 13,
+        pitch: 0,
+        bearing: 0,
+      },
+      alignment: "right",
+      onChapterEnter: [{ layer: "background-white", opacity: 0.95 }],
       onChapterExit: [],
     },
   ],
