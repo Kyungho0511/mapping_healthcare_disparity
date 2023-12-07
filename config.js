@@ -273,18 +273,18 @@ const config = {
       image: "",
       description: `
       <h5>
-      Population : 49,532<br />
-      Insured total : 28,025<br />
-      Medicaid Enrollments : 7,819<br />
-      Medicaid Enrollments ratio : 27.9 %<br />
-      <br />
-      Providers : 1,260<br />
-      Providers accepting Medicaid : 149<br />
-      Medicaid acceptance rate : 11.8 %<br />
-      <br />
-      <b>Disparity index : 2.88</b><br />
-      <b>Providers / 100 Insrued : 2.62</b><br /> 
-      <b>Providers with Medicaid / 100 Medicaids : 0.91</b><br /> 
+        Population : 49,532<br />
+        Insured total : 28,025<br />
+        Medicaid Enrollments : 7,819<br />
+        Medicaid Enrollments ratio : 27.9 %<br />
+        <br />
+        Providers : 1,260<br />
+        Providers accepting Medicaid : 149<br />
+        Medicaid acceptance rate : 11.8 %<br />
+        <br />
+        <b>Disparity index : 2.88</b><br />
+        <b>Providers / 100 Insrued : 2.62</b><br /> 
+        <b>Providers with Medicaid / 100 Medicaids : 0.91</b><br /> 
       </h5>
       `,
       location: {
@@ -532,26 +532,6 @@ const config = {
       onChapterExit: [
         { layer: "medicaid-density-filter-montgomery", opacity: 0 },
       ],
-    },
-    {
-      id: "typology",
-      data: "typology",
-      title: "next steps",
-      image: "",
-      description: ``,
-      location: {
-        center: [-74.163722, 42.944529],
-        zoom: 13,
-        pitch: 0,
-        bearing: 0,
-      },
-      alignment: "right",
-      onChapterEnter: [
-        { layer: "background-white", opacity: 0.1 },
-        { layer: "montgomery-filter-outline", opacity: 0 },
-        { layer: "montgomery-provider-medicaid-big", opacity: 0 },
-      ],
-      onChapterExit: [],
     },
   ],
 };
