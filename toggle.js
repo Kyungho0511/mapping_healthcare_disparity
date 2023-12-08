@@ -45,7 +45,7 @@ function offLayersBackground() {
 }
 
 /**
- * Toggle health_disparity datasets
+ * Toggle health_disparity datasets (medicaid_2018 added)
  */
 const medicaid_2012 = document.querySelector("#medicaid_2012");
 const medicaid_2018 = document.querySelector("#medicaid_2018");
