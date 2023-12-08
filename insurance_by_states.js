@@ -57,9 +57,9 @@ Promise.all([
     .attr(
       "fill",
       (d) =>
-        `rgb(${255 - d[data_property] * 2.64}, ${
-          241 - d[data_property] * 9.64
-        }, ${179 - d[data_property] * 5.64})`
+        `rgb(${255 - d[data_property] * (66 / 25)}, ${
+          241 - d[data_property] * (241 / 25)
+        }, ${179 - d[data_property] * (141 / 25)})`
     );
 
   //Create labels
@@ -104,9 +104,9 @@ Promise.all([
       .attr(
         "fill",
         (d) =>
-          `rgb(${255 - d[data_property] * 2.64}, ${
-            241 - d[data_property] * 9.64
-          }, ${179 - d[data_property] * 5.64})`
+          `rgb(${255 - d[data_property] * (66 / 25)}, ${
+            241 - d[data_property] * (241 / 25)
+          }, ${179 - d[data_property] * (141 / 25)})`
       );
 
     // Update all labels
@@ -127,10 +127,11 @@ Promise.all([
       .attr("y", (d) => yScale(parseFloat(d[data_property])))
       .attr("height", (d) => h - padding - yScale(parseFloat(d[data_property])))
       .attr(
+        "fill",
         (d) =>
-          `rgb(${255 - d[data_property] * 2.64}, ${
-            241 - d[data_property] * 9.64
-          }, ${179 - d[data_property] * 5.64})`
+          `rgb(${255 - d[data_property] * (66 / 25)}, ${
+            241 - d[data_property] * (241 / 25)
+          }, ${179 - d[data_property] * (141 / 25)})`
       );
 
     // Update all labels
@@ -182,7 +183,6 @@ Promise.all([
             217 - d[data_property] * (74 / 36)
           }, ${118 - d[data_property] * (68 / 36)})`
       );
-
     // Update all labels
     svg
       .selectAll("text")

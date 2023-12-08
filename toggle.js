@@ -45,9 +45,10 @@ function offLayersBackground() {
 }
 
 /**
- * Toggle background2 datasets
+ * Toggle health_disparity datasets
  */
 const medicaid_2012 = document.querySelector("#medicaid_2012");
+const medicaid_2018 = document.querySelector("#medicaid_2018");
 const medicaid_2021 = document.querySelector("#medicaid_2021");
 const acceptance_2012 = document.querySelector("#acceptance_2012");
 const acceptance_2021 = document.querySelector("#acceptance_2021");
@@ -61,6 +62,12 @@ const acceptance_legend_counties = document.querySelector(
 medicaid_2012.addEventListener("click", () => {
   offLayersBackground2();
   setLayerOpacity({ layer: "medicaid-percent-counties-2012", opacity: 1.0 });
+  acceptance_legend_counties.classList.add("invisible");
+  medicaid_legend_counties.classList.remove("invisible");
+});
+medicaid_2018.addEventListener("click", () => {
+  offLayersBackground2();
+  setLayerOpacity({ layer: "medicaid-percent-counties-2018", opacity: 1.0 });
   acceptance_legend_counties.classList.add("invisible");
   medicaid_legend_counties.classList.remove("invisible");
 });
@@ -85,6 +92,7 @@ acceptance_2021.addEventListener("click", () => {
 
 function offLayersBackground2() {
   setLayerOpacity({ layer: "medicaid-percent-counties-2012", opacity: 0 });
+  setLayerOpacity({ layer: "medicaid-percent-counties-2018", opacity: 0 });
   setLayerOpacity({ layer: "medicaid-percent-counties-2021", opacity: 0 });
   setLayerOpacity({ layer: "medicaid-accept-counties-2012", opacity: 0 });
   setLayerOpacity({ layer: "medicaid-accept-counties-2021", opacity: 0 });

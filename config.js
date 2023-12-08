@@ -3,7 +3,7 @@ const legendPrice = document.querySelector("#legend_price");
 const config = {
   accessToken:
     "pk.eyJ1Ijoia2xlZTA1MTEiLCJhIjoiY2xrYnFibnNjMGV4cjNrbzRqdGg1d21sYiJ9.nN0pE1qocGhTLnD_xPuYdg",
-  style: "mapbox://styles/klee0511/clptmsn3c00u201p75g0r0vyo",
+  style: "mapbox://styles/klee0511/clpwobuch00y101p6botsa3vd",
   theme: "light",
   chapters: [
     {
@@ -80,41 +80,17 @@ const config = {
       ],
     },
     {
-      id: "background2",
-      data: "background",
-      title: "obamacare has reduced uninsured rate",
-      image: "",
-      description: `The Affordable Care Act (Obama Care) became law on March 23, 2010. In the decade before the enactment of the Affordable Care Act (ACA) in 2010, the uninsured rate averaged 15.0 percent. In 2014, provisions of the ACA went into effect that enabled states to expand Medicaid eligibility. As the ACA expanded Medicaid coverage, the uninsured rate continued to drop, falling below 9.0 percent. So are the Medicaid beneficiaries getting equitable treatment ever since then?<br><br>
-        
-      `,
-      location: {
-        center: [-70.526992, 33.034694],
-        zoom: 3.3,
-        pitch: 0,
-        bearing: 0,
-      },
-      alignment: "right",
-      onChapterEnter: [
-        { layer: "uninsured-percent-2010", opacity: 1.0 },
-        { layer: "background-white", opacity: 1.0 },
-      ],
-      onChapterExit: [
-        { layer: "uninsured-percent-2010", opacity: 0 },
-        { layer: "uninsured-percent-2022", opacity: 0 },
-        { layer: "medicaid-percent-2010", opacity: 0 },
-        { layer: "medicaid-percent-2022", opacity: 0 },
-      ],
-    },
-    {
       id: "health_disparity",
       data: "health_disparity",
       title: "Discrimination against Medicaid Enrollees has Increased",
       image: "",
-      description: `As the percentage of Medicaid Enrollments in relation to total population has increased from 13.7% to 21.7%, Medicaid acceptance rate by health professionals has drastically decreased from 70.9% to 16.3% in New York state in particular. Unfortunately, insurance-based discrimination in healthcare system has been largely deepened. In my site selection tool, I will try to give equitable access to healthcare by targeting the Medicaid enrollees.
+      description: `As the percentage of Medicaid Enrollments in relation to total population has increased from 13.7% to 21.7%, Medicaid acceptance rate by health professionals has drastically decreased from 70.9% to 16.3% in New York state in particular. Unfortunately, insurance-based discrimination in healthcare system has been largely deepened.
         <section class="toggle_datasets">
           <h4 class="legend_title">DataSets</h4>
           <input type="radio" class="btn-check" name="discrimination" id="medicaid_2012" autocomplete="off" checked>
           <label class="btn" for="medicaid_2012">Medicaid 2012</label>
+          <input type="radio" class="btn-check" name="discrimination" id="medicaid_2018" autocomplete="off">
+          <label class="btn" for="medicaid_2018">Medicaid 2018</label>
           <input type="radio" class="btn-check" name="discrimination" id="medicaid_2021" autocomplete="off">
           <label class="btn" for="medicaid_2021">Medicaid 2021</label>
           <br>
@@ -173,6 +149,7 @@ const config = {
       ],
       onChapterExit: [
         { layer: "medicaid-percent-counties-2012", opacity: 0 },
+        { layer: "medicaid-percent-counties-2018", opacity: 0 },
         { layer: "medicaid-percent-counties-2021", opacity: 0 },
         { layer: "medicaid-accept-counties-2012", opacity: 0 },
         { layer: "medicaid-accept-counties-2021", opacity: 0 },
@@ -183,7 +160,7 @@ const config = {
       data: "site",
       title: "metrics for equitable site identification",
       image: "",
-      description: `I will mainly use two datasets to get healthcare disparity index for Medicaid beneficiaries. One is the number of Medicaid Enrollments and the two is the ratio of health professionals who accept Medicaid insurance plans. Counties with high healthcare 'Diparity in Medicaid' are vulnerable to insurance-based discrimination. 
+      description: `Two datasets were mainly used to get healthcare disparity index for Medicaid beneficiaries. One is the number of Medicaid Enrollments and the two is the ratio of health professionals who accept Medicaid insurance plans. Counties with high healthcare 'Diparity in Medicaid' are vulnerable to insurance-based discrimination. 
         <br /><br />
         <section class="toggle_datasets">
           <input type="radio" class="btn-check" name="metrics" id="shortage_2021" autocomplete="off" checked>
@@ -257,7 +234,7 @@ const config = {
       data: "site",
       title: "counties with high health disparity",
       image: "",
-      description: `I chose seven counties with high healthcare diparity index and sorted them with the rural classification. I chose the Montgomery county here to demonstrate site identification methodology in suburban regions with high healthcare disparities.
+      description: `Seven counties with high healthcare diparity index are chosen and sorted with the rural classification. Montgomery county is further examined to find the most vulnerable neighbors to with insurance-based discrimination.
         <img src="./images/vulnerable_counties.png"/>
       `,
       location: {
