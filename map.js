@@ -20,6 +20,7 @@ const alignments = {
 const story = document.querySelector("#story");
 const header = document.querySelector("#header");
 const footer = document.querySelector("#footer");
+const chart = document.querySelector("#insurance_by_states");
 header.classList.add(config.theme);
 footer.classList.add(config.theme);
 
@@ -115,9 +116,10 @@ map.on("load", function () {
       preventDefault: true,
     })
     .onStepEnter((response) => {
-      // interaction for objectives section
-      if (response.element.dataset.category === "objectives") {
-        setLayerOpacity({ layer: "background-white", opacity: 1.0 });
+      if (response.element.id == "background") {
+        chart.classList.remove("transparent");
+      } else {
+        chart.classList.add("transparent");
       }
 
       let chapter = config.chapters.find(

@@ -62,8 +62,8 @@ const config = {
         </section>
         `,
       location: {
-        center: [-77.526992, 39.534694],
-        zoom: 3.5,
+        center: [-70.526992, 33.034694],
+        zoom: 3.3,
         pitch: 0,
         bearing: 0,
       },
@@ -82,6 +82,32 @@ const config = {
     {
       id: "background2",
       data: "background",
+      title: "obamacare has reduced uninsured rate",
+      image: "",
+      description: `The Affordable Care Act (Obama Care) became law on March 23, 2010. In the decade before the enactment of the Affordable Care Act (ACA) in 2010, the uninsured rate averaged 15.0 percent. In 2014, provisions of the ACA went into effect that enabled states to expand Medicaid eligibility. As the ACA expanded Medicaid coverage, the uninsured rate continued to drop, falling below 9.0 percent. So are the Medicaid beneficiaries getting equitable treatment ever since then?<br><br>
+        
+      `,
+      location: {
+        center: [-70.526992, 33.034694],
+        zoom: 3.3,
+        pitch: 0,
+        bearing: 0,
+      },
+      alignment: "right",
+      onChapterEnter: [
+        { layer: "uninsured-percent-2010", opacity: 1.0 },
+        { layer: "background-white", opacity: 1.0 },
+      ],
+      onChapterExit: [
+        { layer: "uninsured-percent-2010", opacity: 0 },
+        { layer: "uninsured-percent-2022", opacity: 0 },
+        { layer: "medicaid-percent-2010", opacity: 0 },
+        { layer: "medicaid-percent-2022", opacity: 0 },
+      ],
+    },
+    {
+      id: "health_disparity",
+      data: "health_disparity",
       title: "Discrimination against Medicaid Enrollees has Increased",
       image: "",
       description: `As the percentage of Medicaid Enrollments in relation to total population has increased from 13.7% to 21.7%, Medicaid acceptance rate by health professionals has drastically decreased from 70.9% to 16.3% in New York state in particular. Unfortunately, insurance-based discrimination in healthcare system has been largely deepened. In my site selection tool, I will try to give equitable access to healthcare by targeting the Medicaid enrollees.
@@ -477,61 +503,6 @@ const config = {
         { layer: "montgomery-provider-medicaid-big", opacity: 1 },
       ],
       onChapterExit: [],
-    },
-    {
-      id: "site8",
-      data: "site",
-      title: "amsterdam city",
-      image: "",
-      description: `
-      <h5>
-        Insured total : 14,958<br />
-        Medicaid Enrollments : 6,086<br />
-        Medicaid Enrollments ratio : 40.7 %<br />
-        <br />
-        Providers : 447<br />
-        Providers accepting Medicaid : 48<br />
-        Medicaid acceptance rate : 10.7 %<br />
-        <br />
-        <b>Disparity index : 3.79</b><br />
-        <b>Providers / 100 Insrued : 2.99</b><br /> 
-        <b>Providers with Medicaid / 100 Medicaids : 0.79</b><br /> 
-      </h5>
-
-      <h4 class="legend_title">Medicaid Enrollments / km2</h4>
-      <section class="legend">
-        <div>
-          <div><span style="background-color: #008f32"></span>1205 - 1962</div>
-          <div><span style="background-color: #459a33"></span>783 - 1205</div>
-          <div><span style="background-color: #8ab03f"></span>614 - 783</div>
-          <div><span style="background-color: #8ab03f"></span>369 - 614</div>
-        </div>
-        <div>
-          <div><span style="background-color: #a9bb49"></span>166 - 369</div>
-          <div><span style="background-color: #c6c555"></span>60 - 166</div>
-          <div><span style="background-color: #e3cf65"></span>20 - 50</div>
-          <div><span style="background-color: #f7efc5"></span>0.37 - 20</div>
-        </div>
-      </section>
-      `,
-      location: {
-        center: [-74.163722, 42.944529],
-        zoom: 13,
-        pitch: 0,
-        bearing: 0,
-      },
-      alignment: "right",
-      onChapterEnter: [
-        { layer: "mapbox-satellite", opacity: 1.0 },
-        { layer: "background-white", opacity: 0.5 },
-        { layer: "areawater-montgomery", opacity: 0 },
-        { layer: "montgomery-filter-outline", opacity: 1 },
-        { layer: "montgomery-provider-medicaid-big", opacity: 1 },
-        { layer: "medicaid-density-filter-montgomery", opacity: 1 },
-      ],
-      onChapterExit: [
-        { layer: "medicaid-density-filter-montgomery", opacity: 0 },
-      ],
     },
   ],
 };

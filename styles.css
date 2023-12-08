@@ -7,6 +7,14 @@ body {
   font-family: articulat-cf, sans-serif;
 }
 
+#insurance_by_states {
+  position: fixed;
+  bottom: 100px;
+  left: 150px;
+  z-index: 100;
+  transition: all 500ms ease-in-out;
+}
+
 #map {
   position: fixed;
   top: 0;
@@ -203,4 +211,9 @@ a:visited {
 
 .invisible {
   display: none;
+}
+
+.transparent {
+  opacity: 0;
+  pointer-events: none;
 }
