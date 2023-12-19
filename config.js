@@ -275,7 +275,6 @@ const config = {
       title: "montgomery county",
       image: "",
       description: `
-      <h5>
         Population : 49,532<br />
         Insured total : 28,025<br />
         Medicaid Enrollments : 7,819<br />
@@ -288,7 +287,6 @@ const config = {
         <b>Disparity index : 2.88</b><br />
         <b>Providers / 100 Insured : 2.62</b><br /> 
         <b>Providers with Medicaid / 100 Medicaids : 0.91</b><br /> 
-      </h5>
       `,
       location: {
         center: [-74.153722, 42.920529],
@@ -409,7 +407,6 @@ const config = {
       title: "St Johnsville village",
       image: "",
       description: ` 
-      <h5>
         Insured total : 1,167<br />
         Medicaid Enrollments : 504<br />
         Medicaid Enrollments ratio : 43.2 %<br />
@@ -421,10 +418,9 @@ const config = {
         <b>Disparity index : 6.36</b><br />
         <b>Providers / 100 Insured : 1.01</b><br /> 
         <b>Providers with Medicaid / 100 Medicaids : 0.16</b><br /> 
-      </h5>
       <br />
-      <img src="./images/stjohns_health_facility.jpg">
-      <h5>Healthcare Facilities in the village</h5>
+      <img src="./images/stjohns_health_facility.png">
+      Existing healthcare facilities in the village
       `,
       location: {
         center: [-74.674895, 43.020729],
@@ -448,7 +444,6 @@ const config = {
       title: "amsterdam city",
       image: "",
       description: `
-      <h5>
         Insured total : 14,958<br />
         Medicaid Enrollments : 6,086<br />
         Medicaid Enrollments ratio : 40.7 %<br />
@@ -460,10 +455,9 @@ const config = {
         <b>Disparity index : 3.79</b><br />
         <b>Providers / 100 Insured : 2.99</b><br /> 
         <b>Providers with Medicaid / 100 Medicaids : 0.79</b><br /> 
-      </h5>
       <br />
-      <img src="./images/amsterdam_health_facility.jpg">
-      <h5>Healthcare Facilities in the city</h5>
+      <img src="./images/amsterdam_health_facility.png">
+      Existing healthcare facilities in the city
       `,
       location: {
         center: [-74.163722, 42.944529],
