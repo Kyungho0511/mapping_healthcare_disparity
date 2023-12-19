@@ -160,12 +160,12 @@ const config = {
       data: "site",
       title: "healthcare disparity index to identify vulnerable areas",
       image: "",
-      description: `"The healthcare disparity index for Medicaid beneficiaries is derived from two datasets. The first dataset measures the number of health professionals who accept Medicaid per one hundred Medicaid enrollees. The second dataset evaluates the number of total health professionals per one hundred insured individuals. This index indicates the discrepancy in healthcare access between Medicaid enrollees and the overall insured population. Counties with a high disparity index are more susceptible to insurance-based discrimination. 
+      description: `The healthcare disparity index for Medicaid beneficiaries is derived from two datasets. The first dataset measures the number of health professionals who accept Medicaid per one hundred Medicaid enrollees. The second dataset evaluates the number of total health professionals per one hundred insured individuals. This index indicates the discrepancy in healthcare access between Medicaid enrollees and the overall insured population. Counties with a high disparity index are more susceptible to insurance-based discrimination. 
         <br /><br />
         <section class="toggle_datasets">
           <input type="radio" class="btn-check" name="metrics" id="shortage_2021" autocomplete="off" checked>
           <label class="btn" for="shortage_2021"><b>P</b></label>
-          = &nbsp&nbsp Providers / 100 Insrued
+          = &nbsp&nbsp Providers / 100 Insured
           <br />
           <input type="radio" class="btn-check" name="metrics" id="shortageM_2021" autocomplete="off">
           <label class="btn" for="shortageM_2021"><b>PM</b></label>
@@ -286,7 +286,7 @@ const config = {
         Medicaid acceptance rate : 11.8 %<br />
         <br />
         <b>Disparity index : 2.88</b><br />
-        <b>Providers / 100 Insrued : 2.62</b><br /> 
+        <b>Providers / 100 Insured : 2.62</b><br /> 
         <b>Providers with Medicaid / 100 Medicaids : 0.91</b><br /> 
       </h5>
       `,
@@ -366,7 +366,7 @@ const config = {
       <section class="toggle_datasets">
         <input type="radio" class="btn-check" name="metrics_cbg" id="montgomery-shortage" autocomplete="off" checked>
         <label class="btn" for="montgomery-shortage"><b>P</b></label>
-        = &nbsp&nbsp Providers / 100 Insrued
+        = &nbsp&nbsp Providers / 100 Insured
         <br />
         <input type="radio" class="btn-check" name="metrics_cbg" id="montgomery-shortageM" autocomplete="off">
         <label class="btn" for="montgomery-shortageM"><b>PM</b></label>
@@ -419,7 +419,7 @@ const config = {
         Medicaid acceptance rate : 8.3 %<br />
         <br />
         <b>Disparity index : 6.36</b><br />
-        <b>Providers / 100 Insrued : 1.01</b><br /> 
+        <b>Providers / 100 Insured : 1.01</b><br /> 
         <b>Providers with Medicaid / 100 Medicaids : 0.16</b><br /> 
       </h5>
       <br />
@@ -458,7 +458,7 @@ const config = {
         Medicaid acceptance rate : 10.7 %<br />
         <br />
         <b>Disparity index : 3.79</b><br />
-        <b>Providers / 100 Insrued : 2.99</b><br /> 
+        <b>Providers / 100 Insured : 2.99</b><br /> 
         <b>Providers with Medicaid / 100 Medicaids : 0.79</b><br /> 
       </h5>
       <br />
