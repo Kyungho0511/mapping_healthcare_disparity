@@ -156,8 +156,8 @@ const config = {
       ],
     },
     {
-      id: "site",
-      data: "site",
+      id: "health_disparity2",
+      data: "health_disparity",
       title: "healthcare disparity index to identify vulnerable areas",
       image: "",
       description: `The healthcare disparity index for Medicaid beneficiaries is derived from two datasets. The first dataset measures the number of health professionals who accept Medicaid per one hundred Medicaid enrollees. The second dataset evaluates the number of total health professionals per one hundred insured individuals. This index indicates the discrepancy in healthcare access between Medicaid enrollees and the overall insured population. Counties with a high disparity index are more susceptible to insurance-based discrimination. 
@@ -230,7 +230,7 @@ const config = {
       ],
     },
     {
-      id: "site2",
+      id: "site",
       data: "site",
       title: "counties with high healthcare disparity",
       image: "",
@@ -270,7 +270,7 @@ const config = {
       ],
     },
     {
-      id: "site3",
+      id: "site2",
       data: "site",
       title: "montgomery county",
       image: "",
@@ -313,7 +313,7 @@ const config = {
       ],
     },
     {
-      id: "site4",
+      id: "site3",
       data: "site",
       title: "filter medicaid density outliers",
       image: "",
@@ -353,7 +353,7 @@ const config = {
       onChapterExit: [{ layer: "medicaid-density-montgomery", opacity: 0 }],
     },
     {
-      id: "site5",
+      id: "site4",
       data: "site",
       title: "areas with high healthcare disparity",
       image: "",
@@ -402,7 +402,7 @@ const config = {
       ],
     },
     {
-      id: "site6",
+      id: "site5",
       data: "site",
       title: "St Johnsville village",
       image: "",
@@ -439,7 +439,7 @@ const config = {
       onChapterExit: [],
     },
     {
-      id: "site7",
+      id: "site6",
       data: "site",
       title: "amsterdam city",
       image: "",

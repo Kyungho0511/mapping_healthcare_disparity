@@ -147,6 +147,15 @@ map.on("load", function () {
         }
       }
     });
+
+  // When the user moves their mouse over the active layer
+  // update the feature state for the feature under the mouse.
+  map.on("mousemove", (event) => {
+    const states = map.queryRenderedFeatures(event.point, {
+      layers: ["uninsured-percent-2010"],
+    });
+    console.log(states);
+  });
 });
 
 /* Here we watch for any resizing of the screen to
