@@ -89,6 +89,7 @@ const map = new mapboxgl.Map({
   bearing: config.chapters[0].location.bearing,
   pitch: config.chapters[0].location.pitch,
   scrollZoom: false,
+  interactive: false,
   transformRequest: transformRequest,
 });
 
@@ -148,13 +149,36 @@ map.on("load", function () {
       }
     });
 
-  // When the user moves their mouse over the active layer
+  // When the user moves their mouse over the active layer, show popups and
   // update the feature state for the feature under the mouse.
+  const popup = document.createElement("div");
+  popup.classList.add("popup");
+  popup.classList.add("invisible");
+  story.appendChild(popup);
+
   map.on("mousemove", (event) => {
     const states = map.queryRenderedFeatures(event.point, {
-      layers: ["uninsured-percent-2010"],
+      layers: ["uninsured-percent-2010", "medicaid-percent-2010"],
     });
-    console.log(states);
+    if (states.length) {
+      const title = document.createElement("h4");
+      // title.innerText =
+      console.log(states);
+      const description = document.createElement("p");
+      popup.innerHTML;
+      popup.style.top = `${event.point.y + 30}px`;
+      popup.style.left = `${event.point.x + 30}px`;
+      popup.classList.remove("invisible");
+    }
+  });
+
+  map.on("mouseenter", "uninsured-percent-2010", () => {
+    map.getCanvas().style.cursor = "pointer";
+  });
+
+  map.on("mouseleave", "uninsured-percent-2010", () => {
+    map.getCanvas().style.cursor = "";
+    popup.classList.add("invisible");
   });
 });
 
