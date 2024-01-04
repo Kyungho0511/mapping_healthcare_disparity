@@ -8,24 +8,18 @@ const config = {
   chapters: [
     {
       id: "background",
-      data: "background",
+      category: "background",
       title: "more insured does not mean more care",
-      image: "",
-      description: `The Affordable Care Act (Obamacare) became law on March 23, 2010. In the decade before the enactment of the Affordable Care Act (ACA) in 2010, the uninsured rate averaged 15.0 percent. In 2014, provisions of the ACA went into effect that enabled states to expand Medicaid eligibility. As the ACA expanded Medicaid coverage, the uninsured rate continued to drop, falling below 9.0 percent. So, have Medicaid beneficiaries been receiving equitable treatment ever since?<br><br>
-        <section class="toggle_datasets">
-          <h4 class="legend_title">DataSets</h4>
-          <input type="radio" class="btn-check" name="uninsured" id="uninsured_2010" autocomplete="off" checked>
-          <label class="btn" for="uninsured_2010">Uninsured 2010</label>
-          <input type="radio" class="btn-check" name="uninsured" id="uninsured_2022" autocomplete="off">
-          <label class="btn" for="uninsured_2022">Uninsured 2022</label>
-          <br>
-          <input type="radio" class="btn-check" name="uninsured" id="medicaid_2010" autocomplete="off">
-          <label class="btn" for="medicaid_2010">Medicaid 2010</label>
-          <input type="radio" class="btn-check" name="uninsured" id="medicaid_2022" autocomplete="off">
-          <label class="btn" for="medicaid_2022">Medicaid 2022</label>
-        </section>
-
-        <section id="uninsured_legend_states">
+      description: `The Affordable Care Act (Obamacare) became law on March 23, 2010. In the decade before the enactment of the Affordable Care Act (ACA) in 2010, the uninsured rate averaged 15.0 percent. In 2014, provisions of the ACA went into effect that enabled states to expand Medicaid eligibility. As the ACA expanded Medicaid coverage, the uninsured rate continued to drop, falling below 9.0 percent. So, have Medicaid beneficiaries been receiving equitable treatment ever since?`,
+      data: [
+        "uninsured-percent-2010",
+        "uninsured-percent-2022",
+        "medicaid-percent-2010",
+        "medicaid-percent-2022",
+      ],
+      dataIndex: 0,
+      legend: `
+      <section id="uninsured-percent-legend" class="legend_container invisible">
           <h4 class="legend_title">Uninsured population percentage</h4>
           <section class="legend">
             <div>
@@ -43,7 +37,7 @@ const config = {
           </section>
         </section>
 
-        <section id="medicaid_legend_states" class="invisible">
+        <section id="medicaid-percent-legend" class="legend_container invisible">
           <h4 class="legend_title">Medicaid Enrollees percentage</h4>
           <section class="legend">
             <div>
@@ -60,43 +54,35 @@ const config = {
             </div>
           </section>
         </section>
-        `,
+      `,
       location: {
-        center: [-70.526992, 33.034694],
-        zoom: 3.3,
+        center: [-77.0, 38.5],
+        zoom: 3.55,
         pitch: 0,
         bearing: 0,
       },
       alignment: "right",
-      onChapterEnter: [
-        { layer: "uninsured-percent-2010", opacity: 1.0 },
-        { layer: "background-white", opacity: 1.0 },
-      ],
-      onChapterExit: [
-        { layer: "uninsured-percent-2010", opacity: 0 },
-        { layer: "uninsured-percent-2022", opacity: 0 },
-        { layer: "medicaid-percent-2010", opacity: 0 },
-        { layer: "medicaid-percent-2022", opacity: 0 },
-      ],
+      onChapterEnter: [{ layer: "background-white", opacity: 1.0 }],
+      onChapterExit: [],
     },
     {
       id: "health_disparity",
-      data: "health_disparity",
+      category: "health_disparity",
       title: "Discrimination against Medicaid has more than doubled",
-      image: "",
       description: `The percentage of Medicaid enrollments in relation to the total population has increased from 13.7% to 21.7% since 2010. However, the Medicaid acceptance rate by health professionals has drastically decreased from 70.9% to 16.3% in New York State specifically. Unfortunately, the data shows that insurance-based discrimination in the healthcare system has significantly deepened since 2010.
-        <section class="toggle_datasets">
-          <h4 class="legend_title">DataSets</h4>
-          <input type="radio" class="btn-check" name="discrimination" id="medicaid_2012" autocomplete="off" checked>
+        <section class="dataset_container">
+          <div class="dataset_title">
+            <h4>Select a dataset</h4>
+            <button class="play_btn pause"><img src="./images/pause.png"></button>
+          </div>
+          <input type="radio" class="btn-check" name="health_disparity" id="medicaid_2012" autocomplete="off" checked>
           <label class="btn" for="medicaid_2012">Medicaid 2012</label>
-          <input type="radio" class="btn-check" name="discrimination" id="medicaid_2018" autocomplete="off">
-          <label class="btn" for="medicaid_2018">Medicaid 2018</label>
-          <input type="radio" class="btn-check" name="discrimination" id="medicaid_2021" autocomplete="off">
+          <input type="radio" class="btn-check" name="health_disparity" id="medicaid_2021" autocomplete="off">
           <label class="btn" for="medicaid_2021">Medicaid 2021</label>
           <br>
-          <input type="radio" class="btn-check" name="discrimination" id="acceptance_2012" autocomplete="off">
+          <input type="radio" class="btn-check" name="health_disparity" id="acceptance_2012" autocomplete="off">
           <label class="btn" for="acceptance_2012">Acceptance 2012</label>
-          <input type="radio" class="btn-check" name="discrimination" id="acceptance_2021" autocomplete="off">
+          <input type="radio" class="btn-check" name="health_disparity" id="acceptance_2021" autocomplete="off">
           <label class="btn" for="acceptance_2021">Acceptance 2021</label>
         </section>
         
@@ -149,7 +135,6 @@ const config = {
       ],
       onChapterExit: [
         { layer: "medicaid-percent-counties-2012", opacity: 0 },
-        { layer: "medicaid-percent-counties-2018", opacity: 0 },
         { layer: "medicaid-percent-counties-2021", opacity: 0 },
         { layer: "medicaid-accept-counties-2012", opacity: 0 },
         { layer: "medicaid-accept-counties-2021", opacity: 0 },
@@ -157,21 +142,19 @@ const config = {
     },
     {
       id: "health_disparity2",
-      data: "health_disparity",
+      category: "health_disparity",
       title: "healthcare disparity index to identify vulnerable areas",
-      image: "",
       description: `The healthcare disparity index for Medicaid beneficiaries is derived from two datasets. The first dataset measures the number of health professionals who accept Medicaid per one hundred Medicaid enrollees. The second dataset evaluates the number of total health professionals per one hundred insured individuals. This index indicates the discrepancy in healthcare access between Medicaid enrollees and the overall insured population. Counties with a high disparity index are more susceptible to insurance-based discrimination. 
-        <br /><br />
-        <section class="toggle_datasets">
-          <input type="radio" class="btn-check" name="metrics" id="shortage_2021" autocomplete="off" checked>
+        <section class="dataset_container">
+          <input type="radio" class="btn-check" name="health_disparity2" id="shortage_2021" autocomplete="off" checked>
           <label class="btn" for="shortage_2021"><b>P</b></label>
           = &nbsp&nbsp Providers / 100 Insured
-          <br />
-          <input type="radio" class="btn-check" name="metrics" id="shortageM_2021" autocomplete="off">
+          <br>
+          <input type="radio" class="btn-check" name="health_disparity2" id="shortageM_2021" autocomplete="off">
           <label class="btn" for="shortageM_2021"><b>PM</b></label>
           = &nbsp&nbsp Providers with Medicaid / 100 Medicaids 
-          <br />
-          <input type="radio" class="btn-check" name="metrics" id="disparity_2021" autocomplete="off">
+          <br>
+          <input type="radio" class="btn-check" name="health_disparity2" id="disparity_2021" autocomplete="off">
           <label class="btn" for="disparity_2021"><b>Disparity in Medicaid</b></label>
           = &nbsp&nbsp P / PM
         </section>
@@ -231,9 +214,8 @@ const config = {
     },
     {
       id: "site",
-      data: "site",
+      category: "site",
       title: "counties with high healthcare disparity",
-      image: "",
       description: `Seven counties with a high healthcare disparity index are selected and classified based on their rural status. Among these, Montgomery County is singled out for further examination to identify the most vulnerable area susceptible to insurance-based discrimination in suburban regions within New York State.
         <img src="./images/vulnerable_counties.png"/>
       `,
@@ -271,9 +253,8 @@ const config = {
     },
     {
       id: "site2",
-      data: "site",
+      category: "site",
       title: "montgomery county",
-      image: "",
       description: `
         Population : 49,532<br />
         Insured total : 28,025<br />
@@ -314,9 +295,8 @@ const config = {
     },
     {
       id: "site3",
-      data: "site",
+      category: "site",
       title: "filter medicaid density outliers",
-      image: "",
       description: `Despite being classified as a suburban area, a significant portion of Montgomery County comprises agricultural lands. To narrow down the analysis, I filtered out census block groups with extremely low Medicaid enrollee density. Then, I grouped together adjacent census block groups to identify distinct neighbors that have sufficient Medicaid enrollees.
         <section id="disparity_legend_counties">
           <h4 class="legend_title">Medicaid Enrollments / km2</h4>
@@ -354,9 +334,8 @@ const config = {
     },
     {
       id: "site4",
-      data: "site",
+      category: "site",
       title: "areas with high healthcare disparity",
-      image: "",
       description: `Healthcare providers within a 5-mile radius of each identified neighbor are considered available healthcare providers for that specific neighbor. Subsequently, the downsizing process using the disparity index is reiterated at a town scale.
       <br /><br />
       <img src="./images/neighbors_buffer.png">
@@ -403,9 +382,8 @@ const config = {
     },
     {
       id: "site5",
-      data: "site",
+      category: "site",
       title: "St Johnsville village",
-      image: "",
       description: ` 
         Insured total : 1,167<br />
         Medicaid Enrollments : 504<br />
@@ -440,9 +418,8 @@ const config = {
     },
     {
       id: "site6",
-      data: "site",
+      category: "site",
       title: "amsterdam city",
-      image: "",
       description: `
         Insured total : 14,958<br />
         Medicaid Enrollments : 6,086<br />
