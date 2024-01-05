@@ -3,7 +3,7 @@ const legendPrice = document.querySelector("#legend_price");
 const config = {
   accessToken:
     "pk.eyJ1Ijoia2xlZTA1MTEiLCJhIjoiY2xrYnFibnNjMGV4cjNrbzRqdGg1d21sYiJ9.nN0pE1qocGhTLnD_xPuYdg",
-  style: "mapbox://styles/klee0511/clpwobuch00y101p6botsa3vd",
+  style: "mapbox://styles/klee0511/clr0aow7x00tr01pi1e3gf3mz",
   theme: "light",
   chapters: [
     {
@@ -17,9 +17,15 @@ const config = {
         "medicaid-percent-2010",
         "medicaid-percent-2022",
       ],
+      dataName: [
+        "Uninsured percent 2010",
+        "Uninsured percent 2022",
+        "Medicaid percent 2010",
+        "Medicaid percent 2022",
+      ],
       dataIndex: 0,
       legend: `
-      <section id="uninsured-percent-legend" class="legend_container invisible">
+      <section id="uninsured_percent_legend" class="legend_container">
           <h4 class="legend_title">Uninsured population percentage</h4>
           <section class="legend">
             <div>
@@ -37,7 +43,7 @@ const config = {
           </section>
         </section>
 
-        <section id="medicaid-percent-legend" class="legend_container invisible">
+        <section id="medicaid_percent_legend" class="legend_container invisible">
           <h4 class="legend_title">Medicaid Enrollees percentage</h4>
           <section class="legend">
             <div>
@@ -69,131 +75,56 @@ const config = {
       id: "health_disparity",
       category: "health_disparity",
       title: "Discrimination against Medicaid has more than doubled",
-      description: `The percentage of Medicaid enrollments in relation to the total population has increased from 13.7% to 21.7% since 2010. However, the Medicaid acceptance rate by health professionals has drastically decreased from 70.9% to 16.3% in New York State specifically. Unfortunately, the data shows that insurance-based discrimination in the healthcare system has significantly deepened since 2010.
-        <section class="dataset_container">
-          <div class="dataset_title">
-            <h4>Select a dataset</h4>
-            <button class="play_btn pause"><img src="./images/pause.png"></button>
+      description: `The percentage of Medicaid enrollments in relation to the total population has increased from 13.7% to 21.7% since 2010. However, the Medicaid acceptance rate by health professionals has drastically decreased from 70.9% to 16.3% in New York State specifically. Unfortunately, the data shows that insurance-based discrimination in the healthcare system has significantly deepened since 2010.`,
+      data: [
+        "medicaid-percent-counties-2012",
+        "medicaid-percent-counties-2021",
+        "medicaid-acceptance-counties-2012",
+        "medicaid-acceptance-counties-2021",
+      ],
+      dataName: [
+        "Medicaid percent 2012",
+        "Medicaid percent 2021",
+        "Acceptance rate 2012",
+        "Acceptance rate 2021",
+      ],
+      dataIndex: 0,
+      legend: `
+      <section id="medicaid_percent_counties_legend" class="legend_container">
+        <h4 class="legend_title">Medicaid Enrollees percentage</h4>
+        <section class="legend">
+          <div>
+            <div><span style="background-color: #008f32"></span>37.4 - 42.0 %</div>
+            <div><span style="background-color: #459a33"></span>32.9 - 37.4 %</div>
+            <div><span style="background-color: #6aa637"></span>28.4 - 32.9 %</div>
+            <div><span style="background-color: #8ab03f"></span>23.9 - 28.4 %</div>
           </div>
-          <input type="radio" class="btn-check" name="health_disparity" id="medicaid_2012" autocomplete="off" checked>
-          <label class="btn" for="medicaid_2012">Medicaid 2012</label>
-          <input type="radio" class="btn-check" name="health_disparity" id="medicaid_2021" autocomplete="off">
-          <label class="btn" for="medicaid_2021">Medicaid 2021</label>
-          <br>
-          <input type="radio" class="btn-check" name="health_disparity" id="acceptance_2012" autocomplete="off">
-          <label class="btn" for="acceptance_2012">Acceptance 2012</label>
-          <input type="radio" class="btn-check" name="health_disparity" id="acceptance_2021" autocomplete="off">
-          <label class="btn" for="acceptance_2021">Acceptance 2021</label>
+          <div>
+            <div><span style="background-color: #a9bb49"></span>19.4 - 23.9 %</div>
+            <div><span style="background-color: #c6c555"></span>14.9 - 19.4 %</div>
+            <div><span style="background-color: #e3cf65"></span>10.4 - 14.9 %</div>
+            <div><span style="background-color: #fed976"></span>5.9 - 10.4 %</div>
+          </div>
         </section>
-        
-        <section id="medicaid_legend_counties">
-          <h4 class="legend_title">Medicaid Enrollees percentage</h4>
-          <section class="legend">
-            <div>
-              <div><span style="background-color: #008f32"></span>37.4 - 42.0 %</div>
-              <div><span style="background-color: #459a33"></span>32.9 - 37.4 %</div>
-              <div><span style="background-color: #6aa637"></span>28.4 - 32.9 %</div>
-              <div><span style="background-color: #8ab03f"></span>23.9 - 28.4 %</div>
-            </div>
-            <div>
-              <div><span style="background-color: #a9bb49"></span>19.4 - 23.9 %</div>
-              <div><span style="background-color: #c6c555"></span>14.9 - 19.4 %</div>
-              <div><span style="background-color: #e3cf65"></span>10.4 - 14.9 %</div>
-              <div><span style="background-color: #fed976"></span>5.9 - 10.4 %</div>
-            </div>
-          </section>
-        </section>
+      </section>
 
-        <section id="acceptance_legend_counties" class="invisible">
-          <h4 class="legend_title">Medicaid Acceptance rate</h4>
-          <section class="legend">
-            <div>
-              <div><span style="background-color: #bd0026"></span>11.6 - 21.8 %</div>
-              <div><span style="background-color: #c9412a"></span>21.8 - 32.1 %</div>
-              <div><span style="background-color: #d36434"></span>32.1 - 42.3 %</div>
-              <div><span style="background-color: #dc8343"></span>42.3 - 52.6 %</div>
-            </div>
-            <div>
-              <div><span style="background-color: #e5a059"></span>52.6 - 62.8 %</div>
-              <div><span style="background-color: #edbc73"></span>62.8 - 73.1 %</div>
-              <div><span style="background-color: #f5d792"></span>73.1 - 83.3 %</div>
-              <div><span style="background-color: #fff1b3"></span>83.3 - 93.6 %</div>
-            </div>
-          </section>
-        </section>        
-        `,
-      location: {
-        center: [-72.300583, 42.901394],
-        zoom: 6.1,
-        pitch: 0,
-        bearing: 0,
-      },
-      alignment: "right",
-      onChapterEnter: [
-        { layer: "medicaid-percent-counties-2012", opacity: 1.0 },
-        { layer: "background-white", opacity: 0.95 },
-      ],
-      onChapterExit: [
-        { layer: "medicaid-percent-counties-2012", opacity: 0 },
-        { layer: "medicaid-percent-counties-2021", opacity: 0 },
-        { layer: "medicaid-accept-counties-2012", opacity: 0 },
-        { layer: "medicaid-accept-counties-2021", opacity: 0 },
-      ],
-    },
-    {
-      id: "health_disparity2",
-      category: "health_disparity",
-      title: "healthcare disparity index to identify vulnerable areas",
-      description: `The healthcare disparity index for Medicaid beneficiaries is derived from two datasets. The first dataset measures the number of health professionals who accept Medicaid per one hundred Medicaid enrollees. The second dataset evaluates the number of total health professionals per one hundred insured individuals. This index indicates the discrepancy in healthcare access between Medicaid enrollees and the overall insured population. Counties with a high disparity index are more susceptible to insurance-based discrimination. 
-        <section class="dataset_container">
-          <input type="radio" class="btn-check" name="health_disparity2" id="shortage_2021" autocomplete="off" checked>
-          <label class="btn" for="shortage_2021"><b>P</b></label>
-          = &nbsp&nbsp Providers / 100 Insured
-          <br>
-          <input type="radio" class="btn-check" name="health_disparity2" id="shortageM_2021" autocomplete="off">
-          <label class="btn" for="shortageM_2021"><b>PM</b></label>
-          = &nbsp&nbsp Providers with Medicaid / 100 Medicaids 
-          <br>
-          <input type="radio" class="btn-check" name="health_disparity2" id="disparity_2021" autocomplete="off">
-          <label class="btn" for="disparity_2021"><b>Disparity in Medicaid</b></label>
-          = &nbsp&nbsp P / PM
+      <section id="medicaid_acceptance_counties_legend" class="legend_container invisible">
+        <h4 class="legend_title">Medicaid Acceptance rate</h4>
+        <section class="legend">
+          <div>
+            <div><span style="background-color: #bd0026"></span>11.6 - 21.8 %</div>
+            <div><span style="background-color: #c9412a"></span>21.8 - 32.1 %</div>
+            <div><span style="background-color: #d36434"></span>32.1 - 42.3 %</div>
+            <div><span style="background-color: #dc8343"></span>42.3 - 52.6 %</div>
+          </div>
+          <div>
+            <div><span style="background-color: #e5a059"></span>52.6 - 62.8 %</div>
+            <div><span style="background-color: #edbc73"></span>62.8 - 73.1 %</div>
+            <div><span style="background-color: #f5d792"></span>73.1 - 83.3 %</div>
+            <div><span style="background-color: #fff1b3"></span>83.3 - 93.6 %</div>
+          </div>
         </section>
-
-        <section id="shortage_legend_counties">
-          <h4 class="legend_title"></h4>
-          <section class="legend">
-            <div>
-              <div><span style="background-color: #000094"></span>4.37 - 5.01</div>
-              <div><span style="background-color: #0000d6"></span>3.73 - 4.37</div>
-              <div><span style="background-color: #2424eb"></span>2.92 - 3.73</div>
-              <div><span style="background-color: #4848eb"></span>2.51 - 2.92</div>
-            </div>
-            <div>
-              <div><span style="background-color: #6c6ce9"></span>2.01 - 2.51</div>
-              <div><span style="background-color: #9090eb"></span>1.46 - 2.01</div>
-              <div><span style="background-color: #b4b4eb"></span>0.67 - 1.46</div>
-              <div><span style="background-color: #d8d8eb"></span>0.25 - 0.67</div>
-            </div>
-          </section>
-        </section>
-
-        <section id="disparity_legend_counties" class="invisible">
-          <h4 class="legend_title"></h4>
-          <section class="legend">
-            <div>
-              <div><span style="background-color: #db0000"></span>3.43 - 3.74</div>
-              <div><span style="background-color: #de2020"></span>3.13 - 3.43</div>
-              <div><span style="background-color: #e24141"></span>2.83 - 3.13</div>
-              <div><span style="background-color: #e56161"></span>2.53 - 2.83</div>
-            </div>
-            <div>
-              <div><span style="background-color: #e98282"></span>2.23 - 2.53</div>
-              <div><span style="background-color: #eca2a2"></span>1.93 - 2.23</div>
-              <div><span style="background-color: #f0c3c3"></span>1.63 - 1.93</div>
-              <div><span style="background-color: #f3e3e3"></span>1.33 - 1.63</div>
-            </div>
-          </section>
-        </section>           
+      </section>   
       `,
       location: {
         center: [-72.300583, 42.901394],
@@ -202,15 +133,69 @@ const config = {
         bearing: 0,
       },
       alignment: "right",
-      onChapterEnter: [
-        { layer: "medicaid-shortage-counties-2021", opacity: 1.0 },
-        { layer: "background-white", opacity: 0.95 },
+      onChapterEnter: [{ layer: "background-white", opacity: 0.95 }],
+      onChapterExit: [],
+    },
+    {
+      id: "health_disparity2",
+      category: "health_disparity",
+      title: "healthcare disparity index to identify vulnerable areas",
+      description: `The healthcare disparity index for Medicaid beneficiaries is derived from two datasets. The first dataset measures the number of health professionals who accept Medicaid per one hundred Medicaid enrollees. The second dataset evaluates the number of total health professionals per one hundred insured individuals. This index indicates the discrepancy in healthcare access between Medicaid enrollees and the overall insured population. Counties with a high disparity index are more susceptible to insurance-based discrimination.`,
+      data: [
+        "medicaid-shortage-counties-2021",
+        "medicaid-shortage-counties-2021M",
+        "medicaid-disparity-counties-2021",
       ],
-      onChapterExit: [
-        { layer: "medicaid-disparity-counties-2021", opacity: 0 },
-        { layer: "medicaid-shortageM-counties-2021", opacity: 0 },
-        { layer: "medicaid-shortage-counties-2021", opacity: 0 },
+      dataName: [
+        "P ( Providers / 100 Insured )",
+        "PM ( Providers with Medicaid / 100 Medicaid Enrollees )",
+        "Disparity Index ( P / PM )",
       ],
+      dataIndex: 0,
+      legend: `
+      <section id="medicaid_shortage_counties_legend" class="legend_container">
+        <section class="legend">
+          <div>
+            <div><span style="background-color: #000094"></span>4.37 - 5.01</div>
+            <div><span style="background-color: #0000d6"></span>3.73 - 4.37</div>
+            <div><span style="background-color: #2424eb"></span>2.92 - 3.73</div>
+            <div><span style="background-color: #4848eb"></span>2.51 - 2.92</div>
+          </div>
+          <div>
+            <div><span style="background-color: #6c6ce9"></span>2.01 - 2.51</div>
+            <div><span style="background-color: #9090eb"></span>1.46 - 2.01</div>
+            <div><span style="background-color: #b4b4eb"></span>0.67 - 1.46</div>
+            <div><span style="background-color: #d8d8eb"></span>0.25 - 0.67</div>
+          </div>
+        </section>
+      </section>
+
+      <section id="medicaid_disparity_counties_legend" class="legend_container invisible">
+        <section class="legend">
+          <div>
+            <div><span style="background-color: #db0000"></span>3.43 - 3.74</div>
+            <div><span style="background-color: #de2020"></span>3.13 - 3.43</div>
+            <div><span style="background-color: #e24141"></span>2.83 - 3.13</div>
+            <div><span style="background-color: #e56161"></span>2.53 - 2.83</div>
+          </div>
+          <div>
+            <div><span style="background-color: #e98282"></span>2.23 - 2.53</div>
+            <div><span style="background-color: #eca2a2"></span>1.93 - 2.23</div>
+            <div><span style="background-color: #f0c3c3"></span>1.63 - 1.93</div>
+            <div><span style="background-color: #f3e3e3"></span>1.33 - 1.63</div>
+          </div>
+        </section>
+      </section>  
+      `,
+      location: {
+        center: [-72.300583, 42.901394],
+        zoom: 6.1,
+        pitch: 0,
+        bearing: 0,
+      },
+      alignment: "right",
+      onChapterEnter: [{ layer: "background-white", opacity: 0.95 }],
+      onChapterExit: [],
     },
     {
       id: "site",
@@ -297,24 +282,25 @@ const config = {
       id: "site3",
       category: "site",
       title: "filter medicaid density outliers",
-      description: `Despite being classified as a suburban area, a significant portion of Montgomery County comprises agricultural lands. To narrow down the analysis, I filtered out census block groups with extremely low Medicaid enrollee density. Then, I grouped together adjacent census block groups to identify distinct neighbors that have sufficient Medicaid enrollees.
-        <section id="disparity_legend_counties">
-          <h4 class="legend_title">Medicaid Enrollments / km2</h4>
-          <section class="legend">
-            <div>
-              <div><span style="background-color: #008f32"></span>1205 - 1962</div>
-              <div><span style="background-color: #459a33"></span>783 - 1205</div>
-              <div><span style="background-color: #8ab03f"></span>614 - 783</div>
-              <div><span style="background-color: #8ab03f"></span>369 - 614</div>
-            </div>
-            <div>
-              <div><span style="background-color: #a9bb49"></span>166 - 369</div>
-              <div><span style="background-color: #c6c555"></span>60 - 166</div>
-              <div><span style="background-color: #e3cf65"></span>20 - 50</div>
-              <div><span style="background-color: #f7efc5"></span>0.37 - 20</div>
-            </div>
-          </section>
-        </section>  
+      description: `Despite being classified as a suburban area, a significant portion of Montgomery County comprises agricultural lands. To narrow down the analysis, I filtered out census block groups with extremely low Medicaid enrollee density. Then, I grouped together adjacent census block groups to identify distinct neighbors that have sufficient Medicaid enrollees.`,
+      legend: `
+      <section id="disparity_legend_counties">
+        <h4 class="legend_title">Medicaid Enrollees / km2</h4>
+        <section class="legend">
+          <div>
+            <div><span style="background-color: #008f32"></span>1205 - 1962</div>
+            <div><span style="background-color: #459a33"></span>783 - 1205</div>
+            <div><span style="background-color: #8ab03f"></span>614 - 783</div>
+            <div><span style="background-color: #8ab03f"></span>369 - 614</div>
+          </div>
+          <div>
+            <div><span style="background-color: #a9bb49"></span>166 - 369</div>
+            <div><span style="background-color: #c6c555"></span>60 - 166</div>
+            <div><span style="background-color: #e3cf65"></span>20 - 50</div>
+            <div><span style="background-color: #f7efc5"></span>0.37 - 20</div>
+          </div>
+        </section>
+      </section>  
       `,
       location: {
         center: [-74.153722, 42.920529],
@@ -336,24 +322,53 @@ const config = {
       id: "site4",
       category: "site",
       title: "areas with high healthcare disparity",
-      description: `Healthcare providers within a 5-mile radius of each identified neighbor are considered available healthcare providers for that specific neighbor. Subsequently, the downsizing process using the disparity index is reiterated at a town scale.
-      <br /><br />
-      <img src="./images/neighbors_buffer.png">
-      <br /><br />
-      <section class="toggle_datasets">
-        <input type="radio" class="btn-check" name="metrics_cbg" id="montgomery-shortage" autocomplete="off" checked>
-        <label class="btn" for="montgomery-shortage"><b>P</b></label>
-        = &nbsp&nbsp Providers / 100 Insured
-        <br />
-        <input type="radio" class="btn-check" name="metrics_cbg" id="montgomery-shortageM" autocomplete="off">
-        <label class="btn" for="montgomery-shortageM"><b>PM</b></label>
-        = &nbsp&nbsp Providers with Medicaid / 100 Medicaids 
-        <br />
-        <input type="radio" class="btn-check" name="metrics_cbg" id="montgomery-disparity" autocomplete="off">
-        <label class="btn" for="montgomery-disparity"><b>Disparity in Medicaid</b></label>
-        = &nbsp&nbsp P / PM
+      description: `Healthcare providers within a 5-mile radius of each identified neighbor are considered available healthcare providers for that specific neighbor. Subsequently, the downsizing process using the disparity index is reiterated at a town scale.`,
+      data: [
+        "montgomery-shortage-2018",
+        "montgomery-shortage-2018M",
+        "montgomery-disparity-2018",
+      ],
+      dataName: [
+        "P ( Providers / 100 Insured )",
+        "PM ( Providers with Medicaid / 100 Medicaid Enrollees )",
+        "Disparity Index ( P / PM )",
+      ],
+      legend: `
+      <section id="montgomery_shortage_legend" class="legend_container">
+        <section class="legend">
+          <div>
+            <div><span style="background-color: #000094"></span>2.61 - 2.96</div>
+            <div><span style="background-color: #0000d6"></span>2.26 - 2.61</div>
+            <div><span style="background-color: #2424eb"></span>1.91 - 2.26</div>
+            <div><span style="background-color: #4848eb"></span>1.56 - 1.91</div>
+          </div>
+          <div>
+            <div><span style="background-color: #6c6ce9"></span>1.21 - 1.56</div>
+            <div><span style="background-color: #9090eb"></span>0.86 - 1.21</div>
+            <div><span style="background-color: #b4b4eb"></span>0.51 - 0.86</div>
+            <div><span style="background-color: #d8d8eb"></span>0.16 - 0.51</div>
+          </div>
+        </section>
       </section>
+
+      <section id="montgomery_disparity_legend" class="legend_container invisible">
+        <section class="legend">
+          <div>
+            <div><span style="background-color: #db0000"></span>5.77 - 6.42</div>
+            <div><span style="background-color: #de2020"></span>5.12 - 5.77</div>
+            <div><span style="background-color: #e24141"></span>4.47 - 5.12</div>
+            <div><span style="background-color: #e56161"></span>3.82 - 4.47</div>
+          </div>
+          <div>
+            <div><span style="background-color: #e98282"></span>3.17 - 3.82</div>
+            <div><span style="background-color: #eca2a2"></span>2.52 - 3.17</div>
+            <div><span style="background-color: #f0c3c3"></span>1.87 - 2.52</div>
+            <div><span style="background-color: #f3e3e3"></span>1.22 - 1.87</div>
+          </div>
+        </section>
+      </section>  
       `,
+      dataIndex: 0,
       location: {
         center: [-74.153722, 42.920529],
         zoom: 9.8,
@@ -367,17 +382,13 @@ const config = {
         { layer: "areawater-montgomery", opacity: 1 },
         { layer: "montgomery-cbg-outline", opacity: 1 },
         { layer: "montgomery-filter-outline", opacity: 1 },
-        { layer: "montgomery-shortage", opacity: 1 },
-        { layer: "montgomery-provider", opacity: 1 },
         { layer: "montgomery-provider-medicaid-big", opacity: 0 },
       ],
       onChapterExit: [
         { layer: "montgomery-cbg-outline", opacity: 0 },
-        { layer: "montgomery-shortage", opacity: 0 },
-        { layer: "montgomery-shortageM", opacity: 0 },
-        { layer: "montgomery-disparity", opacity: 0 },
         { layer: "montgomery-provider", opacity: 0 },
         { layer: "montgomery-provider-medicaid", opacity: 0 },
+        { layer: "montgomery-neighbors-buffer", opacity: 0 },
       ],
     },
     {

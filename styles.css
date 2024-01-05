@@ -53,8 +53,6 @@ body {
 }
 
 #features {
-  padding-bottom: 10vh;
-
   & h3 {
     font-weight: 900;
     text-transform: uppercase;
@@ -121,7 +119,7 @@ a:visited {
 }
 .righty {
   width: 33vw;
-  padding-top: 20vh;
+  padding-top: 11rem;
   margin-left: 60vw;
 }
 .light {
@@ -137,7 +135,7 @@ a:visited {
   z-index: 2;
 }
 .step {
-  padding-bottom: 50vh;
+  padding-bottom: 30rem;
 }
 .step div {
   padding: 25px 50px;
@@ -165,6 +163,10 @@ a:visited {
     margin-right: 20px;
     width: 12px;
   }
+}
+
+.legend_container {
+  margin-top: 12px;
 }
 
 .legend_title {

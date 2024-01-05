@@ -74,7 +74,7 @@ config.chapters.forEach((record, idx) => {
       const label = document.createElement("label");
       label.setAttribute("class", "btn");
       label.setAttribute("for", d);
-      label.textContent = d;
+      label.textContent = record.dataName[idx];
       datasetToggle.appendChild(radioBtn);
       datasetToggle.appendChild(label);
     });
@@ -169,9 +169,11 @@ map.on("load", function () {
         if (chapter.onChapterEnter.length > 0) {
           chapter.onChapterEnter.forEach(setLayerOpacity);
         }
-        onCurrentLayer(chapter.data, chapter.dataIndex);
-        intervalId && clearInterval(intervalId);
-        intervalId = setDatasetInterval(chapter, 2500);
+        if (chapter.data) {
+          onCurrentLayer(chapter.data, chapter.dataIndex);
+          intervalId && clearInterval(intervalId);
+          intervalId = setDatasetInterval(chapter, 2500);
+        }
       }
       const selected = document.querySelector(
         `#header_${response.element.dataset.category}`
@@ -186,8 +188,10 @@ map.on("load", function () {
         if (chapter.onChapterExit.length > 0) {
           chapter.onChapterExit.forEach(setLayerOpacity);
         }
-        offLayers(chapter.data);
-        intervalId && clearInterval(intervalId);
+        if (chapter.data) {
+          offLayers(chapter.data);
+          intervalId && clearInterval(intervalId);
+        }
       }
     });
 
@@ -250,6 +254,21 @@ function setLayerOpacity(layer) {
 function onCurrentLayer(data, index) {
   offLayers(data);
   setLayerOpacity({ layer: data[index], opacity: 1 });
+  // corner case: group layers in the section site4
+  const groupLayers = [
+    "montgomery-provider",
+    "montgomery-provider-medicaid",
+    "montgomery-neighbors-buffer",
+  ];
+  if (data[index] == "montgomery-shortage-2018") {
+    offLayers(groupLayers);
+    setLayerOpacity({ layer: "montgomery-provider", opacity: 0.75 });
+    setLayerOpacity({ layer: "montgomery-neighbors-buffer", opacity: 0.15 });
+  } else if (data[index] == "montgomery-shortage-2018M") {
+    offLayers(groupLayers);
+    setLayerOpacity({ layer: "montgomery-provider-medicaid", opacity: 0.75 });
+    setLayerOpacity({ layer: "montgomery-neighbors-buffer", opacity: 0.15 });
+  } else if (data[index] == "montgomery-disparity-2018") offLayers(groupLayers);
   onCurrentLegend(data, index);
 }
 
@@ -260,20 +279,28 @@ function offLayers(data) {
 }
 
 function onCurrentLegend(data, index) {
-  offLegends();
-  const string = data[index].split("-");
-  let id = "";
-  string.forEach((s) => {
-    if (Object.is(parseInt(s), NaN)) id += `${s}-`;
-  });
-  id += "legend";
+  offLegends(data);
+  const id = getLegendId(data[index]);
   const legend = document.getElementById(id);
   legend.classList.remove("invisible");
 }
 
-function offLegends() {
-  const legends = document.querySelectorAll(".legend_container");
-  legends.forEach((legend) => legend.classList.add("invisible"));
+function offLegends(data) {
+  data.forEach((d) => {
+    const id = getLegendId(d);
+    const legend = document.getElementById(id);
+    legend.classList.add("invisible");
+  });
+}
+
+function getLegendId(data) {
+  const string = data.split("-");
+  let id = "";
+  string.forEach((s) => {
+    if (Object.is(parseInt(s), NaN)) id += `${s}_`;
+  });
+  id += "legend";
+  return id;
 }
 
 function setDatasetInterval(chapter, time) {
