@@ -145,6 +145,14 @@ const map = new mapboxgl.Map({
 const scroller = scrollama();
 
 map.on("load", function () {
+  // Set paint properties of mapbox studio layers for hover effects
+  map.setPaintProperty("united-states-outline-hover", "line-width", [
+    "case",
+    ["boolean", ["feature-state", "hover"], false],
+    4,
+    0,
+  ]);
+
   // Setup the instance, pass callback functions
   let intervalId = null;
   let isExiting = false;
@@ -324,13 +332,29 @@ function mouseMoveHandler(event, chapter) {
   let prevName = null;
   let prevValue = null;
   const states = map.queryRenderedFeatures(event.point, {
-    layers: [chapter.data[0]],
+    layers: [chapter.data[2]],
   });
-  console.log(states);
-  if (states.length) {
-    popup.style.top = `${event.point.y + 30}px`;
-    popup.style.left = `${event.point.x + 30}px`;
+  if (states.length > 0) {
+    // set popup positions
+    const mapWidth = window.innerWidth * 0.6;
+    const popupWidth = 200;
+    const popupHeight = 150;
+    const offset = 20;
+    if (event.point.x + popupWidth + offset > mapWidth) {
+      popup.style.left = `${event.point.x - popupWidth - offset}px`;
+    } else {
+      popup.style.left = `${event.point.x + offset}px`;
+    }
+    if (event.point.y + popupHeight - offset > window.innerHeight * 0.8) {
+      console.log("up");
+      popup.style.top = `${event.point.y - popupHeight + offset}px`;
+    } else {
+      console.log("down");
+      popup.style.top = `${event.point.y - offset}px`;
+    }
     popup.classList.remove("invisible");
+
+    // update popup contents as mouse moves
     if (
       prevName !== states[0].properties.NAME ||
       prevValue !== states[0].properties[layer]
@@ -338,8 +362,31 @@ function mouseMoveHandler(event, chapter) {
       popup.innerHTML = `
         <h5 class="popup_title">${states[0].properties.NAME}</h5>
         <p>${states[0].properties[layer]}</p>
+        <p>${states[0].properties[layer]}</p>
+        <p>${states[0].properties[layer]}</p>
         `;
       prevName = states[0].properties.NAME;
     }
+
+    // add hover effect
+    if (chapter.hoveredPolygonId !== null) {
+      map.setFeatureState(
+        {
+          source: "composite",
+          sourceLayer: "insurance_percent-8pbdsc",
+          id: chapter.hoveredPolygonId,
+        },
+        { hover: false }
+      );
+    }
+    chapter.hoveredPolygonId = states[0].id;
+    map.setFeatureState(
+      {
+        source: "composite",
+        sourceLayer: "insurance_percent-8pbdsc",
+        id: chapter.hoveredPolygonId,
+      },
+      { hover: true }
+    );
   }
 }
