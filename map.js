@@ -106,6 +106,12 @@ config.chapters.forEach((record, idx) => {
   features.appendChild(container);
 });
 
+// Creates the popups
+const popup = document.createElement("div");
+popup.setAttribute("id", "popup");
+popup.classList.add("invisible");
+story.appendChild(popup);
+
 // Appends the features element (with the vignettes) to the story element
 story.insertBefore(features, footer);
 
@@ -139,19 +145,10 @@ const map = new mapboxgl.Map({
 const scroller = scrollama();
 
 map.on("load", function () {
-  // This is the function that finds the first symbol layer
-  const layers = map.getStyle().layers;
-  let firstSymbolId;
-  for (let i = 0; i < layers.length; i++) {
-    // console.log(layers[i].id);
-    // if (layers[i].type === "symbol") {
-    //   firstSymbolId = layers[i].id;
-    //   break;
-    // }
-  }
-
   // Setup the instance, pass callback functions
   let intervalId = null;
+  let isExiting = false;
+  let mouseMoveHandlerWrapper = null;
 
   scroller
     .setup({
@@ -159,21 +156,26 @@ map.on("load", function () {
       offset: 0.2,
       progress: true,
       preventDefault: true,
+      threshold: 1,
     })
     .onStepEnter((response) => {
-      let chapter = config.chapters.find(
+      const chapter = config.chapters.find(
         (chap) => chap.id === response.element.id
       );
-      if (chapter) {
-        map.flyTo(chapter.location);
-        if (chapter.onChapterEnter.length > 0) {
-          chapter.onChapterEnter.forEach(setLayerOpacity);
-        }
-        if (chapter.data) {
-          onCurrentLayer(chapter.data, chapter.dataIndex);
-          intervalId && clearInterval(intervalId);
-          intervalId = setDatasetInterval(chapter, 2500);
-        }
+      map.flyTo(chapter.location);
+      if (chapter.onChapterEnter.length > 0) {
+        chapter.onChapterEnter.forEach(setLayerOpacity);
+      }
+      if (chapter.data) {
+        onCurrentLayer(chapter.data, chapter.dataIndex);
+        intervalId && clearInterval(intervalId);
+        intervalId = setDatasetInterval(chapter, 2500);
+        map.on("mouseenter", chapter.data[0], mouseEnterHandler);
+        map.on("mouseleave", chapter.data[0], mouseLeaveHandler);
+        mouseMoveHandlerWrapper = (event) => {
+          mouseMoveHandler(event, chapter);
+        };
+        map.on("mousemove", chapter.data[0], mouseMoveHandlerWrapper);
       }
       const selected = document.querySelector(
         `#header_${response.element.dataset.category}`
@@ -181,50 +183,37 @@ map.on("load", function () {
       selectNavItem(selected);
     })
     .onStepExit((response) => {
-      let chapter = config.chapters.find(
+      const chapter = config.chapters.find(
         (chap) => chap.id === response.element.id
       );
-      if (chapter) {
-        if (chapter.onChapterExit.length > 0) {
-          chapter.onChapterExit.forEach(setLayerOpacity);
-        }
+      if (chapter.onChapterExit.length > 0) {
+        chapter.onChapterExit.forEach(setLayerOpacity);
+      }
+      if (chapter.data) {
+        offLayers(chapter.data);
+      }
+      isExiting = false;
+    })
+    .onStepProgress(({ progress, direction, element }) => {
+      // onStepProgress is used to guarantee callback from onStepProgress always runs before
+      // onStepEnter, since it is not guaranteed onStepExit triggers before onStepEnter
+      if (
+        ((progress > 0.95 && direction == "down") ||
+          (progress < 0.05 && direction == "up")) &&
+        !isExiting
+      ) {
+        const chapter = config.chapters.find((chap) => chap.id === element.id);
         if (chapter.data) {
-          offLayers(chapter.data);
-          intervalId && clearInterval(intervalId);
+          map.off("mouseenter", chapter.data[0], mouseEnterHandler);
+          map.off("mouseleave", chapter.data[0], mouseLeaveHandler);
+          map.off("mousemove", chapter.data[0], mouseMoveHandlerWrapper);
         }
+        popup.classList.add("invisible");
+        map.getCanvas().style.cursor = "";
+        clearInterval(intervalId);
+        isExiting = true;
       }
     });
-
-  // When the user moves their mouse over the active layer, show popups and
-  // update the feature state for the feature under the mouse.
-  const popup = document.createElement("div");
-  popup.classList.add("popup");
-  popup.classList.add("invisible");
-  story.appendChild(popup);
-
-  map.on("mousemove", (event) => {
-    const states = map.queryRenderedFeatures(event.point, {
-      layers: ["uninsured-percent-2010", "medicaid-percent-2010"],
-    });
-    if (states.length) {
-      const title = document.createElement("h4");
-      title.innerText = console.log(event);
-      const description = document.createElement("p");
-      popup.innerHTML;
-      popup.style.top = `${event.point.y + 30}px`;
-      popup.style.left = `${event.point.x + 30}px`;
-      popup.classList.remove("invisible");
-    }
-  });
-
-  map.on("mouseenter", "uninsured-percent-2010", () => {
-    map.getCanvas().style.cursor = "pointer";
-  });
-
-  map.on("mouseleave", "uninsured-percent-2010", () => {
-    map.getCanvas().style.cursor = "";
-    popup.classList.add("invisible");
-  });
 });
 
 /* Here we watch for any resizing of the screen to
@@ -319,4 +308,38 @@ function playDatasets(chapter) {
   chapter.dataIndex = (chapter.dataIndex + 1) % dataBtns.length; // Move to the next dataset index
   dataBtns[chapter.dataIndex].checked = true; // Check the radio button at the current index
   onCurrentLayer(chapter.data, chapter.dataIndex);
+}
+
+function mouseEnterHandler() {
+  map.getCanvas().style.cursor = "pointer";
+}
+
+function mouseLeaveHandler() {
+  map.getCanvas().style.cursor = "";
+  popup.classList.add("invisible");
+}
+
+function mouseMoveHandler(event, chapter) {
+  const layer = chapter.data[chapter.dataIndex];
+  let prevName = null;
+  let prevValue = null;
+  const states = map.queryRenderedFeatures(event.point, {
+    layers: [chapter.data[0]],
+  });
+  console.log(states);
+  if (states.length) {
+    popup.style.top = `${event.point.y + 30}px`;
+    popup.style.left = `${event.point.x + 30}px`;
+    popup.classList.remove("invisible");
+    if (
+      prevName !== states[0].properties.NAME ||
+      prevValue !== states[0].properties[layer]
+    ) {
+      popup.innerHTML = `
+        <h5 class="popup_title">${states[0].properties.NAME}</h5>
+        <p>${states[0].properties[layer]}</p>
+        `;
+      prevName = states[0].properties.NAME;
+    }
+  }
 }

@@ -204,12 +204,12 @@ a:visited {
   }
 }
 
-.popup {
+#popup {
   position: fixed;
-  height: 200px;
-  width: 180px;
-  background-color: #ffffffdf;
+  width: 200px;
+  background-color: #ffffff;
   z-index: 2;
+  /* border: 1px solid rgb(204, 204, 204); */
   box-shadow: 2px 2px 14px -7px rgba(0, 0, 0, 0.5);
   -webkit-box-shadow: 2px 2px 14px -7px rgba(0, 0, 0, 0.5);
   -moz-box-shadow: 2px 2px 14px -7px rgba(0, 0, 0, 0.5);
