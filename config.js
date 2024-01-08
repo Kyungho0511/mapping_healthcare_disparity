@@ -3,7 +3,7 @@ const legendPrice = document.querySelector("#legend_price");
 const config = {
   accessToken:
     "pk.eyJ1Ijoia2xlZTA1MTEiLCJhIjoiY2xrYnFibnNjMGV4cjNrbzRqdGg1d21sYiJ9.nN0pE1qocGhTLnD_xPuYdg",
-  style: "mapbox://styles/klee0511/clr35puy500wu01nt62dc8b1f",
+  style: "mapbox://styles/klee0511/clr4f7wec00xb01nv4id6991w",
   theme: "light",
   chapters: [
     {
@@ -61,7 +61,6 @@ const config = {
           </section>
         </section>
       `,
-      hoveredPolygonId: null,
       location: {
         center: [-77.0, 38.5],
         zoom: 3.55,
@@ -127,7 +126,6 @@ const config = {
         </section>
       </section>   
       `,
-      hoveredPolygonId: null,
       location: {
         center: [-72.300583, 42.901394],
         zoom: 6.1,
@@ -189,7 +187,6 @@ const config = {
         </section>
       </section>  
       `,
-      hoveredPolygonId: null,
       location: {
         center: [-72.300583, 42.901394],
         zoom: 6.1,

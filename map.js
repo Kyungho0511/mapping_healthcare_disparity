@@ -145,10 +145,18 @@ const map = new mapboxgl.Map({
 const scroller = scrollama();
 
 map.on("load", function () {
-  // Set paint properties of mapbox studio layers for hover effects
+  // Hover effect (mapbox studio duplicates feature ids by mistake, when uploading geojson)
+  // solution: set id states with a unique feature property for every geometry within feature
+  // then in setPaintProperty, do self-reference. so features with the same id are uniquely identifiable.
   map.setPaintProperty("united-states-outline-hover", "line-width", [
     "case",
-    ["boolean", ["feature-state", "hover"], false],
+    ["==", ["get", "id"], ["feature-state", "id"]],
+    4,
+    0,
+  ]);
+  map.setPaintProperty("united-states-counties-outline-hover", "line-width", [
+    "case",
+    ["==", ["get", "id"], ["feature-state", "id"]],
     4,
     0,
   ]);
@@ -157,6 +165,7 @@ map.on("load", function () {
   let intervalId = null;
   let isExiting = false;
   let mouseMoveHandlerWrapper = null;
+  let mouseLeaveHandlerWrapper = null;
 
   scroller
     .setup({
@@ -179,7 +188,10 @@ map.on("load", function () {
         intervalId && clearInterval(intervalId);
         intervalId = setDatasetInterval(chapter, 2500);
         map.on("mouseenter", chapter.data[0], mouseEnterHandler);
-        map.on("mouseleave", chapter.data[0], mouseLeaveHandler);
+        mouseLeaveHandlerWrapper = () => {
+          mouseLeaveHandler(chapter);
+        };
+        map.on("mouseleave", chapter.data[0], mouseLeaveHandlerWrapper);
         mouseMoveHandlerWrapper = (event) => {
           mouseMoveHandler(event, chapter);
         };
@@ -213,7 +225,7 @@ map.on("load", function () {
         const chapter = config.chapters.find((chap) => chap.id === element.id);
         if (chapter.data) {
           map.off("mouseenter", chapter.data[0], mouseEnterHandler);
-          map.off("mouseleave", chapter.data[0], mouseLeaveHandler);
+          map.off("mouseleave", chapter.data[0], mouseLeaveHandlerWrapper);
           map.off("mousemove", chapter.data[0], mouseMoveHandlerWrapper);
         }
         popup.classList.add("invisible");
@@ -322,9 +334,37 @@ function mouseEnterHandler() {
   map.getCanvas().style.cursor = "pointer";
 }
 
-function mouseLeaveHandler() {
+function mouseLeaveHandler(chapter) {
   map.getCanvas().style.cursor = "";
   popup.classList.add("invisible");
+
+  // Hover effect (when mouse leaves, delete id states for every geometry within feature)
+  if (chapter.id === "background") {
+    for (let i = 0; i < 27; i++) {
+      map.setFeatureState(
+        {
+          source: "composite",
+          sourceLayer: "insurance_percent-bokrxj",
+          id: i,
+        },
+        { id: null }
+      );
+    }
+  } else if (
+    chapter.id === "health_disparity" ||
+    chapter.id === "health_disparity2"
+  ) {
+    for (let i = 0; i < 60; i++) {
+      map.setFeatureState(
+        {
+          source: "composite",
+          sourceLayer: "medicaid_counties-cn3p9u",
+          id: i,
+        },
+        { id: null }
+      );
+    }
+  }
 }
 
 function mouseMoveHandler(event, chapter) {
@@ -332,24 +372,22 @@ function mouseMoveHandler(event, chapter) {
   let prevName = null;
   let prevValue = null;
   const states = map.queryRenderedFeatures(event.point, {
-    layers: [chapter.data[2]],
+    layers: [chapter.data[0]],
   });
   if (states.length > 0) {
     // set popup positions
     const mapWidth = window.innerWidth * 0.6;
     const popupWidth = 200;
     const popupHeight = 150;
-    const offset = 20;
+    const offset = 30;
     if (event.point.x + popupWidth + offset > mapWidth) {
       popup.style.left = `${event.point.x - popupWidth - offset}px`;
     } else {
       popup.style.left = `${event.point.x + offset}px`;
     }
     if (event.point.y + popupHeight - offset > window.innerHeight * 0.8) {
-      console.log("up");
       popup.style.top = `${event.point.y - popupHeight + offset}px`;
     } else {
-      console.log("down");
       popup.style.top = `${event.point.y - offset}px`;
     }
     popup.classList.remove("invisible");
@@ -363,30 +401,38 @@ function mouseMoveHandler(event, chapter) {
         <h5 class="popup_title">${states[0].properties.NAME}</h5>
         <p>${states[0].properties[layer]}</p>
         <p>${states[0].properties[layer]}</p>
-        <p>${states[0].properties[layer]}</p>
         `;
       prevName = states[0].properties.NAME;
     }
 
-    // add hover effect
-    if (chapter.hoveredPolygonId !== null) {
-      map.setFeatureState(
-        {
-          source: "composite",
-          sourceLayer: "insurance_percent-8pbdsc",
-          id: chapter.hoveredPolygonId,
-        },
-        { hover: false }
-      );
+    // Hover effect (mapbox studio duplicates feature ids by mistake, when uploading geojson)
+    // solution: set id states with a unique feature property for every geometry within feature
+    // then in setPaintProperty, do self-reference. so features with the same id are uniquely identifiable.
+    if (chapter.id === "background") {
+      for (let i = 0; i < 27; i++) {
+        map.setFeatureState(
+          {
+            source: "composite",
+            sourceLayer: "insurance_percent-bokrxj",
+            id: i,
+          },
+          { id: states[0].properties.id }
+        );
+      }
+    } else if (
+      chapter.id === "health_disparity" ||
+      chapter.id === "health_disparity2"
+    ) {
+      for (let i = 0; i < 60; i++) {
+        map.setFeatureState(
+          {
+            source: "composite",
+            sourceLayer: "medicaid_counties-cn3p9u",
+            id: i,
+          },
+          { id: states[0].properties.id }
+        );
+      }
     }
-    chapter.hoveredPolygonId = states[0].id;
-    map.setFeatureState(
-      {
-        source: "composite",
-        sourceLayer: "insurance_percent-8pbdsc",
-        id: chapter.hoveredPolygonId,
-      },
-      { hover: true }
-    );
   }
 }
