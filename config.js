@@ -3,7 +3,7 @@ const legendPrice = document.querySelector("#legend_price");
 const config = {
   accessToken:
     "pk.eyJ1Ijoia2xlZTA1MTEiLCJhIjoiY2xrYnFibnNjMGV4cjNrbzRqdGg1d21sYiJ9.nN0pE1qocGhTLnD_xPuYdg",
-  style: "mapbox://styles/klee0511/clr4f7wec00xb01nv4id6991w",
+  style: "mapbox://styles/klee0511/clr671xro00ym01qr93toby6o",
   theme: "light",
   chapters: [
     {
@@ -204,6 +204,8 @@ const config = {
       description: `Seven counties with a high healthcare disparity index are selected and classified based on their rural status. Among these, Montgomery County is singled out for further examination to identify the most vulnerable area susceptible to insurance-based discrimination in suburban regions within New York State.
         <img src="./images/vulnerable_counties.png"/>
       `,
+      data: ["medicaid-disparity-counties-filter-2021"],
+      dataIndex: 0,
       location: {
         center: [-72.300583, 42.901394],
         zoom: 6.1,
@@ -268,8 +270,6 @@ const config = {
           layer: "medicaid-disparity-counties-filter-line-dotted-2021",
           opacity: 1.0,
         },
-        { layer: "areawater-montgomery", opacity: 0 },
-        { layer: "montgomery-filter-outline", opacity: 0 },
       ],
       onChapterExit: [
         {
@@ -283,6 +283,8 @@ const config = {
       category: "site",
       title: "filter medicaid density outliers",
       description: `Despite being classified as a suburban area, a significant portion of Montgomery County comprises agricultural lands. To narrow down the analysis, I filtered out census block groups with extremely low Medicaid enrollee density. Then, I grouped together adjacent census block groups to identify distinct neighbors that have sufficient Medicaid enrollees.`,
+      data: ["medicaid-density-montgomery"],
+      dataIndex: 0,
       legend: `
       <section id="disparity_legend_counties">
         <h4 class="legend_title">Medicaid Enrollees / km2</h4>
@@ -313,8 +315,6 @@ const config = {
         { layer: "mapbox-satellite", opacity: 1.0 },
         { layer: "background-white", opacity: 0.5 },
         { layer: "medicaid-density-montgomery", opacity: 1 },
-        { layer: "areawater-montgomery", opacity: 1 },
-        { layer: "montgomery-filter-outline", opacity: 1 },
       ],
       onChapterExit: [{ layer: "medicaid-density-montgomery", opacity: 0 }],
     },
@@ -379,10 +379,9 @@ const config = {
       onChapterEnter: [
         { layer: "mapbox-satellite", opacity: 1.0 },
         { layer: "background-white", opacity: 0.5 },
-        { layer: "areawater-montgomery", opacity: 1 },
         { layer: "montgomery-cbg-outline", opacity: 1 },
-        { layer: "montgomery-filter-outline", opacity: 1 },
         { layer: "montgomery-provider-medicaid-big", opacity: 0 },
+        { layer: "montgomery-filter-outline", opacity: 0 },
       ],
       onChapterExit: [
         { layer: "montgomery-cbg-outline", opacity: 0 },
@@ -421,7 +420,6 @@ const config = {
       onChapterEnter: [
         { layer: "mapbox-satellite", opacity: 1.0 },
         { layer: "background-white", opacity: 0.1 },
-        { layer: "areawater-montgomery", opacity: 0 },
         { layer: "montgomery-filter-outline", opacity: 1 },
         { layer: "montgomery-provider-medicaid-big", opacity: 1 },
       ],
@@ -457,7 +455,6 @@ const config = {
       onChapterEnter: [
         { layer: "mapbox-satellite", opacity: 1.0 },
         { layer: "background-white", opacity: 0.1 },
-        { layer: "areawater-montgomery", opacity: 0 },
         { layer: "montgomery-filter-outline", opacity: 1 },
         { layer: "montgomery-provider-medicaid-big", opacity: 1 },
       ],
