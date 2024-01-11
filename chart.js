@@ -1,193 +1,98 @@
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
 
 // Set size
-let w = 900;
-let h = 180;
-let padding = 40;
+const margin = { top: 10, right: 30, bottom: 10, left: 30 };
+const width = popupWidth - margin.left - margin.right;
+const height = 120 - margin.top - margin.bottom;
 
-Promise.all([
-  d3.csv("./data/insurance_by_states_2010.csv"),
-  d3.csv("./data/insurance_by_states_2022.csv"),
-]).then((dataset) => {
-  let data = dataset[0];
-  let data_property = "uninsured_percent";
-  let xScale = d3
-    .scaleBand()
-    .domain(
-      data.map(function (d) {
-        return d["Appendix"];
-      })
-    )
-    .range([padding, w - padding])
-    .padding(0.1);
+const data = [
+  { category: "medicaid", value1: 18, value2: 23 },
+  { category: "uninsured", value1: 30, value2: 16 },
+];
 
-  let yScale = d3
-    .scaleLinear()
-    .domain([
-      0,
-      d3.max(data, function (d) {
-        return parseFloat(d[data_property]);
-      }),
-    ])
-    .range([h - padding, padding]);
+const svg = d3
+  .select("#popup")
+  .append("svg")
+  .attr("width", width + margin.left + margin.right)
+  .attr("height", height + margin.top + margin.bottom)
+  .attr("class", "popup_chart")
+  .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-  //Create SVG element
-  let svg = d3
-    .select("#insurance_by_states")
-    .append("svg")
-    .attr("width", w)
-    .attr("height", h);
+const x = d3
+  .scaleLinear()
+  .domain([0, 1]) // Two categories represented by 0 and 1
+  .range([0, width]);
 
-  //Create bars
-  svg
-    .selectAll("rect")
-    .data(data)
-    .enter()
-    .append("rect")
-    .attr("x", function (d) {
-      return xScale(d["Appendix"]);
-    })
-    .attr("y", function (d) {
-      return yScale(parseFloat(d[data_property]));
-    })
-    .attr("width", xScale.bandwidth())
-    .attr("height", function (d) {
-      return h - padding - yScale(parseFloat(d[data_property]));
-    })
-    .attr(
-      "fill",
-      (d) =>
-        `rgb(${255 - d[data_property] * (66 / 25)}, ${
-          241 - d[data_property] * (241 / 25)
-        }, ${179 - d[data_property] * (141 / 25)})`
-    );
+const min = 0;
+const max = 40;
+const y1 = d3.scaleLinear().domain([min, max]).range([height, 0]);
+const y2 = d3.scaleLinear().domain([min, max]).range([height, 0]);
 
-  //Create labels
-  svg
-    .selectAll("text")
-    .data(data)
-    .enter()
-    .append("text")
-    .text(function (d) {
-      return Math.round(parseFloat(d[data_property]));
-    })
-    .attr("text-anchor", "middle")
-    .attr("x", function (d) {
-      return xScale(d["Appendix"]) + xScale.bandwidth() / 2;
-    })
-    .attr("y", function (d) {
-      return yScale(parseFloat(d[data_property])) + 14;
-    })
-    .attr("font-family", "sans-serif")
-    .attr("font-size", "10px")
-    .attr("fill", "white");
+let tickValuesY1 = data.map((d) => d.value1);
+let tickValuesY2 = data.map((d) => d.value2);
+tickValuesY1 = [min, ...tickValuesY1, max];
 
-  // Create x axis
-  let xAxis = d3.axisBottom().scale(xScale);
-  svg
-    .append("g")
-    .attr("class", "x axis")
-    .attr("transform", "translate(0," + (h - padding) + ")")
-    .call(xAxis);
+// Append y1 axis and style
+svg
+  .append("g")
+  .call(
+    d3
+      .axisLeft(y1)
+      .tickValues(tickValuesY1)
+      .tickSizeOuter(0)
+      .tickFormat((d) => d + "%")
+  )
+  .select(".domain")
+  .attr("stroke-dasharray", 4)
+  .attr("stroke", "lightgrey");
 
-  //On click, update with new data
-  d3.select("#uninsured_2010").on("click", () => {
-    data = dataset[0];
-    data_property = "uninsured_percent";
-    // Update all rects
-    svg
-      .selectAll("rect")
-      .data(data)
-      .transition()
-      .attr("y", (d) => yScale(parseFloat(d[data_property])))
-      .attr("height", (d) => h - padding - yScale(parseFloat(d[data_property])))
-      .attr(
-        "fill",
-        (d) =>
-          `rgb(${255 - d[data_property] * (66 / 25)}, ${
-            241 - d[data_property] * (241 / 25)
-          }, ${179 - d[data_property] * (141 / 25)})`
-      );
+// Append y2 axis and style
+svg
+  .append("g")
+  .attr("transform", "translate(" + width + ", 0)")
+  .call(
+    d3
+      .axisRight(y2)
+      .tickValues(tickValuesY2)
+      .tickSizeOuter(0)
+      .tickFormat((d) => d + "%")
+  )
+  .select(".domain")
+  .attr("stroke-dasharray", 4)
+  .attr("stroke", "lightgrey");
 
-    // Update all labels
-    svg
-      .selectAll("text")
-      .data(data)
-      .text((d) => Math.round(parseFloat(d[data_property])))
-      .attr("y", (d) => yScale(parseFloat(d[data_property])) + 14);
-  });
-  d3.select("#uninsured_2022").on("click", () => {
-    data = dataset[1];
-    data_property = "uninsured_percent";
-    // Update all rects
-    svg
-      .selectAll("rect")
-      .data(data)
-      .transition()
-      .attr("y", (d) => yScale(parseFloat(d[data_property])))
-      .attr("height", (d) => h - padding - yScale(parseFloat(d[data_property])))
-      .attr(
-        "fill",
-        (d) =>
-          `rgb(${255 - d[data_property] * (66 / 25)}, ${
-            241 - d[data_property] * (241 / 25)
-          }, ${179 - d[data_property] * (141 / 25)})`
-      );
+svg.selectAll(".tick line").attr("stroke", "lightgrey");
+svg.selectAll(".tick text").style("font-size", 10);
 
-    // Update all labels
-    svg
-      .selectAll("text")
-      .data(data)
-      .text((d) => Math.round(parseFloat(d[data_property])))
-      .attr("y", (d) => yScale(parseFloat(d[data_property])) + 14);
-  });
-  d3.select("#medicaid_2010").on("click", () => {
-    data = dataset[0];
-    data_property = "medicaid_percent";
-    // Update all rects
-    svg
-      .selectAll("rect")
-      .data(data)
-      .transition()
-      .attr("y", (d) => yScale(parseFloat(d[data_property])))
-      .attr("height", (d) => h - padding - yScale(parseFloat(d[data_property])))
-      .attr(
-        "fill",
-        (d) =>
-          `rgb(${254 - d[data_property] * (254 / 36)}, ${
-            217 - d[data_property] * (74 / 36)
-          }, ${118 - d[data_property] * (68 / 36)})`
-      );
+const line = svg
+  .selectAll(".line")
+  .data(data)
+  .enter()
+  .append("line")
+  .attr("class", "line")
+  .attr("x1", (d) => x(0))
+  .attr("y1", (d) => y1(d.value1))
+  .attr("x2", (d) => x(1))
+  .attr("y2", (d) => y2(d.value2))
+  .attr("stroke", (d) => (d.category === "medicaid" ? "green" : "red"))
+  .attr("stroke-width", 2);
 
-    // Update all labels
-    svg
-      .selectAll("text")
-      .data(data)
-      .text((d) => Math.round(parseFloat(d[data_property])))
-      .attr("y", (d) => yScale(parseFloat(d[data_property])) + 14);
-  });
-  d3.select("#medicaid_2022").on("click", () => {
-    data = dataset[1];
-    data_property = "medicaid_percent";
-    // Update all rects
-    svg
-      .selectAll("rect")
-      .data(data)
-      .transition()
-      .attr("y", (d) => yScale(parseFloat(d[data_property])))
-      .attr("height", (d) => h - padding - yScale(parseFloat(d[data_property])))
-      .attr(
-        "fill",
-        (d) =>
-          `rgb(${254 - d[data_property] * (254 / 36)}, ${
-            217 - d[data_property] * (74 / 36)
-          }, ${118 - d[data_property] * (68 / 36)})`
-      );
-    // Update all labels
-    svg
-      .selectAll("text")
-      .data(data)
-      .text((d) => Math.round(parseFloat(d[data_property])))
-      .attr("y", (d) => yScale(parseFloat(d[data_property])) + 14);
-  });
-});
+const circles = svg
+  .selectAll("circle")
+  .data(data)
+  .enter()
+  .append("circle")
+  .attr("cx", (d) => x(0))
+  .attr("cy", (d) => y1(d.value1))
+  .attr("r", 4)
+  .style("fill", (d) => (d.category === "medicaid" ? "green" : "red"));
+
+const circles2 = svg
+  .selectAll("circle2")
+  .data(data)
+  .enter()
+  .append("circle")
+  .attr("cx", (d) => x(1))
+  .attr("cy", (d) => y2(d.value2))
+  .attr("r", 4)
+  .style("fill", (d) => (d.category === "medicaid" ? "green" : "red"));

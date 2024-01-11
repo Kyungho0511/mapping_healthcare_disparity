@@ -107,9 +107,15 @@ config.chapters.forEach((record, idx) => {
 });
 
 // Creates the popups
+const popupWidth = 200;
+const popupHeight = 180;
 const popup = document.createElement("div");
 popup.setAttribute("id", "popup");
+popup.setAttribute("width", popupWidth);
+popup.setAttribute("height", popupHeight);
 popup.classList.add("invisible");
+const popupText = document.createElement("div");
+popup.appendChild(popupText);
 story.appendChild(popup);
 
 // Appends the features element (with the vignettes) to the story element
@@ -335,66 +341,66 @@ function mouseLeaveHandler(chapter) {
 
 function mouseMoveHandler(event, chapter) {
   const layer = chapter.data[chapter.dataIndex];
-  let prevName = null;
-  let prevValue = null;
+  const layerName = chapter.dataName[chapter.dataIndex];
   const feature = map.queryRenderedFeatures(event.point, {
     layers: [chapter.data[0]],
   });
   if (feature.length > 0) {
-    // set popup positions
-    const mapWidth = window.innerWidth * 0.6;
-    const popupWidth = 200;
-    const popupHeight = 150;
-    const offset = 30;
-    if (event.point.x + popupWidth + offset > mapWidth) {
-      popup.style.left = `${event.point.x - popupWidth - offset}px`;
-    } else {
-      popup.style.left = `${event.point.x + offset}px`;
-    }
-    if (event.point.y + popupHeight - offset > window.innerHeight * 0.8) {
-      popup.style.top = `${event.point.y - popupHeight + offset}px`;
-    } else {
-      popup.style.top = `${event.point.y - offset}px`;
-    }
-    popup.classList.remove("invisible");
-
-    // update popup contents as mouse moves
-    if (
-      prevName !== feature[0].properties.NAME ||
-      prevValue !== feature[0].properties[layer]
-    ) {
-      popup.innerHTML = `
-        <h5 class="popup_title">${feature[0].properties.NAME}</h5>
-        <p>${feature[0].properties[layer]}</p>
-        <p>${feature[0].properties[layer]}</p>
-        `;
-      prevName = feature[0].properties.NAME;
-    }
+    updatePopupPosition(event);
+    updatePopupContent(chapter.id, chapter.data, layer, layerName, feature[0]);
     onHover(chapter, feature[0]);
   }
+}
+
+function updatePopupPosition(event) {
+  const mapWidth = window.innerWidth * 0.6;
+
+  const offset = 30;
+  if (event.point.x + popupWidth + offset > mapWidth) {
+    popup.style.left = `${event.point.x - popupWidth - offset}px`;
+  } else {
+    popup.style.left = `${event.point.x + offset}px`;
+  }
+  if (event.point.y + popupHeight - offset > window.innerHeight * 0.8) {
+    popup.style.top = `${event.point.y - popupHeight + offset}px`;
+  } else {
+    popup.style.top = `${event.point.y - offset}px`;
+  }
+  popup.classList.remove("invisible");
+}
+
+function updatePopupContent(id, data, layer, layerName, feature) {
+  // Chapters(multiple datasets) showing slope charts
+  const name = feature.properties.NAME;
+  if (id === "background" || id === "health_disparity") {
+    popupText.innerHTML = `
+      <h5 class="popup_title">${
+        id === "background" ? name : name + ", New York"
+      }</h5>
+      <p class='popup_text'><b>${
+        feature.properties[layer]
+      }%</b> (${layerName})</p>
+      `;
+  }
+  // Chapters(multiple datasets) showing data in bullet points.
+  else if (id === "health_disparity2" || id === "site4") {
+    popupText.innerHTML = `
+      <h5 class="popup_title">${feature.properties.NAME}</h5>
+      <p>${feature.properties[layer]}</p>
+      <p>${feature.properties[layer]}</p>
+      `;
+  }
+  // // Chapters(single dataset) showing data in bullet points.
+  // popupText.innerHTML = `
+  //   <h5 class="popup_title">${feature.properties.NAME}</h5>
+  //   <p>${feature.properties[layer]}</p>
+  //   <p>${feature.properties[layer]}</p>
+  //   `;
 }
 
 // Hover effect (mapbox studio duplicates feature ids by mistake, when uploading geojson)
 // solution: set id states with a unique feature property for every geometry within feature
 // then in setPaintProperty, do self-reference. so features with the same id are uniquely identifiable.
-function setHoverPaintProperty(layer) {
-  if (layer === "montgomery-cbg-outline-hover") {
-    map.setPaintProperty(layer, "line-width", [
-      "case",
-      ["==", ["get", "area"], ["feature-state", "id"]],
-      4,
-      0,
-    ]);
-  } else {
-    map.setPaintProperty(layer, "line-width", [
-      "case",
-      ["==", ["get", "id"], ["feature-state", "id"]],
-      4,
-      0,
-    ]);
-  }
-}
-
 function onHover(chapter, feature) {
   if (chapter.id === "background") {
     for (let i = 0; i < 27; i++) {
@@ -517,5 +523,27 @@ function offHover(chapter) {
         { id: null }
       );
     }
+  }
+}
+
+function setPaintProperty(layer, property) {
+  map.setPaintProperty(layer, "line-width", [
+    "case",
+    ["==", ["get", property], ["feature-state", "id"]],
+    4,
+    0,
+  ]);
+}
+
+function setHoverPaintProperty(layer) {
+  // corner case for "montgomery-cbg-outline-hover" layer
+  // it does not have unique id column, therefore use area column instead
+  if (layer === "montgomery-cbg-outline-hover") {
+    setPaintProperty(layer, "area");
+  } else if (layer === "montgomery-filter-outline-hover") {
+    map.setPaintProperty(layer, "line-dasharray", [1, 0]);
+    setPaintProperty(layer, "id");
+  } else {
+    setPaintProperty(layer, "id");
   }
 }

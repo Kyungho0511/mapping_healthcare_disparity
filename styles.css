@@ -207,13 +207,27 @@ a:visited {
 
 #popup {
   position: fixed;
-  width: 200px;
-  height: 150px;
+  font-family: Helvetica, sans-serif;
   background-color: #ffffffe9;
+  padding: 0.75rem;
   z-index: 2;
   box-shadow: 2px 2px 14px -7px rgba(0, 0, 0, 0.5);
   -webkit-box-shadow: 2px 2px 14px -7px rgba(0, 0, 0, 0.5);
   -moz-box-shadow: 2px 2px 14px -7px rgba(0, 0, 0, 0.5);
+
+  & .popup_title {
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  & .popup_text {
+    font-size: 12px;
+    /* font-weight: ; */
+    /* font-style: italic; */
+  }
+
+  & .popup_chart {
+  }
 }
 
 .invisible {
