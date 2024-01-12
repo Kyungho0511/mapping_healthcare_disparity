@@ -1,3 +1,5 @@
+import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
+
 const layerTypes = {
   fill: ["fill-opacity"],
   line: ["line-opacity"],
@@ -149,6 +151,7 @@ const map = new mapboxgl.Map({
 
 // Instantiates the scrollama function
 const scroller = scrollama();
+let prevName = null;
 
 map.on("load", function () {
   setHoverPaintProperty("united-states-outline-hover");
@@ -230,6 +233,7 @@ map.on("load", function () {
           popup.classList.add("invisible");
           map.getCanvas().style.cursor = "";
         }
+        prevName = null;
         isExiting = true;
       }
     });
@@ -240,7 +244,7 @@ adjust our scrolling setup */
 window.addEventListener("resize", scroller.resize);
 
 function selectNavItem(selected) {
-  navItems = header.children;
+  const navItems = header.children;
   for (let i = 0; i < navItems.length; i++) {
     navItems[i].classList.remove("active");
   }
@@ -341,7 +345,7 @@ function mouseLeaveHandler(chapter) {
 
 function mouseMoveHandler(event, chapter) {
   const layer = chapter.data[chapter.dataIndex];
-  const layerName = chapter.dataName[chapter.dataIndex];
+  const layerName = chapter.dataName && chapter.dataName[chapter.dataIndex];
   const feature = map.queryRenderedFeatures(event.point, {
     layers: [chapter.data[0]],
   });
@@ -369,7 +373,7 @@ function updatePopupPosition(event) {
   popup.classList.remove("invisible");
 }
 
-function updatePopupContent(id, data, layer, layerName, feature) {
+function updatePopupContent(id, layers, layer, layerName, feature) {
   // Chapters(multiple datasets) showing slope charts
   const name = feature.properties.NAME;
   if (id === "background" || id === "health_disparity") {
@@ -377,10 +381,47 @@ function updatePopupContent(id, data, layer, layerName, feature) {
       <h5 class="popup_title">${
         id === "background" ? name : name + ", New York"
       }</h5>
-      <p class='popup_text'><b>${
-        feature.properties[layer]
-      }%</b> (${layerName})</p>
+      <div class='popup_text'>
+      <p><b>${feature.properties[layer]}%</b> (${layerName})</p>
+      </div>
       `;
+
+    // Initialize slope chart
+    if (!prevName) {
+      const data = [
+        {
+          category: "medicaid",
+          value1: feature.properties[layers[2]],
+          value2: feature.properties[layers[3]],
+        },
+        {
+          category: "uninsured",
+          value1: feature.properties[layers[0]],
+          value2: feature.properties[layers[1]],
+        },
+      ];
+      initChart(data);
+      prevName = name;
+      return;
+    }
+
+    // Rerender slope charts with new data when hovered area name is changed
+    if (prevName !== name) {
+      const data = [
+        {
+          category: "medicaid",
+          value1: feature.properties[layers[2]],
+          value2: feature.properties[layers[3]],
+        },
+        {
+          category: "uninsured",
+          value1: feature.properties[layers[0]],
+          value2: feature.properties[layers[1]],
+        },
+      ];
+      updateChart(data);
+      prevName = name;
+    }
   }
   // Chapters(multiple datasets) showing data in bullet points.
   else if (id === "health_disparity2" || id === "site4") {
@@ -546,4 +587,220 @@ function setHoverPaintProperty(layer) {
   } else {
     setPaintProperty(layer, "id");
   }
+}
+
+function initChart(data) {
+  // delete existing chart before rendering
+  d3.select(".popup_chart").remove();
+
+  // Set size
+  const margin = { top: 10, right: 50, bottom: 30, left: 40 };
+  const width = popupWidth - margin.left - margin.right;
+  const height = 120 - margin.top - margin.bottom;
+
+  const svg = d3
+    .select("#popup")
+    .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .attr("class", "popup_chart");
+
+  const x = d3
+    .scaleLinear()
+    .domain([0, 1]) // Two categories represented by 0 and 1
+    .range([margin.left, margin.left + width]);
+
+  const min = 0;
+  const max = 30;
+  const y1 = d3
+    .scaleLinear()
+    .domain([max, min])
+    .range([margin.top, margin.top + height]);
+  const y2 = d3
+    .scaleLinear()
+    .domain([max, min])
+    .range([margin.top, margin.top + height]);
+
+  let tickValuesY1 = data.map((d) => d.value1);
+  let tickValuesY2 = data.map((d) => d.value2);
+  tickValuesY1 = [min, ...tickValuesY1, max];
+
+  // Append y1 axis and style
+  svg
+    .append("g")
+    .attr("transform", `translate(${margin.left}, 0)`)
+    .attr("class", "y1_axis")
+    .call(
+      d3
+        .axisLeft(y1)
+        .tickValues(tickValuesY1)
+        .tickSizeOuter(0)
+        .tickFormat((d) => d + "%")
+    )
+    .select(".domain")
+    .attr("stroke-dasharray", 4)
+    .attr("stroke", "lightgrey");
+
+  // Append y2 axis and style
+  svg
+    .append("g")
+    .attr("transform", `translate(${width + margin.left}, 0)`)
+    .attr("class", "y2_axis")
+    .call(
+      d3
+        .axisRight(y2)
+        .tickValues(tickValuesY2)
+        .tickSizeOuter(0)
+        .tickFormat((d) => d + "%")
+    )
+    .select(".domain")
+    .attr("stroke-dasharray", 4)
+    .attr("stroke", "lightgrey");
+
+  svg.selectAll(".tick line").attr("stroke", "lightgrey");
+
+  // Add year labels
+  const years = [2010, 2022];
+  svg
+    .selectAll(".year-label")
+    .data(years)
+    .enter()
+    .append("text")
+    .attr("class", "year-label")
+    .attr("x", (d, i) => x(i))
+    .attr("y", height + margin.top + 30)
+    .text((d) => d)
+    .attr("text-anchor", "middle")
+    .style("font-size", 10);
+
+  // Add geometries
+  svg
+    .selectAll(".line")
+    .data(data)
+    .enter()
+    .append("line")
+    .attr("class", "line")
+    .attr("x1", (d) => x(0))
+    .attr("y1", (d) => y1(d.value1))
+    .attr("x2", (d) => x(1))
+    .attr("y2", (d) => y2(d.value2))
+    .attr("stroke", (d) => (d.category === "medicaid" ? "green" : "red"))
+    .attr("stroke-width", 2);
+
+  svg
+    .selectAll(".circle")
+    .data(data)
+    .enter()
+    .append("circle")
+    .attr("class", "circle")
+    .attr("cx", (d) => x(0))
+    .attr("cy", (d) => y1(d.value1))
+    .attr("r", 4)
+    .style("fill", (d) => {
+      if (d.category === "medicaid") {
+        return `rgb(${254 - d.value1 * (254 / 36)}, ${
+          217 - d.value1 * (74 / 36)
+        }, ${118 - d.value1 * (68 / 36)})`;
+      } else {
+        return `rgb(${255 - d.value1 * (66 / 25)}, ${
+          241 - d.value1 * (241 / 25)
+        }, ${179 - d.value1 * (141 / 25)})`;
+      }
+    });
+
+  svg
+    .selectAll(".circle2")
+    .data(data)
+    .enter()
+    .append("circle")
+    .attr("class", "circle2")
+    .attr("cx", (d) => x(1))
+    .attr("cy", (d) => y2(d.value2))
+    .attr("r", 4)
+    .style("fill", (d) => {
+      if (d.category === "medicaid") {
+        return `rgb(${254 - d.value2 * (254 / 36)}, ${
+          217 - d.value2 * (74 / 36)
+        }, ${118 - d.value2 * (68 / 36)})`;
+      } else {
+        return `rgb(${255 - d.value2 * (66 / 25)}, ${
+          241 - d.value2 * (241 / 25)
+        }, ${179 - d.value2 * (141 / 25)})`;
+      }
+    });
+}
+
+function updateChart(data) {
+  // Set size
+  const margin = { top: 10, right: 50, bottom: 30, left: 40 };
+  const height = 120 - margin.top - margin.bottom;
+  const duration = 200;
+
+  const svg = d3.select(".popup_chart");
+
+  const min = 0;
+  const max = 30;
+  const y1 = d3
+    .scaleLinear()
+    .domain([max, min])
+    .range([margin.top, margin.top + height]);
+  const y2 = d3
+    .scaleLinear()
+    .domain([max, min])
+    .range([margin.top, margin.top + height]);
+
+  let tickValuesY1 = data.map((d) => d.value1);
+  let tickValuesY2 = data.map((d) => d.value2);
+  tickValuesY1 = [min, ...tickValuesY1, max];
+
+  // update y1 axis
+  svg
+    .select(".y1_axis")
+    .transition()
+    .duration(duration)
+    .call(
+      d3
+        .axisLeft(y1)
+        .tickValues(tickValuesY1)
+        .tickSizeOuter(0)
+        .tickFormat((d) => d + "%")
+    );
+
+  // update y2 axis
+  svg
+    .select(".y2_axis")
+    .transition()
+    .duration(duration)
+    .call(
+      d3
+        .axisRight(y2)
+        .tickValues(tickValuesY2)
+        .tickSizeOuter(0)
+        .tickFormat((d) => d + "%")
+    );
+
+  svg.selectAll(".tick line").attr("stroke", "lightgrey");
+
+  // Update geometries
+  svg
+    .selectAll(".line")
+    .data(data)
+    .transition()
+    .duration(duration)
+    .attr("y1", (d) => y1(d.value1))
+    .attr("y2", (d) => y2(d.value2));
+
+  svg
+    .selectAll(".circle")
+    .data(data)
+    .transition()
+    .duration(duration)
+    .attr("cy", (d) => y1(d.value1));
+
+  svg
+    .selectAll(".circle2")
+    .data(data)
+    .transition()
+    .duration(duration)
+    .attr("cy", (d) => y2(d.value2));
 }
