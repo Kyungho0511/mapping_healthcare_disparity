@@ -378,14 +378,13 @@ function updatePopupPosition(event) {
 }
 
 function updatePopupContent(id, layers, layerIndex, layerName, feature) {
-  // Chapters(multiple datasets) showing slope charts
   const name = feature.properties.NAME;
   const layer = layers[layerIndex];
-  if (id === "background" || id === "health_disparity") {
+
+  // Background: showing slope charts with multiple datasets
+  if (id === "background") {
     popupText.innerHTML = `
-      <h5 class="popup_title">${
-        id === "background" ? name : name + ", New York"
-      }</h5>
+      <h5 class="popup_title">${name}</h5>
       <div class='popup_text'>
       <p><b>${feature.properties[layer]}%</b> (${layerName})</p>
       </div>
@@ -395,17 +394,28 @@ function updatePopupContent(id, layers, layerIndex, layerName, feature) {
     if (!prevName) {
       const data = [
         {
-          category: "uninsured",
           value1: feature.properties[layers[0]],
           value2: feature.properties[layers[1]],
         },
         {
-          category: "medicaid",
           value1: feature.properties[layers[2]],
           value2: feature.properties[layers[3]],
         },
       ];
-      initChart(data, 0, 30, layerIndex);
+      initSlopeChart(data, 0, 30, layerIndex, [
+        {
+          sourceMin: 2.4,
+          sourceMax: 21.3,
+          targetMin: [255, 241, 179],
+          targetMax: [189, 0, 38],
+        },
+        {
+          sourceMin: 6.2,
+          sourceMax: 25.4,
+          targetMin: [254, 217, 118],
+          targetMax: [0, 143, 50],
+        },
+      ]);
       prevName = name;
       return;
     }
@@ -414,20 +424,101 @@ function updatePopupContent(id, layers, layerIndex, layerName, feature) {
     if (prevName !== name) {
       const data = [
         {
-          category: "uninsured",
           value1: feature.properties[layers[0]],
           value2: feature.properties[layers[1]],
         },
         {
-          category: "medicaid",
           value1: feature.properties[layers[2]],
           value2: feature.properties[layers[3]],
         },
       ];
-      updateChart(data, 0, 30, layerIndex);
+      updateSlopeChart(data, 0, 30, layerIndex, [
+        {
+          sourceMin: 2.4,
+          sourceMax: 21.3,
+          targetMin: [255, 241, 179],
+          targetMax: [189, 0, 38],
+        },
+        {
+          sourceMin: 6.2,
+          sourceMax: 25.4,
+          targetMin: [254, 217, 118],
+          targetMax: [0, 143, 50],
+        },
+      ]);
       prevName = name;
     }
   }
+
+  // Health Disparity: showing slope charts with multiple datasets
+  else if (id === "health_disparity") {
+    popupText.innerHTML = `
+      <h5 class="popup_title">${name}, New York</h5>
+      <div class='popup_text'>
+      <p><b>${feature.properties[layer]}%</b> (${layerName})</p>
+      </div>
+      `;
+
+    // Initialize slope chart
+    if (!prevName) {
+      const data = [
+        {
+          value1: feature.properties[layers[0]],
+          value2: feature.properties[layers[1]],
+        },
+        {
+          value1: feature.properties[layers[2]],
+          value2: feature.properties[layers[3]],
+        },
+      ];
+      initSlopeChart(data, 0, 100, layerIndex, [
+        {
+          sourceMin: 5.9,
+          sourceMax: 42.0,
+          targetMin: [254, 217, 118],
+          targetMax: [0, 143, 50],
+        },
+        {
+          sourceMin: 11.6,
+          sourceMax: 93.6,
+          targetMin: [189, 0, 38],
+          targetMax: [255, 241, 179],
+        },
+      ]);
+      prevName = name;
+      return;
+    }
+
+    // Rerender slope charts with new data when hovered area name is changed
+    if (prevName !== name) {
+      const data = [
+        {
+          value1: feature.properties[layers[0]],
+          value2: feature.properties[layers[1]],
+        },
+        {
+          value1: feature.properties[layers[2]],
+          value2: feature.properties[layers[3]],
+        },
+      ];
+      updateSlopeChart(data, 0, 100, layerIndex, [
+        {
+          sourceMin: 5.9,
+          sourceMax: 42.0,
+          targetMin: [254, 217, 118],
+          targetMax: [0, 143, 50],
+        },
+        {
+          sourceMin: 11.6,
+          sourceMax: 93.6,
+          targetMin: [189, 0, 38],
+          targetMax: [255, 241, 179],
+        },
+      ]);
+      prevName = name;
+    }
+  }
+
   // Chapters(multiple datasets) showing data in bullet points.
   else if (id === "health_disparity2" || id === "site4") {
     popupText.innerHTML = `
@@ -594,7 +685,7 @@ function setHoverPaintProperty(layer) {
   }
 }
 
-function initChart(data, min, max, layerIndex) {
+function initSlopeChart(data, min, max, layerIndex, domains) {
   // delete existing chart before rendering
   d3.select(".popup_chart").remove();
 
@@ -628,16 +719,16 @@ function initChart(data, min, max, layerIndex) {
   let tickValuesY1 = [];
   let tickValuesY2 = [];
   if (layerIndex < 2) {
-    data.forEach((d) => {
-      if (d.category === data[0].category) {
+    data.forEach((d, i) => {
+      if (i === 0) {
         tickValuesY1.push(d.value1);
         tickValuesY2.push(d.value2);
       }
     });
     tickValuesY1 = [min, ...tickValuesY1, max];
   } else {
-    data.forEach((d) => {
-      if (d.category === data[1].category) {
+    data.forEach((d, i) => {
+      if (i === 0) {
         tickValuesY1.push(d.value1);
         tickValuesY2.push(d.value2);
       }
@@ -694,8 +785,14 @@ function initChart(data, min, max, layerIndex) {
     .style("font-size", 10);
 
   // Define gradients
-  defineGradient(svg, "lineGradient1", "green", "yellow");
-  defineGradient(svg, "lineGradient2", "red", "orange");
+  data.forEach((d, i) => {
+    defineGradient(
+      svg,
+      `lineGradient${i + 1}`,
+      remapToRGB(Math.max(d.value1, d.value2), domains[i]),
+      remapToRGB(Math.min(d.value1, d.value2), domains[i])
+    );
+  });
 
   // Add geometries
   svg
@@ -708,16 +805,14 @@ function initChart(data, min, max, layerIndex) {
     .attr("y1", (d) => y1(d.value1))
     .attr("x2", (d) => x(1))
     .attr("y2", (d) => y2(d.value2))
-    .attr("stroke", (d) =>
-      d.category === "medicaid" ? "url(#lineGradient1)" : "url(#lineGradient2)"
-    )
-    .attr("stroke-width", (d) => {
+    .attr("stroke", (d, i) => `url(#lineGradient${i + 1})`)
+    .attr("stroke-width", (d, i) => {
       if (layerIndex < 2) {
-        if (d.category === data[0].category) return 2;
-        else return 0.5;
+        if (i === 0) return 2.5;
+        else return 1;
       } else {
-        if (d.category === data[0].category) return 0.5;
-        else return 2;
+        if (i === 0) return 1;
+        else return 2.5;
       }
     });
 
@@ -730,17 +825,7 @@ function initChart(data, min, max, layerIndex) {
     .attr("cx", (d) => x(0))
     .attr("cy", (d) => y1(d.value1))
     .attr("r", 3)
-    .style("fill", (d) => {
-      if (d.category === "medicaid") {
-        return `rgb(${254 - d.value1 * (254 / 36)}, ${
-          217 - d.value1 * (74 / 36)
-        }, ${118 - d.value1 * (68 / 36)})`;
-      } else {
-        return `rgb(${255 - d.value1 * (66 / 25)}, ${
-          241 - d.value1 * (241 / 25)
-        }, ${179 - d.value1 * (141 / 25)})`;
-      }
-    });
+    .style("fill", (d, i) => remapToRGB(d.value1, domains[i]));
 
   svg
     .selectAll(".circle2")
@@ -751,20 +836,10 @@ function initChart(data, min, max, layerIndex) {
     .attr("cx", (d) => x(1))
     .attr("cy", (d) => y2(d.value2))
     .attr("r", 3)
-    .style("fill", (d) => {
-      if (d.category === "medicaid") {
-        return `rgb(${254 - d.value2 * (254 / 36)}, ${
-          217 - d.value2 * (74 / 36)
-        }, ${118 - d.value2 * (68 / 36)})`;
-      } else {
-        return `rgb(${255 - d.value2 * (66 / 25)}, ${
-          241 - d.value2 * (241 / 25)
-        }, ${179 - d.value2 * (141 / 25)})`;
-      }
-    });
+    .style("fill", (d, i) => remapToRGB(d.value2, domains[i]));
 }
 
-function updateChart(data, min, max, layerIndex) {
+function updateSlopeChart(data, min, max, layerIndex, domains) {
   // Set size
   const margin = { top: 10, right: 50, bottom: 30, left: 40 };
   const height = 120 - margin.top - margin.bottom;
@@ -785,16 +860,16 @@ function updateChart(data, min, max, layerIndex) {
   let tickValuesY1 = [];
   let tickValuesY2 = [];
   if (layerIndex < 2) {
-    data.forEach((d) => {
-      if (d.category === data[0].category) {
+    data.forEach((d, i) => {
+      if (i === 0) {
         tickValuesY1.push(d.value1);
         tickValuesY2.push(d.value2);
       }
     });
     tickValuesY1 = [min, ...tickValuesY1, max];
   } else {
-    data.forEach((d) => {
-      if (d.category === data[1].category) {
+    data.forEach((d, i) => {
+      if (i === 1) {
         tickValuesY1.push(d.value1);
         tickValuesY2.push(d.value2);
       }
@@ -831,8 +906,13 @@ function updateChart(data, min, max, layerIndex) {
   svg.selectAll(".tick line").attr("stroke", "lightgrey");
 
   // Update gradients
-  updateGradient("lineGradient1", "green", "green");
-  updateGradient("lineGradient2", "red", "red");
+  data.forEach((d, i) => {
+    updateGradient(
+      `lineGradient${i + 1}`,
+      remapToRGB(Math.max(d.value1, d.value2), domains[i]),
+      remapToRGB(Math.min(d.value1, d.value2), domains[i])
+    );
+  });
 
   // Update geometries
   svg
@@ -842,13 +922,13 @@ function updateChart(data, min, max, layerIndex) {
     .duration(duration)
     .attr("y1", (d) => y1(d.value1))
     .attr("y2", (d) => y2(d.value2))
-    .attr("stroke-width", (d) => {
+    .attr("stroke-width", (d, i) => {
       if (layerIndex < 2) {
-        if (d.category === data[0].category) return 2;
-        else return 0.5;
+        if (i === 0) return 2.5;
+        else return 1;
       } else {
-        if (d.category === data[0].category) return 0.5;
-        else return 2;
+        if (i === 0) return 1;
+        else return 2.5;
       }
     });
 
@@ -858,17 +938,7 @@ function updateChart(data, min, max, layerIndex) {
     .transition()
     .duration(duration)
     .attr("cy", (d) => y1(d.value1))
-    .style("fill", (d) => {
-      if (d.category === "medicaid") {
-        return `rgb(${254 - d.value1 * (254 / 36)}, ${
-          217 - d.value1 * (74 / 36)
-        }, ${118 - d.value1 * (68 / 36)})`;
-      } else {
-        return `rgb(${255 - d.value1 * (66 / 25)}, ${
-          241 - d.value1 * (241 / 25)
-        }, ${179 - d.value1 * (141 / 25)})`;
-      }
-    });
+    .style("fill", (d, i) => remapToRGB(d.value1, domains[i]));
 
   svg
     .selectAll(".circle2")
@@ -876,17 +946,7 @@ function updateChart(data, min, max, layerIndex) {
     .transition()
     .duration(duration)
     .attr("cy", (d) => y2(d.value2))
-    .style("fill", (d) => {
-      if (d.category === "medicaid") {
-        return `rgb(${254 - d.value2 * (254 / 36)}, ${
-          217 - d.value2 * (74 / 36)
-        }, ${118 - d.value2 * (68 / 36)})`;
-      } else {
-        return `rgb(${255 - d.value2 * (66 / 25)}, ${
-          241 - d.value2 * (241 / 25)
-        }, ${179 - d.value2 * (141 / 25)})`;
-      }
-    });
+    .style("fill", (d, i) => remapToRGB(d.value2, domains[i]));
 }
 
 function defineGradient(svg, id, colorStart, colorEnd) {
@@ -919,6 +979,19 @@ function updateGradient(id, colorStart, colorEnd) {
     .attr("style", `stop-color: ${colorEnd}; stop-opacity: 1`);
 }
 
-function remapToRGB() {
-  console.log("remap");
+function remapToRGB(val, { sourceMin, sourceMax, targetMin, targetMax }) {
+  // index (0,1,2) corresponds to (r,g,b)
+  // prettier-ignore
+  let r, g, b = null;
+  for (let i = 0; i < 3; i++) {
+    const valRemap = Math.round(
+      ((val - sourceMin) / (sourceMax - sourceMin)) *
+        (targetMax[i] - targetMin[i]) +
+        targetMin[i]
+    );
+    if (i === 0) r = valRemap;
+    else if (i === 1) g = valRemap;
+    else if (i === 2) b = valRemap;
+  }
+  return `rgb(${r}, ${g}, ${b})`;
 }
