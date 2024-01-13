@@ -344,21 +344,25 @@ function mouseLeaveHandler(chapter) {
 }
 
 function mouseMoveHandler(event, chapter) {
-  const layer = chapter.data[chapter.dataIndex];
   const layerName = chapter.dataName && chapter.dataName[chapter.dataIndex];
   const feature = map.queryRenderedFeatures(event.point, {
     layers: [chapter.data[0]],
   });
   if (feature.length > 0) {
     updatePopupPosition(event);
-    updatePopupContent(chapter.id, chapter.data, layer, layerName, feature[0]);
+    updatePopupContent(
+      chapter.id,
+      chapter.data,
+      chapter.dataIndex,
+      layerName,
+      feature[0]
+    );
     onHover(chapter, feature[0]);
   }
 }
 
 function updatePopupPosition(event) {
   const mapWidth = window.innerWidth * 0.6;
-
   const offset = 30;
   if (event.point.x + popupWidth + offset > mapWidth) {
     popup.style.left = `${event.point.x - popupWidth - offset}px`;
@@ -373,9 +377,10 @@ function updatePopupPosition(event) {
   popup.classList.remove("invisible");
 }
 
-function updatePopupContent(id, layers, layer, layerName, feature) {
+function updatePopupContent(id, layers, layerIndex, layerName, feature) {
   // Chapters(multiple datasets) showing slope charts
   const name = feature.properties.NAME;
+  const layer = layers[layerIndex];
   if (id === "background" || id === "health_disparity") {
     popupText.innerHTML = `
       <h5 class="popup_title">${
@@ -390,17 +395,17 @@ function updatePopupContent(id, layers, layer, layerName, feature) {
     if (!prevName) {
       const data = [
         {
-          category: "medicaid",
-          value1: feature.properties[layers[2]],
-          value2: feature.properties[layers[3]],
-        },
-        {
           category: "uninsured",
           value1: feature.properties[layers[0]],
           value2: feature.properties[layers[1]],
         },
+        {
+          category: "medicaid",
+          value1: feature.properties[layers[2]],
+          value2: feature.properties[layers[3]],
+        },
       ];
-      initChart(data);
+      initChart(data, 0, 30, layerIndex);
       prevName = name;
       return;
     }
@@ -409,17 +414,17 @@ function updatePopupContent(id, layers, layer, layerName, feature) {
     if (prevName !== name) {
       const data = [
         {
-          category: "medicaid",
-          value1: feature.properties[layers[2]],
-          value2: feature.properties[layers[3]],
-        },
-        {
           category: "uninsured",
           value1: feature.properties[layers[0]],
           value2: feature.properties[layers[1]],
         },
+        {
+          category: "medicaid",
+          value1: feature.properties[layers[2]],
+          value2: feature.properties[layers[3]],
+        },
       ];
-      updateChart(data);
+      updateChart(data, 0, 30, layerIndex);
       prevName = name;
     }
   }
@@ -589,7 +594,7 @@ function setHoverPaintProperty(layer) {
   }
 }
 
-function initChart(data) {
+function initChart(data, min, max, layerIndex) {
   // delete existing chart before rendering
   d3.select(".popup_chart").remove();
 
@@ -610,8 +615,6 @@ function initChart(data) {
     .domain([0, 1]) // Two categories represented by 0 and 1
     .range([margin.left, margin.left + width]);
 
-  const min = 0;
-  const max = 30;
   const y1 = d3
     .scaleLinear()
     .domain([max, min])
@@ -621,9 +624,26 @@ function initChart(data) {
     .domain([max, min])
     .range([margin.top, margin.top + height]);
 
-  let tickValuesY1 = data.map((d) => d.value1);
-  let tickValuesY2 = data.map((d) => d.value2);
-  tickValuesY1 = [min, ...tickValuesY1, max];
+  // Set tick values for y1 and y2 axes
+  let tickValuesY1 = [];
+  let tickValuesY2 = [];
+  if (layerIndex < 2) {
+    data.forEach((d) => {
+      if (d.category === data[0].category) {
+        tickValuesY1.push(d.value1);
+        tickValuesY2.push(d.value2);
+      }
+    });
+    tickValuesY1 = [min, ...tickValuesY1, max];
+  } else {
+    data.forEach((d) => {
+      if (d.category === data[1].category) {
+        tickValuesY1.push(d.value1);
+        tickValuesY2.push(d.value2);
+      }
+    });
+    tickValuesY1 = [min, ...tickValuesY1, max];
+  }
 
   // Append y1 axis and style
   svg
@@ -673,6 +693,10 @@ function initChart(data) {
     .attr("text-anchor", "middle")
     .style("font-size", 10);
 
+  // Define gradients
+  defineGradient(svg, "lineGradient1", "green", "yellow");
+  defineGradient(svg, "lineGradient2", "red", "orange");
+
   // Add geometries
   svg
     .selectAll(".line")
@@ -684,8 +708,18 @@ function initChart(data) {
     .attr("y1", (d) => y1(d.value1))
     .attr("x2", (d) => x(1))
     .attr("y2", (d) => y2(d.value2))
-    .attr("stroke", (d) => (d.category === "medicaid" ? "green" : "red"))
-    .attr("stroke-width", 2);
+    .attr("stroke", (d) =>
+      d.category === "medicaid" ? "url(#lineGradient1)" : "url(#lineGradient2)"
+    )
+    .attr("stroke-width", (d) => {
+      if (layerIndex < 2) {
+        if (d.category === data[0].category) return 2;
+        else return 0.5;
+      } else {
+        if (d.category === data[0].category) return 0.5;
+        else return 2;
+      }
+    });
 
   svg
     .selectAll(".circle")
@@ -695,7 +729,7 @@ function initChart(data) {
     .attr("class", "circle")
     .attr("cx", (d) => x(0))
     .attr("cy", (d) => y1(d.value1))
-    .attr("r", 4)
+    .attr("r", 3)
     .style("fill", (d) => {
       if (d.category === "medicaid") {
         return `rgb(${254 - d.value1 * (254 / 36)}, ${
@@ -716,7 +750,7 @@ function initChart(data) {
     .attr("class", "circle2")
     .attr("cx", (d) => x(1))
     .attr("cy", (d) => y2(d.value2))
-    .attr("r", 4)
+    .attr("r", 3)
     .style("fill", (d) => {
       if (d.category === "medicaid") {
         return `rgb(${254 - d.value2 * (254 / 36)}, ${
@@ -730,7 +764,7 @@ function initChart(data) {
     });
 }
 
-function updateChart(data) {
+function updateChart(data, min, max, layerIndex) {
   // Set size
   const margin = { top: 10, right: 50, bottom: 30, left: 40 };
   const height = 120 - margin.top - margin.bottom;
@@ -738,8 +772,6 @@ function updateChart(data) {
 
   const svg = d3.select(".popup_chart");
 
-  const min = 0;
-  const max = 30;
   const y1 = d3
     .scaleLinear()
     .domain([max, min])
@@ -749,9 +781,26 @@ function updateChart(data) {
     .domain([max, min])
     .range([margin.top, margin.top + height]);
 
-  let tickValuesY1 = data.map((d) => d.value1);
-  let tickValuesY2 = data.map((d) => d.value2);
-  tickValuesY1 = [min, ...tickValuesY1, max];
+  // Set tick values for y1 and y2 axes
+  let tickValuesY1 = [];
+  let tickValuesY2 = [];
+  if (layerIndex < 2) {
+    data.forEach((d) => {
+      if (d.category === data[0].category) {
+        tickValuesY1.push(d.value1);
+        tickValuesY2.push(d.value2);
+      }
+    });
+    tickValuesY1 = [min, ...tickValuesY1, max];
+  } else {
+    data.forEach((d) => {
+      if (d.category === data[1].category) {
+        tickValuesY1.push(d.value1);
+        tickValuesY2.push(d.value2);
+      }
+    });
+    tickValuesY1 = [min, ...tickValuesY1, max];
+  }
 
   // update y1 axis
   svg
@@ -781,6 +830,10 @@ function updateChart(data) {
 
   svg.selectAll(".tick line").attr("stroke", "lightgrey");
 
+  // Update gradients
+  updateGradient("lineGradient1", "green", "green");
+  updateGradient("lineGradient2", "red", "red");
+
   // Update geometries
   svg
     .selectAll(".line")
@@ -788,19 +841,84 @@ function updateChart(data) {
     .transition()
     .duration(duration)
     .attr("y1", (d) => y1(d.value1))
-    .attr("y2", (d) => y2(d.value2));
+    .attr("y2", (d) => y2(d.value2))
+    .attr("stroke-width", (d) => {
+      if (layerIndex < 2) {
+        if (d.category === data[0].category) return 2;
+        else return 0.5;
+      } else {
+        if (d.category === data[0].category) return 0.5;
+        else return 2;
+      }
+    });
 
   svg
     .selectAll(".circle")
     .data(data)
     .transition()
     .duration(duration)
-    .attr("cy", (d) => y1(d.value1));
+    .attr("cy", (d) => y1(d.value1))
+    .style("fill", (d) => {
+      if (d.category === "medicaid") {
+        return `rgb(${254 - d.value1 * (254 / 36)}, ${
+          217 - d.value1 * (74 / 36)
+        }, ${118 - d.value1 * (68 / 36)})`;
+      } else {
+        return `rgb(${255 - d.value1 * (66 / 25)}, ${
+          241 - d.value1 * (241 / 25)
+        }, ${179 - d.value1 * (141 / 25)})`;
+      }
+    });
 
   svg
     .selectAll(".circle2")
     .data(data)
     .transition()
     .duration(duration)
-    .attr("cy", (d) => y2(d.value2));
+    .attr("cy", (d) => y2(d.value2))
+    .style("fill", (d) => {
+      if (d.category === "medicaid") {
+        return `rgb(${254 - d.value2 * (254 / 36)}, ${
+          217 - d.value2 * (74 / 36)
+        }, ${118 - d.value2 * (68 / 36)})`;
+      } else {
+        return `rgb(${255 - d.value2 * (66 / 25)}, ${
+          241 - d.value2 * (241 / 25)
+        }, ${179 - d.value2 * (141 / 25)})`;
+      }
+    });
+}
+
+function defineGradient(svg, id, colorStart, colorEnd) {
+  const gradient = svg
+    .append("defs")
+    .append("linearGradient")
+    .attr("id", id)
+    .attr("gradientTransform", "rotate(90)");
+
+  gradient
+    .append("stop")
+    .attr("offset", "0%")
+    .attr("style", `stop-color: ${colorStart}; stop-opacity: 1`);
+
+  gradient
+    .append("stop")
+    .attr("offset", "100%")
+    .attr("style", `stop-color: ${colorEnd}; stop-opacity: 1`);
+}
+
+function updateGradient(id, colorStart, colorEnd) {
+  const gradient = d3.select(`#${id}`);
+
+  gradient
+    .select('stop[offset="0%"]')
+    .attr("style", `stop-color: ${colorStart}; stop-opacity: 1`);
+
+  gradient
+    .select('stop[offset="100%"]')
+    .attr("style", `stop-color: ${colorEnd}; stop-opacity: 1`);
+}
+
+function remapToRGB() {
+  console.log("remap");
 }
