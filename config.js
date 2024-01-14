@@ -149,14 +149,14 @@ const config = {
       dataName: [
         "P ( Providers / 100 Insured )",
         "PM ( Providers with Medicaid / 100 Medicaid Enrollees )",
-        "Disparity Index ( P / PM )",
+        "D ( Disparity Index = P / PM )",
       ],
       dataIndex: 0,
       legend: `
       <section id="medicaid_shortage_counties_legend" class="legend_container">
         <section class="legend">
           <div>
-            <div><span style="background-color: #000094"></span>4.37 - 5.01</div>
+            <div><span style="background-color: #000094"></span>4.37 - 9.51</div>
             <div><span style="background-color: #0000d6"></span>3.73 - 4.37</div>
             <div><span style="background-color: #2424eb"></span>2.92 - 3.73</div>
             <div><span style="background-color: #4848eb"></span>2.51 - 2.92</div>
@@ -331,7 +331,7 @@ const config = {
       dataName: [
         "P ( Providers / 100 Insured )",
         "PM ( Providers with Medicaid / 100 Medicaid Enrollees )",
-        "Disparity Index ( P / PM )",
+        "D ( Disparity Index = P / PM )",
       ],
       legend: `
       <section id="montgomery_shortage_legend" class="legend_container">

@@ -110,9 +110,11 @@ config.chapters.forEach((record, idx) => {
 
 // Creates the popups
 const popupWidth = 200;
+const popupMaxWidth = 240;
 const popupHeight = 180;
 const popup = document.createElement("div");
 popup.setAttribute("id", "popup");
+popup.style.maxWidth = `${popupMaxWidth}px`;
 popup.setAttribute("width", popupWidth);
 popup.setAttribute("height", popupHeight);
 popup.classList.add("invisible");
@@ -219,8 +221,8 @@ map.on("load", function () {
     // onStepEnter, since it is not guaranteed onStepExit triggers before onStepEnter
     .onStepProgress(({ progress, direction, element }) => {
       if (
-        ((progress > 0.95 && direction == "down") ||
-          (progress < 0.05 && direction == "up")) &&
+        ((progress > 0.9 && direction == "down") ||
+          (progress < 0.1 && direction == "up")) &&
         !isExiting
       ) {
         const chapter = config.chapters.find((chap) => chap.id === element.id);
@@ -233,6 +235,7 @@ map.on("load", function () {
           popup.classList.add("invisible");
           map.getCanvas().style.cursor = "";
         }
+        d3.select(".popup_chart").remove(); // delete existing charts
         prevName = null;
         isExiting = true;
       }
@@ -364,8 +367,8 @@ function mouseMoveHandler(event, chapter) {
 function updatePopupPosition(event) {
   const mapWidth = window.innerWidth * 0.6;
   const offset = 30;
-  if (event.point.x + popupWidth + offset > mapWidth) {
-    popup.style.left = `${event.point.x - popupWidth - offset}px`;
+  if (event.point.x + popupMaxWidth + offset > mapWidth) {
+    popup.style.left = `${event.point.x - popupMaxWidth - offset}px`;
   } else {
     popup.style.left = `${event.point.x + offset}px`;
   }
@@ -378,161 +381,289 @@ function updatePopupPosition(event) {
 }
 
 function updatePopupContent(id, layers, layerIndex, layerName, feature) {
+  const prop = feature.properties;
   const name = feature.properties.NAME;
   const layer = layers[layerIndex];
 
-  // Background: showing slope charts with multiple datasets
+  // Background: slope charts
   if (id === "background") {
     popupText.innerHTML = `
       <h5 class="popup_title">${name}</h5>
       <div class='popup_text'>
-      <p><b>${feature.properties[layer]}%</b> (${layerName})</p>
+      <p><b>${prop[layer]}%</b> (${layerName})</p>
       </div>
       `;
 
+    // Set data and domains for charts
+    const data = [
+      {
+        value1: prop[layers[0]],
+        value2: prop[layers[1]],
+      },
+      {
+        value1: prop[layers[2]],
+        value2: prop[layers[3]],
+      },
+    ];
+    const domains = [
+      {
+        sourceMin: 2.4,
+        sourceMax: 21.3,
+        targetMin: [255, 241, 179],
+        targetMax: [189, 0, 38],
+      },
+      {
+        sourceMin: 6.2,
+        sourceMax: 25.4,
+        targetMin: [254, 217, 118],
+        targetMax: [0, 143, 50],
+      },
+    ];
+
     // Initialize slope chart
     if (!prevName) {
-      const data = [
-        {
-          value1: feature.properties[layers[0]],
-          value2: feature.properties[layers[1]],
-        },
-        {
-          value1: feature.properties[layers[2]],
-          value2: feature.properties[layers[3]],
-        },
-      ];
-      initSlopeChart(data, 0, 30, layerIndex, [
-        {
-          sourceMin: 2.4,
-          sourceMax: 21.3,
-          targetMin: [255, 241, 179],
-          targetMax: [189, 0, 38],
-        },
-        {
-          sourceMin: 6.2,
-          sourceMax: 25.4,
-          targetMin: [254, 217, 118],
-          targetMax: [0, 143, 50],
-        },
-      ]);
+      initSlopeChart(data, 0, 30, layerIndex, domains, [2010, 2022]);
       prevName = name;
       return;
     }
 
     // Rerender slope charts with new data when hovered area name is changed
     if (prevName !== name) {
-      const data = [
-        {
-          value1: feature.properties[layers[0]],
-          value2: feature.properties[layers[1]],
-        },
-        {
-          value1: feature.properties[layers[2]],
-          value2: feature.properties[layers[3]],
-        },
-      ];
-      updateSlopeChart(data, 0, 30, layerIndex, [
-        {
-          sourceMin: 2.4,
-          sourceMax: 21.3,
-          targetMin: [255, 241, 179],
-          targetMax: [189, 0, 38],
-        },
-        {
-          sourceMin: 6.2,
-          sourceMax: 25.4,
-          targetMin: [254, 217, 118],
-          targetMax: [0, 143, 50],
-        },
-      ]);
+      updateSlopeChart(data, 0, 30, layerIndex, domains, [2010, 2022]);
       prevName = name;
     }
   }
 
-  // Health Disparity: showing slope charts with multiple datasets
+  // Health Disparity: slope charts
   else if (id === "health_disparity") {
     popupText.innerHTML = `
       <h5 class="popup_title">${name}, New York</h5>
       <div class='popup_text'>
-      <p><b>${feature.properties[layer]}%</b> (${layerName})</p>
+      <p><b>${prop[layer]}%</b> (${layerName})</p>
       </div>
       `;
 
+    // Set data and domains for charts
+    const data = [
+      {
+        value1: prop[layers[0]],
+        value2: prop[layers[1]],
+      },
+      {
+        value1: prop[layers[2]],
+        value2: prop[layers[3]],
+      },
+    ];
+
+    const domains = [
+      {
+        sourceMin: 5.9,
+        sourceMax: 42.0,
+        targetMin: [254, 217, 118],
+        targetMax: [0, 143, 50],
+      },
+      {
+        sourceMin: 11.6,
+        sourceMax: 93.6,
+        targetMin: [189, 0, 38],
+        targetMax: [255, 241, 179],
+      },
+    ];
+
     // Initialize slope chart
     if (!prevName) {
-      const data = [
-        {
-          value1: feature.properties[layers[0]],
-          value2: feature.properties[layers[1]],
-        },
-        {
-          value1: feature.properties[layers[2]],
-          value2: feature.properties[layers[3]],
-        },
-      ];
-      initSlopeChart(data, 0, 100, layerIndex, [
-        {
-          sourceMin: 5.9,
-          sourceMax: 42.0,
-          targetMin: [254, 217, 118],
-          targetMax: [0, 143, 50],
-        },
-        {
-          sourceMin: 11.6,
-          sourceMax: 93.6,
-          targetMin: [189, 0, 38],
-          targetMax: [255, 241, 179],
-        },
-      ]);
+      initSlopeChart(data, 0, 100, layerIndex, domains, [2012, 2021]);
       prevName = name;
       return;
     }
 
     // Rerender slope charts with new data when hovered area name is changed
     if (prevName !== name) {
-      const data = [
-        {
-          value1: feature.properties[layers[0]],
-          value2: feature.properties[layers[1]],
-        },
-        {
-          value1: feature.properties[layers[2]],
-          value2: feature.properties[layers[3]],
-        },
-      ];
-      updateSlopeChart(data, 0, 100, layerIndex, [
-        {
-          sourceMin: 5.9,
-          sourceMax: 42.0,
-          targetMin: [254, 217, 118],
-          targetMax: [0, 143, 50],
-        },
-        {
-          sourceMin: 11.6,
-          sourceMax: 93.6,
-          targetMin: [189, 0, 38],
-          targetMax: [255, 241, 179],
-        },
-      ]);
+      updateSlopeChart(data, 0, 100, layerIndex, domains, [2012, 2021]);
       prevName = name;
     }
   }
 
-  // Chapters(multiple datasets) showing data in bullet points.
-  else if (id === "health_disparity2" || id === "site4") {
+  // Health Disparity2: bar charts
+  else if (id === "health_disparity2") {
     popupText.innerHTML = `
-      <h5 class="popup_title">${feature.properties.NAME}</h5>
-      <p>${feature.properties[layer]}</p>
-      <p>${feature.properties[layer]}</p>
+      <h5 class="popup_title">${name}, New York</h5>
+      <div class="popup_text">
+        <p><b>${prop[layer]}</b> ${layerName}</p>
+      </div>
       `;
+
+    // Set data and domains for charts
+    const data = [
+      { category: "P", value: prop[layers[0]] },
+      { category: "PM", value: prop[layers[1]] },
+      { category: "D", value: prop[layers[2]] },
+    ];
+
+    const domains = [
+      {
+        sourceMin: 0.67,
+        sourceMax: 4.37,
+        targetMin: [180, 180, 232],
+        targetMax: [0, 0, 214],
+      },
+      {
+        sourceMin: 0.25,
+        sourceMax: 4.37,
+        targetMin: [216, 216, 235],
+        targetMax: [0, 0, 214],
+      },
+      {
+        sourceMin: 1.33,
+        sourceMax: 3.74,
+        targetMin: [243, 227, 227],
+        targetMax: [209, 0, 0],
+      },
+    ];
+
+    // Initialize slope charts
+    if (!prevName) {
+      initBarChart(data, domains);
+      prevName = name;
+      return;
+    }
+
+    // Rerender slope charts with new data when hovered area name is changed
+    if (prevName !== name) {
+      updateBarChart(data, domains);
+      prevName = name;
+    }
   }
-  // // Chapters(single dataset) showing data in bullet points.
-  // popupText.innerHTML = `
-  //   <h5 class="popup_title">${feature.properties.NAME}</h5>
-  //   <p>${feature.properties[layer]}</p>
-  //   <p>${feature.properties[layer]}</p>
-  //   `;
+
+  // Site: bar charts
+  else if (id === "site") {
+    popupText.innerHTML = `
+    <h5 class="popup_title">${name}, New York</h5>
+    <div class="popup_text">
+      <p>Region: <b>${formatNumber(prop["REGION"])}</b></p>
+      <p>Population: ${formatNumber(prop["2021_population"])}</p>
+      <p>Medicaid Enrollments: ${formatNumber(
+        prop["2021_medicaid enrollments"]
+      )}</p>
+    </div>
+    `;
+
+    // Set data and domains for charts
+    const data = [
+      {
+        category: "P",
+        value: prop["medicaid-shortage-counties-2021"],
+      },
+      {
+        category: "PM",
+        value: prop["medicaid-shortage-counties-2021M"],
+      },
+      {
+        category: "D",
+        value: prop["medicaid-disparity-counties-2021"],
+      },
+    ];
+
+    const domains = [
+      {
+        sourceMin: 0.67,
+        sourceMax: 4.37,
+        targetMin: [180, 180, 232],
+        targetMax: [0, 0, 214],
+      },
+      {
+        sourceMin: 0.25,
+        sourceMax: 4.37,
+        targetMin: [216, 216, 235],
+        targetMax: [0, 0, 214],
+      },
+      {
+        sourceMin: 1.33,
+        sourceMax: 3.74,
+        targetMin: [243, 227, 227],
+        targetMax: [209, 0, 0],
+      },
+    ];
+
+    // Initialize slope charts
+    if (!prevName) {
+      initBarChart(data, domains);
+      prevName = name;
+      return;
+    }
+
+    // Rerender slope charts with new data when hovered area name is changed
+    if (prevName !== name) {
+      updateBarChart(data, domains);
+      prevName = name;
+    }
+  }
+
+  // Site3: bullet points
+  else if (id === "site3") {
+    popupText.innerHTML = `
+    <h5 class="popup_title">${prop["TRACTCE"].slice(
+      0,
+      4
+    )} Census Tract (Block Group ${prop["BLKGRPCE"]})</h5>
+    <div class="popup_text">
+      <p>Area: ${(prop["area"] / 1000000).toFixed(2)} km2</p>
+      <p>Medicaid Enrollees: ${prop["insurance_medicaid"]}</p>
+      <p>Medicaid Enrollees / km2: <b>${prop["medic/km2"]}</b></p>
+    </div>
+    `;
+  }
+
+  // Site4: bar charts
+  else if (id === "site4") {
+    popupText.innerHTML = `
+    <h5 class="popup_title">Town${prop.id}, Montgomery</h5>
+    <div class="popup_text">
+      <p><b>${prop[layer]}</b> ${layerName}</p>
+    </div>
+    `;
+
+    // Set data and domains for charts
+    const data = [
+      { category: "P", value: prop[layers[0]] },
+      { category: "PM", value: prop[layers[1]] },
+      { category: "D", value: prop[layers[2]] },
+    ];
+
+    const domains = [
+      {
+        sourceMin: 0.59,
+        sourceMax: 2.99,
+        targetMin: [186, 186, 232],
+        targetMax: [0, 0, 214],
+      },
+      {
+        sourceMin: 0.16,
+        sourceMax: 0.79,
+        targetMin: [216, 216, 235],
+        targetMax: [0, 0, 214],
+      },
+      {
+        sourceMin: 1.22,
+        sourceMax: 6.36,
+        targetMin: [243, 227, 227],
+        targetMax: [209, 0, 0],
+      },
+    ];
+
+    // Initialize slope charts
+    if (!prevName) {
+      initBarChart(data, domains);
+      prevName = prop.id;
+      return;
+    }
+
+    // Rerender slope charts with new data when hovered area name is changed
+    if (prevName !== prop.id) {
+      updateBarChart(data, domains);
+      prevName = prop.id;
+    }
+  }
 }
 
 // Hover effect (mapbox studio duplicates feature ids by mistake, when uploading geojson)
@@ -685,14 +816,11 @@ function setHoverPaintProperty(layer) {
   }
 }
 
-function initSlopeChart(data, min, max, layerIndex, domains) {
-  // delete existing chart before rendering
-  d3.select(".popup_chart").remove();
-
+function initSlopeChart(data, min, max, layerIndex, domains, years) {
   // Set size
-  const margin = { top: 10, right: 50, bottom: 30, left: 40 };
+  const margin = { top: 5, right: 50, bottom: 30, left: 40 };
   const width = popupWidth - margin.left - margin.right;
-  const height = 120 - margin.top - margin.bottom;
+  const height = 110 - margin.top - margin.bottom;
 
   const svg = d3
     .select("#popup")
@@ -745,12 +873,12 @@ function initSlopeChart(data, min, max, layerIndex, domains) {
       d3
         .axisLeft(y1)
         .tickValues(tickValuesY1)
-        .tickSizeOuter(0)
+        .tickSize(0)
         .tickFormat((d) => d + "%")
     )
     .select(".domain")
     .attr("stroke-dasharray", 4)
-    .attr("stroke", "lightgrey");
+    .attr("stroke", "grey");
 
   // Append y2 axis and style
   svg
@@ -761,17 +889,14 @@ function initSlopeChart(data, min, max, layerIndex, domains) {
       d3
         .axisRight(y2)
         .tickValues(tickValuesY2)
-        .tickSizeOuter(0)
+        .tickSize(0)
         .tickFormat((d) => d + "%")
     )
     .select(".domain")
     .attr("stroke-dasharray", 4)
-    .attr("stroke", "lightgrey");
-
-  svg.selectAll(".tick line").attr("stroke", "lightgrey");
+    .attr("stroke", "grey");
 
   // Add year labels
-  const years = [2010, 2022];
   svg
     .selectAll(".year-label")
     .data(years)
@@ -782,7 +907,7 @@ function initSlopeChart(data, min, max, layerIndex, domains) {
     .attr("y", height + margin.top + 30)
     .text((d) => d)
     .attr("text-anchor", "middle")
-    .style("font-size", 10);
+    .style("font-size", "10px");
 
   // Define gradients
   data.forEach((d, i) => {
@@ -841,8 +966,8 @@ function initSlopeChart(data, min, max, layerIndex, domains) {
 
 function updateSlopeChart(data, min, max, layerIndex, domains) {
   // Set size
-  const margin = { top: 10, right: 50, bottom: 30, left: 40 };
-  const height = 120 - margin.top - margin.bottom;
+  const margin = { top: 5, right: 50, bottom: 30, left: 40 };
+  const height = 110 - margin.top - margin.bottom;
   const duration = 200;
 
   const svg = d3.select(".popup_chart");
@@ -886,7 +1011,7 @@ function updateSlopeChart(data, min, max, layerIndex, domains) {
       d3
         .axisLeft(y1)
         .tickValues(tickValuesY1)
-        .tickSizeOuter(0)
+        .tickSize(0)
         .tickFormat((d) => d + "%")
     );
 
@@ -899,11 +1024,9 @@ function updateSlopeChart(data, min, max, layerIndex, domains) {
       d3
         .axisRight(y2)
         .tickValues(tickValuesY2)
-        .tickSizeOuter(0)
+        .tickSize(0)
         .tickFormat((d) => d + "%")
     );
-
-  svg.selectAll(".tick line").attr("stroke", "lightgrey");
 
   // Update gradients
   data.forEach((d, i) => {
@@ -947,6 +1070,115 @@ function updateSlopeChart(data, min, max, layerIndex, domains) {
     .duration(duration)
     .attr("cy", (d) => y2(d.value2))
     .style("fill", (d, i) => remapToRGB(d.value2, domains[i]));
+}
+
+function initBarChart(data, domains) {
+  // Set size
+  const margin = { top: 0, right: 70, bottom: 0, left: 20 };
+  const width = popupWidth - margin.left - margin.right;
+  const height = 80 - margin.top - margin.bottom;
+  const max = d3.max(domains.map((d) => d.sourceMax));
+
+  const svg = d3
+    .select("#popup")
+    .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .attr("class", "popup_chart");
+
+  // Set up scales
+  const x = d3
+    .scaleLinear()
+    .domain([0, max])
+    .range([margin.left, margin.left + width]);
+  const y = d3
+    .scaleBand()
+    .domain(data.map((d) => d.category))
+    .range([0, height])
+    .padding(0.6);
+
+  // Create horizontal bars
+  svg
+    .selectAll("rect")
+    .data(data)
+    .enter()
+    .append("rect")
+    .attr("x", margin.left)
+    .attr("y", (d) => y(d.category))
+    .attr("width", (d) => {
+      if (d.value > max) return x(max);
+      else return x(d.value);
+    })
+    .attr("height", y.bandwidth())
+    .attr("fill", (d, i) => remapToRGB(d.value, domains[i]));
+
+  // Add vertical axis
+  svg
+    .append("g")
+    .attr("transform", `translate(${margin.left}, 0)`)
+    .call(d3.axisLeft(y).tickSize(0))
+    .select(".domain")
+    .attr("stroke-dasharray", 3)
+    .attr("stroke", "grey");
+
+  svg.selectAll("text").style("font-size", "11px");
+
+  // Add labels
+  svg
+    .selectAll(".label")
+    .data(data)
+    .enter()
+    .append("text")
+    .attr("class", "label")
+    .text((d) => d.value)
+    .attr("x", (d) => {
+      if (d.value > max) return margin.left + x(max) + 10;
+      else return margin.left + x(d.value) + 10;
+    })
+    .attr("y", (d) => y(d.category) + y.bandwidth() / 2)
+    .attr("fill", "black")
+    .style("font-size", "11px")
+    .style("alignment-baseline", "middle");
+}
+
+function updateBarChart(data, domains) {
+  // Set size
+  const margin = { top: 0, right: 70, bottom: 0, left: 20 };
+  const width = popupWidth - margin.left - margin.right;
+  const duration = 200;
+  const max = d3.max(domains.map((d) => d.sourceMax));
+
+  const svg = d3.select(".popup_chart");
+
+  // Set up scales
+  const x = d3
+    .scaleLinear()
+    .domain([0, max])
+    .range([margin.left, margin.left + width]);
+
+  // Create horizontal bars
+  svg
+    .selectAll("rect")
+    .data(data)
+    .transition()
+    .duration(duration)
+    .attr("width", (d) => {
+      if (d.value > max) return x(max);
+      else return x(d.value);
+    })
+    .attr("fill", (d, i) => remapToRGB(d.value, domains[i]));
+
+  // Add labels
+  svg
+    .selectAll(".label")
+    .data(data)
+    .transition()
+    .duration(duration)
+    .text((d) => d.value)
+    .attr("x", (d) => {
+      if (d.value > max) return margin.left + x(max) + 10;
+      else return margin.left + x(d.value) + 10;
+    });
 }
 
 function defineGradient(svg, id, colorStart, colorEnd) {
@@ -994,4 +1226,14 @@ function remapToRGB(val, { sourceMin, sourceMax, targetMin, targetMax }) {
     else if (i === 2) b = valRemap;
   }
   return `rgb(${r}, ${g}, ${b})`;
+}
+
+function formatNumber(number) {
+  // Convert the number to a string
+  let numStr = number.toString();
+
+  // Use a regular expression to add commas
+  numStr = numStr.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+  return numStr;
 }

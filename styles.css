@@ -222,6 +222,12 @@ a:visited {
 
   & .popup_text {
     font-size: 12px;
+    margin-bottom: 0.6rem;
+
+    > p {
+      padding: 0;
+      margin: 0;
+    }
   }
 }
 
