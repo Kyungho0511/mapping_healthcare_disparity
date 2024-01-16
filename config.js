@@ -3,7 +3,7 @@ const legendPrice = document.querySelector("#legend_price");
 const config = {
   accessToken:
     "pk.eyJ1Ijoia2xlZTA1MTEiLCJhIjoiY2xrYnFibnNjMGV4cjNrbzRqdGg1d21sYiJ9.nN0pE1qocGhTLnD_xPuYdg",
-  style: "mapbox://styles/klee0511/clr671xro00ym01qr93toby6o",
+  style: "mapbox://styles/klee0511/clrehmn8c008p01mefs906uu9",
   theme: "light",
   chapters: [
     {
@@ -242,19 +242,15 @@ const config = {
       id: "site2",
       category: "site",
       title: "montgomery county",
+      subtitle: "the most vulnerable suburban county to healthcare disparity",
       description: `
-        Population : 49,532<br />
-        Insured total : 28,025<br />
-        Medicaid Enrollments : 7,819<br />
-        Medicaid Enrollments ratio : 27.9 %<br />
-        <br />
-        Providers : 1,260<br />
-        Providers accepting Medicaid : 149<br />
-        Medicaid acceptance rate : 11.8 %<br />
-        <br />
-        <b>Disparity index : 2.88</b><br />
-        <b>Providers / 100 Insured : 2.62</b><br /> 
-        <b>Providers with Medicaid / 100 Medicaids : 0.91</b><br /> 
+        Population : 49,532<br/>
+        Providers : 1,260<br/>
+        Providers accepting Medicaid : 149<br/>
+        Medicaid acceptance rate : 11.8 %<br/>
+        Providers / 100 Insured : <b>2.62</b><br/> 
+        Providers with Medicaid / 100 Medicaids : <b>0.91</b><br/> 
+        Disparity index : <b>2.88</b><br/>
       `,
       location: {
         center: [-74.153722, 42.920529],
@@ -380,7 +376,6 @@ const config = {
         { layer: "mapbox-satellite", opacity: 1.0 },
         { layer: "background-white", opacity: 0.5 },
         { layer: "montgomery-cbg-outline", opacity: 1 },
-        { layer: "montgomery-provider-medicaid-big", opacity: 0 },
         { layer: "montgomery-filter-outline", opacity: 0 },
       ],
       onChapterExit: [
@@ -394,22 +389,24 @@ const config = {
       id: "site5",
       category: "site",
       title: "St Johnsville village",
+      subtitle: "the most vulnerable area in montgomery",
       description: ` 
-        Insured total : 1,167<br />
-        Medicaid Enrollments : 504<br />
-        Medicaid Enrollments ratio : 43.2 %<br />
-        <br />
         Providers : 12<br />
         Providers accepting Medicaid : 1<br />
         Medicaid acceptance rate : 8.3 %<br />
-        <br />
-        <b>Disparity index : 6.36</b><br />
-        <b>Providers / 100 Insured : 1.01</b><br /> 
-        <b>Providers with Medicaid / 100 Medicaids : 0.16</b><br /> 
-      <br />
-      <img src="./images/stjohns_health_facility.png">
-      Existing healthcare facilities in the village
+        Providers / 100 Insured : <b>1.01</b><br /> 
+        Providers with Medicaid / 100 Medicaids : <b>0.16</b><br /> 
+        Disparity index : <b>6.36</b><br />
       `,
+      data: [
+        "montgomery-institutional-provider",
+        "montgomery-institutional-provider-medicaid",
+      ],
+      dataName: [
+        "Healthcare Facilities rejecting Medicaid",
+        "Healthcare Facilities accepting Medicaid",
+      ],
+      dataIndex: 0,
       location: {
         center: [-74.674895, 43.020729],
         zoom: 12.6,
@@ -421,7 +418,6 @@ const config = {
         { layer: "mapbox-satellite", opacity: 1.0 },
         { layer: "background-white", opacity: 0.1 },
         { layer: "montgomery-filter-outline", opacity: 1 },
-        { layer: "montgomery-provider-medicaid-big", opacity: 1 },
       ],
       onChapterExit: [],
     },
@@ -429,22 +425,24 @@ const config = {
       id: "site6",
       category: "site",
       title: "amsterdam city",
+      subtitle: "the second most vulnerable area in montgomery",
       description: `
-        Insured total : 14,958<br />
-        Medicaid Enrollments : 6,086<br />
-        Medicaid Enrollments ratio : 40.7 %<br />
-        <br />
-        Providers : 447<br />
-        Providers accepting Medicaid : 48<br />
-        Medicaid acceptance rate : 10.7 %<br />
-        <br />
-        <b>Disparity index : 3.79</b><br />
-        <b>Providers / 100 Insured : 2.99</b><br /> 
-        <b>Providers with Medicaid / 100 Medicaids : 0.79</b><br /> 
-      <br />
-      <img src="./images/amsterdam_health_facility.png">
-      Existing healthcare facilities in the city
+        Providers : 447<br/>
+        Providers accepting Medicaid : 48<br/>
+        Medicaid acceptance rate : 10.7 %<br/>
+        Providers / 100 Insured : <b>2.99</b><br/> 
+        Providers with Medicaid / 100 Medicaids : <b>0.79</b><br/> 
+        Disparity index : <b>3.79</b><br/>
       `,
+      data: [
+        "montgomery-institutional-provider",
+        "montgomery-institutional-provider-medicaid",
+      ],
+      dataName: [
+        "Healthcare Facilities rejecting Medicaid",
+        "Healthcare Facilities accepting Medicaid",
+      ],
+      dataIndex: 0,
       location: {
         center: [-74.163722, 42.944529],
         zoom: 13,
@@ -456,7 +454,6 @@ const config = {
         { layer: "mapbox-satellite", opacity: 1.0 },
         { layer: "background-white", opacity: 0.1 },
         { layer: "montgomery-filter-outline", opacity: 1 },
-        { layer: "montgomery-provider-medicaid-big", opacity: 1 },
       ],
       onChapterExit: [],
     },

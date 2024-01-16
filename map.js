@@ -42,6 +42,13 @@ config.chapters.forEach((record, idx) => {
     chapter.appendChild(title);
   }
 
+  // Creates the subtitle for the vignettes
+  if (record.subtitle) {
+    const subtitle = document.createElement("h4");
+    subtitle.innerText = record.subtitle;
+    chapter.appendChild(subtitle);
+  }
+
   // Creates the description for the vignette
   if (record.description) {
     const description = document.createElement("p");
@@ -55,7 +62,7 @@ config.chapters.forEach((record, idx) => {
     datasetContainer.classList.add("dataset_container");
     const datasetTitle = document.createElement("div");
     datasetTitle.classList.add("dataset_title");
-    datasetTitle.innerHTML = "<h4>Select a dataset</h4>";
+    datasetTitle.innerHTML = "<h5>Select a dataset</h5>";
     const datasetToggle = document.createElement("div");
     datasetToggle.classList.add("dataset_toggle");
 
@@ -70,7 +77,7 @@ config.chapters.forEach((record, idx) => {
       radioBtn.addEventListener("click", (event) => {
         if (event.target.className !== "dataset_toggle") {
           record.dataIndex = record.data.indexOf(event.target.id);
-          onCurrentLayer(record.data, record.dataIndex);
+          onCurrentLayer(record.data, record.dataIndex, record.legend);
         }
       });
       const label = document.createElement("label");
@@ -186,7 +193,7 @@ map.on("load", function () {
       }
       if (chapter.data) {
         if (chapter.data.length > 1) {
-          onCurrentLayer(chapter.data, chapter.dataIndex);
+          onCurrentLayer(chapter.data, chapter.dataIndex, chapter.legend);
           intervalId && clearInterval(intervalId);
           intervalId = setDatasetInterval(chapter, 2500);
         }
@@ -266,7 +273,7 @@ function setLayerOpacity(layer) {
   });
 }
 
-function onCurrentLayer(data, index) {
+function onCurrentLayer(data, index, legend) {
   offLayers(data);
   setLayerOpacity({ layer: data[index], opacity: 1 });
   // corner case: group layers in the section site4
@@ -284,7 +291,7 @@ function onCurrentLayer(data, index) {
     setLayerOpacity({ layer: "montgomery-provider-medicaid", opacity: 0.75 });
     setLayerOpacity({ layer: "montgomery-neighbors-buffer", opacity: 0.15 });
   } else if (data[index] == "montgomery-disparity-2018") offLayers(groupLayers);
-  onCurrentLegend(data, index);
+  legend && onCurrentLegend(data, index);
 }
 
 function offLayers(data) {
@@ -333,7 +340,7 @@ function playDatasets(chapter) {
   const dataBtns = document.querySelectorAll(`input[name="${chapter.id}"]`);
   chapter.dataIndex = (chapter.dataIndex + 1) % dataBtns.length; // Move to the next dataset index
   dataBtns[chapter.dataIndex].checked = true; // Check the radio button at the current index
-  onCurrentLayer(chapter.data, chapter.dataIndex);
+  onCurrentLayer(chapter.data, chapter.dataIndex, chapter.legend);
 }
 
 function mouseEnterHandler() {
@@ -664,6 +671,16 @@ function updatePopupContent(id, layers, layerIndex, layerName, feature) {
       prevName = prop.id;
     }
   }
+
+  // Site5: bullet points with images
+  else if (id === "site5" || id === "site6") {
+    popupText.innerHTML = `
+    <h5 class="popup_title">Town${prop.id}, Montgomery</h5>
+    <div class="popup_text">
+      <p><b>${prop[layer]}</b> ${layerName}</p>
+    </div>
+    `;
+  }
 }
 
 // Hover effect (mapbox studio duplicates feature ids by mistake, when uploading geojson)
@@ -722,7 +739,7 @@ function onHover(chapter, feature) {
       map.setFeatureState(
         {
           source: "composite",
-          sourceLayer: "neighbors_disparity-5vl5cx",
+          sourceLayer: "neighbors_disparity-8ptuyk",
           id: i,
         },
         { id: feature.properties.id }
@@ -785,7 +802,7 @@ function offHover(chapter) {
       map.setFeatureState(
         {
           source: "composite",
-          sourceLayer: "neighbors_disparity-5vl5cx",
+          sourceLayer: "neighbors_disparity-8ptuyk",
           id: i,
         },
         { id: null }
