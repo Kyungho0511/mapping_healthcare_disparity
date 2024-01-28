@@ -86,6 +86,7 @@ config.chapters.forEach((record, idx) => {
       label.textContent = record.dataName[idx];
       datasetToggle.appendChild(radioBtn);
       datasetToggle.appendChild(label);
+      datasetToggle.appendChild(document.createElement("br"));
     });
 
     datasetContainer.appendChild(datasetTitle);
@@ -268,9 +269,9 @@ function getLayerPaintType(layer) {
 
 function setLayerOpacity(layer) {
   const paintProps = getLayerPaintType(layer.layer);
-  paintProps.forEach(function (prop) {
-    map.setPaintProperty(layer.layer, prop, layer.opacity);
-  });
+  paintProps.forEach((prop) =>
+    map.setPaintProperty(layer.layer, prop, layer.opacity)
+  );
 }
 
 function onCurrentLayer(data, index, legend) {
@@ -284,11 +285,11 @@ function onCurrentLayer(data, index, legend) {
   ];
   if (data[index] == "montgomery-shortage-2018") {
     offLayers(groupLayers);
-    setLayerOpacity({ layer: "montgomery-provider", opacity: 0.75 });
+    setLayerOpacity({ layer: "montgomery-provider", opacity: 1 });
     setLayerOpacity({ layer: "montgomery-neighbors-buffer", opacity: 0.15 });
   } else if (data[index] == "montgomery-shortage-2018M") {
     offLayers(groupLayers);
-    setLayerOpacity({ layer: "montgomery-provider-medicaid", opacity: 0.75 });
+    setLayerOpacity({ layer: "montgomery-provider-medicaid", opacity: 1 });
     setLayerOpacity({ layer: "montgomery-neighbors-buffer", opacity: 0.15 });
   } else if (data[index] == "montgomery-disparity-2018") offLayers(groupLayers);
   legend && onCurrentLegend(data, index);
@@ -356,7 +357,7 @@ function mouseLeaveHandler(chapter) {
 function mouseMoveHandler(event, chapter) {
   const layerName = chapter.dataName && chapter.dataName[chapter.dataIndex];
   const feature = map.queryRenderedFeatures(event.point, {
-    layers: [chapter.data[0]],
+    layers: [chapter.data[chapter.dataIndex]],
   });
   if (feature.length > 0) {
     updatePopupPosition(event);
@@ -675,9 +676,9 @@ function updatePopupContent(id, layers, layerIndex, layerName, feature) {
   // Site5: bullet points with images
   else if (id === "site5" || id === "site6") {
     popupText.innerHTML = `
-    <h5 class="popup_title">Town${prop.id}, Montgomery</h5>
+    <h5 class="popup_title">${prop["Street Address"]},<br>${prop["Town/City"]}</h5>
     <div class="popup_text">
-      <p><b>${prop[layer]}</b> ${layerName}</p>
+      <p><b>${prop["Provider Counts"]}</b> providers</p>
     </div>
     `;
   }
@@ -811,26 +812,26 @@ function offHover(chapter) {
   }
 }
 
-function setPaintProperty(layer, property) {
+function setHoverPaintProperty(layer) {
+  // corner case for "montgomery-cbg-outline-hover" layer
+  // it does not have unique id column, therefore use area column instead
+  if (layer === "montgomery-cbg-outline-hover") {
+    setPaintPropertyCase(layer, "area");
+  } else if (layer === "montgomery-filter-outline-hover") {
+    map.setPaintProperty(layer, "line-dasharray", [1, 0]);
+    setPaintPropertyCase(layer, "id");
+  } else {
+    setPaintPropertyCase(layer, "id");
+  }
+}
+
+function setPaintPropertyCase(layer, property) {
   map.setPaintProperty(layer, "line-width", [
     "case",
     ["==", ["get", property], ["feature-state", "id"]],
     4,
     0,
   ]);
-}
-
-function setHoverPaintProperty(layer) {
-  // corner case for "montgomery-cbg-outline-hover" layer
-  // it does not have unique id column, therefore use area column instead
-  if (layer === "montgomery-cbg-outline-hover") {
-    setPaintProperty(layer, "area");
-  } else if (layer === "montgomery-filter-outline-hover") {
-    map.setPaintProperty(layer, "line-dasharray", [1, 0]);
-    setPaintProperty(layer, "id");
-  } else {
-    setPaintProperty(layer, "id");
-  }
 }
 
 function initSlopeChart(data, min, max, layerIndex, domains, years) {

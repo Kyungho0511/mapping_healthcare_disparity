@@ -3,7 +3,7 @@ const legendPrice = document.querySelector("#legend_price");
 const config = {
   accessToken:
     "pk.eyJ1Ijoia2xlZTA1MTEiLCJhIjoiY2xrYnFibnNjMGV4cjNrbzRqdGg1d21sYiJ9.nN0pE1qocGhTLnD_xPuYdg",
-  style: "mapbox://styles/klee0511/clrehmn8c008p01mefs906uu9",
+  style: "mapbox://styles/klee0511/clry17u5r017601p2f7ks1i93",
   theme: "light",
   chapters: [
     {
@@ -26,7 +26,7 @@ const config = {
       dataIndex: 0,
       legend: `
       <section id="uninsured_percent_legend" class="legend_container">
-          <h4 class="legend_title">Uninsured population percentage</h4>
+          <h5 class="legend_title">Uninsured population percentage</h5>
           <section class="legend">
             <div>
               <div><span style="background-color: #bd0026"></span>18.9 - 21.3 %</div>
@@ -44,7 +44,7 @@ const config = {
         </section>
 
         <section id="medicaid_percent_legend" class="legend_container invisible">
-          <h4 class="legend_title">Medicaid Enrollees percentage</h4>
+          <h5 class="legend_title">Medicaid Enrollees percentage</h5>
           <section class="legend">
             <div>
               <div><span style="background-color: #008f32"></span>22.5 - 29.7 %</div>
@@ -91,7 +91,7 @@ const config = {
       dataIndex: 0,
       legend: `
       <section id="medicaid_percent_counties_legend" class="legend_container">
-        <h4 class="legend_title">Medicaid Enrollees percentage</h4>
+        <h5 class="legend_title">Medicaid Enrollees percentage</h5>
         <section class="legend">
           <div>
             <div><span style="background-color: #008f32"></span>37.4 - 42.0 %</div>
@@ -109,7 +109,7 @@ const config = {
       </section>
 
       <section id="medicaid_acceptance_counties_legend" class="legend_container invisible">
-        <h4 class="legend_title">Medicaid Acceptance rate</h4>
+        <h5 class="legend_title">Medicaid Acceptance rate</h5>
         <section class="legend">
           <div>
             <div><span style="background-color: #bd0026"></span>11.6 - 21.8 %</div>
@@ -283,7 +283,7 @@ const config = {
       dataIndex: 0,
       legend: `
       <section id="disparity_legend_counties">
-        <h4 class="legend_title">Medicaid Enrollees / km2</h4>
+        <h5 class="legend_title">Medicaid Enrollees / km2</h5>
         <section class="legend">
           <div>
             <div><span style="background-color: #008f32"></span>1205 - 1962</div>
@@ -391,22 +391,52 @@ const config = {
       title: "St Johnsville village",
       subtitle: "the most vulnerable area in montgomery",
       description: ` 
-        Providers : 12<br />
-        Providers accepting Medicaid : 1<br />
-        Medicaid acceptance rate : 8.3 %<br />
         Providers / 100 Insured : <b>1.01</b><br /> 
         Providers with Medicaid / 100 Medicaids : <b>0.16</b><br /> 
         Disparity index : <b>6.36</b><br />
       `,
       data: [
-        "montgomery-institutional-provider",
-        "montgomery-institutional-provider-medicaid",
+        "johnsville-institutional-provider",
+        "johnsville-institutional-provider-medicaid",
       ],
       dataName: [
-        "Healthcare Facilities rejecting Medicaid",
-        "Healthcare Facilities accepting Medicaid",
+        "Healthcare Facilities ( All )",
+        "Healthcare Facilities ( Medicaid )",
       ],
       dataIndex: 0,
+      legend: `
+      <section id="johnsville_institutional_provider_legend" class="legend_container">
+        <h5 class="legend_title">Number of providers</h5>
+        <section class="legend">
+          <div>
+            <div><span style="background-color: #cc0000"></span>25 - 216</div>
+            <div><span style="background-color: #d42828"></span>20 - 25</div>
+            <div><span style="background-color: #dc5050"></span>15 - 20</div>
+          </div>
+          <div>
+            <div><span style="background-color: #e47878"></span>10 - 15</div>
+            <div><span style="background-color: #eca0a0"></span>5 - 10</div>
+            <div><span style="background-color: #f4c8c8"></span>1 - 5</div>
+          </div>
+        </section>
+      </section>
+
+      <section id="johnsville_institutional_provider_medicaid_legend" class="legend_container invisible">
+        <h5 class="legend_title">Number of providers accepting Medicaid</h5>
+        <section class="legend">
+          <div>
+            <div><span style="background-color: #cc0000"></span>25 - 216</div>
+            <div><span style="background-color: #d42828"></span>20 - 25</div>
+            <div><span style="background-color: #dc5050"></span>15 - 20</div>
+          </div>
+          <div>
+            <div><span style="background-color: #e47878"></span>10 - 15</div>
+            <div><span style="background-color: #eca0a0"></span>5 - 10</div>
+            <div><span style="background-color: #f4c8c8"></span>1 - 5</div>
+          </div>
+        </section>
+      </section> 
+      `,
       location: {
         center: [-74.674895, 43.020729],
         zoom: 12.6,
@@ -427,22 +457,52 @@ const config = {
       title: "amsterdam city",
       subtitle: "the second most vulnerable area in montgomery",
       description: `
-        Providers : 447<br/>
-        Providers accepting Medicaid : 48<br/>
-        Medicaid acceptance rate : 10.7 %<br/>
         Providers / 100 Insured : <b>2.99</b><br/> 
         Providers with Medicaid / 100 Medicaids : <b>0.79</b><br/> 
         Disparity index : <b>3.79</b><br/>
       `,
       data: [
-        "montgomery-institutional-provider",
-        "montgomery-institutional-provider-medicaid",
+        "amsterdam-institutional-provider",
+        "amsterdam-institutional-provider-medicaid",
       ],
       dataName: [
-        "Healthcare Facilities rejecting Medicaid",
-        "Healthcare Facilities accepting Medicaid",
+        "Healthcare Facilities ( All )",
+        "Healthcare Facilities ( Medicaid )",
       ],
       dataIndex: 0,
+      legend: `
+      <section id="amsterdam_institutional_provider_legend" class="legend_container">
+        <h5 class="legend_title">Number of providers</h5>
+        <section class="legend">
+          <div>
+            <div><span style="background-color: #cc0000"></span>25 - 216</div>
+            <div><span style="background-color: #d42828"></span>20 - 25</div>
+            <div><span style="background-color: #dc5050"></span>15 - 20</div>
+          </div>
+          <div>
+            <div><span style="background-color: #e47878"></span>10 - 15</div>
+            <div><span style="background-color: #eca0a0"></span>5 - 10</div>
+            <div><span style="background-color: #f4c8c8"></span>1 - 5</div>
+          </div>
+        </section>
+      </section>
+
+      <section id="amsterdam_institutional_provider_medicaid_legend" class="legend_container invisible">
+        <h5 class="legend_title">Number of providers accepting Medicaid</h5>
+        <section class="legend">
+          <div>
+            <div><span style="background-color: #cc0000"></span>25 - 216</div>
+            <div><span style="background-color: #d42828"></span>20 - 25</div>
+            <div><span style="background-color: #dc5050"></span>15 - 20</div>
+          </div>
+          <div>
+            <div><span style="background-color: #e47878"></span>10 - 15</div>
+            <div><span style="background-color: #eca0a0"></span>5 - 10</div>
+            <div><span style="background-color: #f4c8c8"></span>1 - 5</div>
+          </div>
+        </section>
+      </section> 
+      `,
       location: {
         center: [-74.163722, 42.944529],
         zoom: 13,
