@@ -1,9 +1,10 @@
 const legendPrice = document.querySelector("#legend_price");
 
 const config = {
+  GOOGLE_MAPS_API_KEY: "AIzaSyB6iI6HMX7p8WKomFZpEZj5Joi6auHQeho",
   accessToken:
     "pk.eyJ1Ijoia2xlZTA1MTEiLCJhIjoiY2xrYnFibnNjMGV4cjNrbzRqdGg1d21sYiJ9.nN0pE1qocGhTLnD_xPuYdg",
-  style: "mapbox://styles/klee0511/clry17u5r017601p2f7ks1i93",
+  style: "mapbox://styles/klee0511/clry2sxor017v01nldl929ajv",
   theme: "light",
   chapters: [
     {
@@ -396,17 +397,16 @@ const config = {
         Disparity index : <b>6.36</b><br />
       `,
       data: [
-        "johnsville-institutional-provider",
-        "johnsville-institutional-provider-medicaid",
+        "johnsville-institutional-provider-2018",
+        "johnsville-institutional-provider-2018M",
       ],
       dataName: [
-        "Healthcare Facilities ( All )",
-        "Healthcare Facilities ( Medicaid )",
+        "Number of Providers",
+        "Number of Providers accepting Medicaid",
       ],
       dataIndex: 0,
       legend: `
       <section id="johnsville_institutional_provider_legend" class="legend_container">
-        <h5 class="legend_title">Number of providers</h5>
         <section class="legend">
           <div>
             <div><span style="background-color: #cc0000"></span>25 - 216</div>
@@ -420,22 +420,6 @@ const config = {
           </div>
         </section>
       </section>
-
-      <section id="johnsville_institutional_provider_medicaid_legend" class="legend_container invisible">
-        <h5 class="legend_title">Number of providers accepting Medicaid</h5>
-        <section class="legend">
-          <div>
-            <div><span style="background-color: #cc0000"></span>25 - 216</div>
-            <div><span style="background-color: #d42828"></span>20 - 25</div>
-            <div><span style="background-color: #dc5050"></span>15 - 20</div>
-          </div>
-          <div>
-            <div><span style="background-color: #e47878"></span>10 - 15</div>
-            <div><span style="background-color: #eca0a0"></span>5 - 10</div>
-            <div><span style="background-color: #f4c8c8"></span>1 - 5</div>
-          </div>
-        </section>
-      </section> 
       `,
       location: {
         center: [-74.674895, 43.020729],
@@ -462,17 +446,16 @@ const config = {
         Disparity index : <b>3.79</b><br/>
       `,
       data: [
-        "amsterdam-institutional-provider",
-        "amsterdam-institutional-provider-medicaid",
+        "amsterdam-institutional-provider-2018",
+        "amsterdam-institutional-provider-2018M",
       ],
       dataName: [
-        "Healthcare Facilities ( All )",
-        "Healthcare Facilities ( Medicaid )",
+        "Number of Providers",
+        "Number of Providers accepting Medicaid",
       ],
       dataIndex: 0,
       legend: `
       <section id="amsterdam_institutional_provider_legend" class="legend_container">
-        <h5 class="legend_title">Number of providers</h5>
         <section class="legend">
           <div>
             <div><span style="background-color: #cc0000"></span>25 - 216</div>
@@ -486,22 +469,6 @@ const config = {
           </div>
         </section>
       </section>
-
-      <section id="amsterdam_institutional_provider_medicaid_legend" class="legend_container invisible">
-        <h5 class="legend_title">Number of providers accepting Medicaid</h5>
-        <section class="legend">
-          <div>
-            <div><span style="background-color: #cc0000"></span>25 - 216</div>
-            <div><span style="background-color: #d42828"></span>20 - 25</div>
-            <div><span style="background-color: #dc5050"></span>15 - 20</div>
-          </div>
-          <div>
-            <div><span style="background-color: #e47878"></span>10 - 15</div>
-            <div><span style="background-color: #eca0a0"></span>5 - 10</div>
-            <div><span style="background-color: #f4c8c8"></span>1 - 5</div>
-          </div>
-        </section>
-      </section> 
       `,
       location: {
         center: [-74.163722, 42.944529],

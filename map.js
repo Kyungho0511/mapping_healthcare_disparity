@@ -118,7 +118,7 @@ config.chapters.forEach((record, idx) => {
 
 // Creates the popups
 const popupWidth = 200;
-const popupMaxWidth = 240;
+const popupMaxWidth = 300;
 const popupHeight = 180;
 const popup = document.createElement("div");
 popup.setAttribute("id", "popup");
@@ -175,6 +175,7 @@ map.on("load", function () {
   let isExiting = false;
   let mouseMoveHandlerWrapper = null;
   let mouseLeaveHandlerWrapper = null;
+  let mouseEnterHandlerWrapper = null;
 
   scroller
     .setup({
@@ -198,11 +199,17 @@ map.on("load", function () {
           intervalId && clearInterval(intervalId);
           intervalId = setDatasetInterval(chapter, 2500);
         }
-        map.on("mouseenter", chapter.data[0], mouseEnterHandler);
-        mouseLeaveHandlerWrapper = () => {
-          mouseLeaveHandler(chapter);
+
+        mouseEnterHandlerWrapper = (event) => {
+          mouseEnterHandler(event, chapter);
+        };
+        map.on("mouseenter", chapter.data[0], mouseEnterHandlerWrapper);
+
+        mouseLeaveHandlerWrapper = (event) => {
+          mouseLeaveHandler(event, chapter);
         };
         map.on("mouseleave", chapter.data[0], mouseLeaveHandlerWrapper);
+
         mouseMoveHandlerWrapper = (event) => {
           mouseMoveHandler(event, chapter);
         };
@@ -236,14 +243,15 @@ map.on("load", function () {
         const chapter = config.chapters.find((chap) => chap.id === element.id);
         if (chapter.data) {
           if (chapter.data.length > 1) clearInterval(intervalId);
-          map.off("mouseenter", chapter.data[0], mouseEnterHandler);
+          map.off("mouseenter", chapter.data[0], mouseEnterHandlerWrapper);
           map.off("mouseleave", chapter.data[0], mouseLeaveHandlerWrapper);
           map.off("mousemove", chapter.data[0], mouseMoveHandlerWrapper);
           offHover(chapter);
           popup.classList.add("invisible");
           map.getCanvas().style.cursor = "";
         }
-        d3.select(".popup_chart").remove(); // delete existing charts
+        d3.select(".popup_chart").remove(); // delete existing charts on popup
+        d3.select(".popup_img").remove(); // delete existing images on popup
         prevName = null;
         isExiting = true;
       }
@@ -344,14 +352,17 @@ function playDatasets(chapter) {
   onCurrentLayer(chapter.data, chapter.dataIndex, chapter.legend);
 }
 
-function mouseEnterHandler() {
+function mouseEnterHandler(event, chapter) {
+  const feature = event.features[0];
   map.getCanvas().style.cursor = "pointer";
+  updatePopupContentOnEnter(chapter.id, feature);
 }
 
-function mouseLeaveHandler(chapter) {
+function mouseLeaveHandler(event, chapter) {
   map.getCanvas().style.cursor = "";
   popup.classList.add("invisible");
   offHover(chapter);
+  updatePopupContentOnLeave(chapter.id);
 }
 
 function mouseMoveHandler(event, chapter) {
@@ -361,7 +372,7 @@ function mouseMoveHandler(event, chapter) {
   });
   if (feature.length > 0) {
     updatePopupPosition(event);
-    updatePopupContent(
+    updatePopupContentOnMove(
       chapter.id,
       chapter.data,
       chapter.dataIndex,
@@ -388,7 +399,28 @@ function updatePopupPosition(event) {
   popup.classList.remove("invisible");
 }
 
-function updatePopupContent(id, layers, layerIndex, layerName, feature) {
+function updatePopupContentOnEnter(id, feature) {
+  // Site5,6: bullet points with images
+  const prop = feature.properties;
+  if (id === "site5" || id === "site6") {
+    popupText.innerHTML = `
+      <h5 class="popup_title">${prop["Street Address"]}, ${prop["Town/City"]}</h5>
+      <div class="popup_text">
+        <p><b>${prop["Provider Counts"]}</b> individual providers in the healthcare facility.</p>
+      </div>
+      `;
+    addStreetViewImage(prop.Latitude, prop.Longitude);
+  }
+}
+
+function updatePopupContentOnLeave(id) {
+  // Site5,6: bullet points with images
+  if (id === "site5" || id === "site6") {
+    d3.select(".popup_img").remove();
+  }
+}
+
+function updatePopupContentOnMove(id, layers, layerIndex, layerName, feature) {
   const prop = feature.properties;
   const name = feature.properties.NAME;
   const layer = layers[layerIndex];
@@ -672,16 +704,34 @@ function updatePopupContent(id, layers, layerIndex, layerName, feature) {
       prevName = prop.id;
     }
   }
+}
 
-  // Site5: bullet points with images
-  else if (id === "site5" || id === "site6") {
-    popupText.innerHTML = `
-    <h5 class="popup_title">${prop["Street Address"]},<br>${prop["Town/City"]}</h5>
-    <div class="popup_text">
-      <p><b>${prop["Provider Counts"]}</b> providers</p>
-    </div>
-    `;
-  }
+function addStreetViewImage(latitude, longitude) {
+  // Construct the request URL
+  const apiKey = config.GOOGLE_MAPS_API_KEY;
+  const width = 300;
+  const height = 200;
+  const url = `https://maps.googleapis.com/maps/api/streetview?size=${width}x${height}&location=${latitude},${longitude}&key=${apiKey}`;
+
+  // Make the HTTP request using fetch
+  fetch(url)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Failed to fetch image");
+      }
+      // Convert the response to blob
+      return response.blob();
+    })
+    .then((blob) => {
+      const imageUrl = URL.createObjectURL(blob);
+      const imgElement = document.createElement("img");
+      imgElement.src = imageUrl;
+      imgElement.classList.add("popup_img");
+      popup.appendChild(imgElement);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
 }
 
 // Hover effect (mapbox studio duplicates feature ids by mistake, when uploading geojson)
