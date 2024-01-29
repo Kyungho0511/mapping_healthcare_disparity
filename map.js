@@ -127,7 +127,11 @@ popup.setAttribute("width", popupWidth);
 popup.setAttribute("height", popupHeight);
 popup.classList.add("invisible");
 const popupText = document.createElement("div");
+const popupImg = document.createElement("img");
+popupImg.classList.add("popup_img");
+popupImg.classList.add("invisible");
 popup.appendChild(popupText);
+popup.appendChild(popupImg);
 story.appendChild(popup);
 
 // Appends the features element (with the vignettes) to the story element
@@ -205,8 +209,8 @@ map.on("load", function () {
         };
         map.on("mouseenter", chapter.data[0], mouseEnterHandlerWrapper);
 
-        mouseLeaveHandlerWrapper = (event) => {
-          mouseLeaveHandler(event, chapter);
+        mouseLeaveHandlerWrapper = () => {
+          mouseLeaveHandler(chapter);
         };
         map.on("mouseleave", chapter.data[0], mouseLeaveHandlerWrapper);
 
@@ -251,7 +255,7 @@ map.on("load", function () {
           map.getCanvas().style.cursor = "";
         }
         d3.select(".popup_chart").remove(); // delete existing charts on popup
-        d3.select(".popup_img").remove(); // delete existing images on popup
+        popupImg.classList.add("invisible"); // make existing images on popup invisible
         prevName = null;
         isExiting = true;
       }
@@ -358,11 +362,10 @@ function mouseEnterHandler(event, chapter) {
   updatePopupContentOnEnter(chapter.id, feature);
 }
 
-function mouseLeaveHandler(event, chapter) {
+function mouseLeaveHandler(chapter) {
   map.getCanvas().style.cursor = "";
   popup.classList.add("invisible");
   offHover(chapter);
-  updatePopupContentOnLeave(chapter.id);
 }
 
 function mouseMoveHandler(event, chapter) {
@@ -410,13 +413,6 @@ function updatePopupContentOnEnter(id, feature) {
       </div>
       `;
     addStreetViewImage(prop.Latitude, prop.Longitude);
-  }
-}
-
-function updatePopupContentOnLeave(id) {
-  // Site5,6: bullet points with images
-  if (id === "site5" || id === "site6") {
-    d3.select(".popup_img").remove();
   }
 }
 
@@ -707,11 +703,15 @@ function updatePopupContentOnMove(id, layers, layerIndex, layerName, feature) {
 }
 
 function addStreetViewImage(latitude, longitude) {
+  // Hide existing image
+  popupImg.classList.add("invisible");
+
   // Construct the request URL
   const apiKey = config.GOOGLE_MAPS_API_KEY;
   const width = 300;
   const height = 200;
-  const url = `https://maps.googleapis.com/maps/api/streetview?size=${width}x${height}&location=${latitude},${longitude}&key=${apiKey}`;
+  const fov = 100;
+  const url = `https://maps.googleapis.com/maps/api/streetview?size=${width}x${height}&fov=${fov}&location=${latitude},${longitude}&key=${apiKey}`;
 
   // Make the HTTP request using fetch
   fetch(url)
@@ -724,10 +724,8 @@ function addStreetViewImage(latitude, longitude) {
     })
     .then((blob) => {
       const imageUrl = URL.createObjectURL(blob);
-      const imgElement = document.createElement("img");
-      imgElement.src = imageUrl;
-      imgElement.classList.add("popup_img");
-      popup.appendChild(imgElement);
+      popupImg.src = imageUrl;
+      popupImg.classList.remove("invisible"); // Show image after loaded
     })
     .catch((error) => {
       console.error(error);
