@@ -73,8 +73,8 @@ const config = {
       onChapterExit: [],
     },
     {
-      id: "health_disparity",
-      category: "health_disparity",
+      id: "background2",
+      category: "background",
       title: "Discrimination against Medicaid has more than doubled",
       description: `The percentage of Medicaid enrollments in relation to the total population has increased from 13.7% to 21.7% since 2010. However, the Medicaid acceptance rate by health professionals has drastically decreased from 70.9% to 16.3% in New York State specifically. Unfortunately, the data shows that insurance-based discrimination in the healthcare system has significantly deepened since 2010.`,
       data: [
@@ -138,8 +138,8 @@ const config = {
       onChapterExit: [],
     },
     {
-      id: "health_disparity2",
-      category: "health_disparity",
+      id: "disparity_index",
+      category: "disparity_index",
       title: "healthcare disparity index to identify vulnerable areas",
       description: `The healthcare disparity index for Medicaid beneficiaries is derived from two datasets. The first dataset measures the number of health professionals who accept Medicaid per one hundred Medicaid enrollees. The second dataset evaluates the number of total health professionals per one hundred insured individuals. This index indicates the discrepancy in healthcare access between Medicaid enrollees and the overall insured population. Counties with a high disparity index are more susceptible to insurance-based discrimination.`,
       data: [
@@ -199,8 +199,8 @@ const config = {
       onChapterExit: [],
     },
     {
-      id: "site",
-      category: "site",
+      id: "disparity_index2",
+      category: "disparity_index",
       title: "counties with high healthcare disparity",
       description: `Seven counties with a high healthcare disparity index are selected and classified based on their rural status. Among these, Montgomery County is singled out for further examination to identify the most vulnerable area susceptible to insurance-based discrimination in suburban regions within New York State.
         <img src="./images/vulnerable_counties.png"/>
@@ -240,7 +240,7 @@ const config = {
       ],
     },
     {
-      id: "site2",
+      id: "site",
       category: "site",
       title: "montgomery county",
       subtitle: "the most vulnerable suburban county to healthcare disparity",
@@ -276,7 +276,7 @@ const config = {
       ],
     },
     {
-      id: "site3",
+      id: "site2",
       category: "site",
       title: "filter medicaid density outliers",
       description: `Despite being classified as a suburban area, a significant portion of Montgomery County comprises agricultural lands. To narrow down the analysis, I filtered out census block groups with extremely low Medicaid enrollee density. Then, I grouped together adjacent census block groups to identify distinct neighbors that have sufficient Medicaid enrollees.`,
@@ -316,7 +316,7 @@ const config = {
       onChapterExit: [{ layer: "medicaid-density-montgomery", opacity: 0 }],
     },
     {
-      id: "site4",
+      id: "site3",
       category: "site",
       title: "areas with high healthcare disparity",
       description: `Healthcare providers within a 5-mile radius of each identified neighbor are considered available healthcare providers for that specific neighbor. Subsequently, the downsizing process using the disparity index is reiterated at a town scale.`,
@@ -387,7 +387,7 @@ const config = {
       ],
     },
     {
-      id: "site5",
+      id: "site4",
       category: "site",
       title: "St Johnsville village",
       subtitle: "the most vulnerable area in montgomery",
@@ -436,7 +436,7 @@ const config = {
       onChapterExit: [],
     },
     {
-      id: "site6",
+      id: "site5",
       category: "site",
       title: "amsterdam city",
       subtitle: "the second most vulnerable area in montgomery",

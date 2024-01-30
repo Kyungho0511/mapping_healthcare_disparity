@@ -21,6 +21,7 @@ const alignments = {
  */
 const story = document.querySelector("#story");
 const header = document.querySelector("#header");
+const headerHeight = header.getBoundingClientRect().height;
 const footer = document.querySelector("#footer");
 header.classList.add(config.theme);
 footer.classList.add(config.theme);
@@ -219,6 +220,8 @@ map.on("load", function () {
         };
         map.on("mousemove", chapter.data[0], mouseMoveHandlerWrapper);
       }
+
+      // Hightlight the selected header
       const selected = document.querySelector(
         `#header_${response.element.dataset.category}`
       );
@@ -262,12 +265,23 @@ map.on("load", function () {
     });
 });
 
-/* Here we watch for any resizing of the screen to
-adjust our scrolling setup */
+// Here we watch for any resizing of the screen to adjust our scrolling setup
 window.addEventListener("resize", scroller.resize);
 
+// Header interactivity as scrolling
+document.addEventListener("scroll", scrollHandler);
+
+function scrollHandler() {
+  // make header transparent and highlight the title when on the top page
+  if (window.scrollY > headerHeight) {
+    header.classList.remove("highlight");
+  } else {
+    header.classList.add("highlight");
+  }
+}
+
 function selectNavItem(selected) {
-  const navItems = header.children;
+  const navItems = header.querySelectorAll("a");
   for (let i = 0; i < navItems.length; i++) {
     navItems[i].classList.remove("active");
   }
@@ -405,7 +419,7 @@ function updatePopupPosition(event) {
 function updatePopupContentOnEnter(id, feature) {
   // Site5,6: bullet points with images
   const prop = feature.properties;
-  if (id === "site5" || id === "site6") {
+  if (id === "site4" || id === "site5") {
     popupText.innerHTML = `
       <h5 class="popup_title">${prop["Street Address"]}, ${prop["Town/City"]}</h5>
       <div class="popup_text">
@@ -470,8 +484,8 @@ function updatePopupContentOnMove(id, layers, layerIndex, layerName, feature) {
     }
   }
 
-  // Health Disparity: slope charts
-  else if (id === "health_disparity") {
+  // Background2: slope charts
+  else if (id === "background2") {
     popupText.innerHTML = `
       <h5 class="popup_title">${name}, New York</h5>
       <div class='popup_text'>
@@ -520,8 +534,8 @@ function updatePopupContentOnMove(id, layers, layerIndex, layerName, feature) {
     }
   }
 
-  // Health Disparity2: bar charts
-  else if (id === "health_disparity2") {
+  // Disparity Index: bar charts
+  else if (id === "disparity_index") {
     popupText.innerHTML = `
       <h5 class="popup_title">${name}, New York</h5>
       <div class="popup_text">
@@ -571,8 +585,8 @@ function updatePopupContentOnMove(id, layers, layerIndex, layerName, feature) {
     }
   }
 
-  // Site: bar charts
-  else if (id === "site") {
+  // Disparity Index2: bar charts
+  else if (id === "disparity_index2") {
     popupText.innerHTML = `
     <h5 class="popup_title">${name}, New York</h5>
     <div class="popup_text">
@@ -635,8 +649,8 @@ function updatePopupContentOnMove(id, layers, layerIndex, layerName, feature) {
     }
   }
 
-  // Site3: bullet points
-  else if (id === "site3") {
+  // Site2: bullet points
+  else if (id === "site2") {
     popupText.innerHTML = `
     <h5 class="popup_title">${prop["TRACTCE"].slice(
       0,
@@ -650,8 +664,8 @@ function updatePopupContentOnMove(id, layers, layerIndex, layerName, feature) {
     `;
   }
 
-  // Site4: bar charts
-  else if (id === "site4") {
+  // Site3: bar charts
+  else if (id === "site3") {
     popupText.innerHTML = `
     <h5 class="popup_title">Town${prop.id}, Montgomery</h5>
     <div class="popup_text">
@@ -747,10 +761,7 @@ function onHover(chapter, feature) {
         { id: feature.properties.id }
       );
     }
-  } else if (
-    chapter.id === "health_disparity" ||
-    chapter.id === "health_disparity2"
-  ) {
+  } else if (chapter.id === "background2" || chapter.id === "disparity_index") {
     for (let i = 0; i < 60; i++) {
       map.setFeatureState(
         {
@@ -761,7 +772,7 @@ function onHover(chapter, feature) {
         { id: feature.properties.id }
       );
     }
-  } else if (chapter.id === "site") {
+  } else if (chapter.id === "disparity_index2") {
     for (let i = 0; i < 7; i++) {
       map.setFeatureState(
         {
@@ -772,7 +783,7 @@ function onHover(chapter, feature) {
         { id: feature.properties.id }
       );
     }
-  } else if (chapter.id === "site3") {
+  } else if (chapter.id === "site2") {
     for (let i = 0; i < 40; i++) {
       map.setFeatureState(
         {
@@ -783,7 +794,7 @@ function onHover(chapter, feature) {
         { id: feature.properties.area }
       );
     }
-  } else if (chapter.id === "site4") {
+  } else if (chapter.id === "site3") {
     for (let i = 0; i < 5; i++) {
       map.setFeatureState(
         {
@@ -810,10 +821,7 @@ function offHover(chapter) {
         { id: null }
       );
     }
-  } else if (
-    chapter.id === "health_disparity" ||
-    chapter.id === "health_disparity2"
-  ) {
+  } else if (chapter.id === "background2" || chapter.id === "disparity_index") {
     for (let i = 0; i < 60; i++) {
       map.setFeatureState(
         {
@@ -824,7 +832,7 @@ function offHover(chapter) {
         { id: null }
       );
     }
-  } else if (chapter.id === "site") {
+  } else if (chapter.id === "disparity_index2") {
     for (let i = 0; i < 7; i++) {
       map.setFeatureState(
         {
@@ -835,7 +843,7 @@ function offHover(chapter) {
         { id: null }
       );
     }
-  } else if (chapter.id === "site3") {
+  } else if (chapter.id === "site2") {
     for (let i = 0; i < 40; i++) {
       map.setFeatureState(
         {
@@ -846,7 +854,7 @@ function offHover(chapter) {
         { id: null }
       );
     }
-  } else if (chapter.id === "site4") {
+  } else if (chapter.id === "site3") {
     for (let i = 0; i < 5; i++) {
       map.setFeatureState(
         {
