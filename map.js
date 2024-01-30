@@ -17,14 +17,13 @@ const alignments = {
 };
 
 /**
- * Main 'story' and header/footer
+ * Main 'story' and navbar/header/footer
  */
 const story = document.querySelector("#story");
+const navbar = document.querySelector("#navbar");
+const navbarHeight = navbar.getBoundingClientRect().height;
 const header = document.querySelector("#header");
-const headerHeight = header.getBoundingClientRect().height;
 const footer = document.querySelector("#footer");
-header.classList.add(config.theme);
-footer.classList.add(config.theme);
 
 /**
  * Features
@@ -191,39 +190,58 @@ map.on("load", function () {
       threshold: 1,
     })
     .onStepEnter((response) => {
+      // Header interaction
+      if (response.element.dataset.category === "header") {
+        map.flyTo({
+          center: [-93, 47.5],
+          zoom: 3.2,
+          pitch: 0,
+          bearing: 0,
+        });
+        setLayerOpacity({ layer: "background-white", opacity: 0 });
+        setLayerOpacity({ layer: "country-boundaries-black", opacity: 0.04 });
+        setLayerOpacity({ layer: "united-states-black", opacity: 0.15 });
+      }
+
+      // Features interaction
       const chapter = config.chapters.find(
         (chap) => chap.id === response.element.id
       );
-      map.flyTo(chapter.location);
-      if (chapter.onChapterEnter.length > 0) {
-        chapter.onChapterEnter.forEach(setLayerOpacity);
-      }
-      if (chapter.data) {
-        if (chapter.data.length > 1) {
-          onCurrentLayer(chapter.data, chapter.dataIndex, chapter.legend);
-          intervalId && clearInterval(intervalId);
-          intervalId = setDatasetInterval(chapter, 2500);
+
+      if (chapter) {
+        map.flyTo(chapter.location);
+
+        if (chapter.onChapterEnter.length > 0) {
+          chapter.onChapterEnter.forEach(setLayerOpacity);
         }
 
-        mouseEnterHandlerWrapper = (event) => {
-          mouseEnterHandler(event, chapter);
-        };
-        map.on("mouseenter", chapter.data[0], mouseEnterHandlerWrapper);
+        if (chapter.data) {
+          if (chapter.data.length > 1) {
+            onCurrentLayer(chapter.data, chapter.dataIndex, chapter.legend);
+            intervalId && clearInterval(intervalId);
+            intervalId = setDatasetInterval(chapter, 2500);
+          }
 
-        mouseLeaveHandlerWrapper = () => {
-          mouseLeaveHandler(chapter);
-        };
-        map.on("mouseleave", chapter.data[0], mouseLeaveHandlerWrapper);
+          mouseEnterHandlerWrapper = (event) => {
+            mouseEnterHandler(event, chapter);
+          };
+          map.on("mouseenter", chapter.data[0], mouseEnterHandlerWrapper);
 
-        mouseMoveHandlerWrapper = (event) => {
-          mouseMoveHandler(event, chapter);
-        };
-        map.on("mousemove", chapter.data[0], mouseMoveHandlerWrapper);
+          mouseLeaveHandlerWrapper = () => {
+            mouseLeaveHandler(chapter);
+          };
+          map.on("mouseleave", chapter.data[0], mouseLeaveHandlerWrapper);
+
+          mouseMoveHandlerWrapper = (event) => {
+            mouseMoveHandler(event, chapter);
+          };
+          map.on("mousemove", chapter.data[0], mouseMoveHandlerWrapper);
+        }
       }
 
-      // Hightlight the selected header
+      // Hightlight the selected navbar item
       const selected = document.querySelector(
-        `#header_${response.element.dataset.category}`
+        `#navbar_${response.element.dataset.category}`
       );
       selectNavItem(selected);
     })
@@ -231,10 +249,10 @@ map.on("load", function () {
       const chapter = config.chapters.find(
         (chap) => chap.id === response.element.id
       );
-      if (chapter.onChapterExit.length > 0) {
+      if (chapter?.onChapterExit.length > 0) {
         chapter.onChapterExit.forEach(setLayerOpacity);
       }
-      if (chapter.data && chapter.data.length > 1) {
+      if (chapter?.data && chapter?.data.length > 1) {
         offLayers(chapter.data);
       }
       isExiting = false;
@@ -248,7 +266,7 @@ map.on("load", function () {
         !isExiting
       ) {
         const chapter = config.chapters.find((chap) => chap.id === element.id);
-        if (chapter.data) {
+        if (chapter?.data) {
           if (chapter.data.length > 1) clearInterval(intervalId);
           map.off("mouseenter", chapter.data[0], mouseEnterHandlerWrapper);
           map.off("mouseleave", chapter.data[0], mouseLeaveHandlerWrapper);
@@ -268,20 +286,20 @@ map.on("load", function () {
 // Here we watch for any resizing of the screen to adjust our scrolling setup
 window.addEventListener("resize", scroller.resize);
 
-// Header interactivity as scrolling
+// Navbar interactivity as scrolling
 document.addEventListener("scroll", scrollHandler);
 
 function scrollHandler() {
-  // make header transparent and highlight the title when on the top page
-  if (window.scrollY > headerHeight) {
-    header.classList.remove("highlight");
+  // make navbar transparent and highlight the title when on the top page
+  if (window.scrollY > navbarHeight) {
+    navbar.classList.remove("highlight");
   } else {
-    header.classList.add("highlight");
+    navbar.classList.add("highlight");
   }
 }
 
 function selectNavItem(selected) {
-  const navItems = header.querySelectorAll("a");
+  const navItems = navbar.querySelectorAll("a");
   for (let i = 0; i < navItems.length; i++) {
     navItems[i].classList.remove("active");
   }

@@ -21,26 +21,35 @@
     <link rel="stylesheet" href="styles.css" />
     <script src="config.js" defer></script>
     <script type="module" src="map.js" defer></script>
-    <title>Healthcare Disparity</title>
+    <title>Beyond Numbers</title>
   </head>
 
   <body>
+    <nav id="navbar" class="highlight">
+      <div class="container_header">
+        <a href="#header" id="navbar_header">beyond numbers</a>
+      </div>
+      <div class="container_menu">
+        <a href="#background" id="navbar_background">background</a>
+        <a href="#disparity_index" id="navbar_disparity_index"
+          >disparity index
+        </a>
+        <a href="#site" id="navbar_site">vulnerable areas</a>
+        <a href="#resources" id="navbar_resources">resources</a>
+      </div>
+    </nav>
     <div id="map"></div>
     <div id="story">
-      <header id="header" class="highlight">
-        <div class="container_home">
-          <a href="#home" id="header_home">mapping healthcare disparities</a>
-        </div>
-        <div class="container_menu">
-          <a href="#background" id="header_background">background</a>
-          <a href="#disparity_index" id="header_disparity_index"
-            >disparity index
-          </a>
-          <a href="#site" id="header_site">vulnerable areas</a>
-          <a href="#resources" id="header_resources">resources</a>
+      <header id="header" class="step" data-category="header">
+        <div class="container_title">
+          <h1 class="header_title">beyond numbers:</h1>
+          <h1 class="header_subtitle">seeking equity among</h1>
+          <h1 class="header_subtitle">90 million medicaid recipients</h1>
         </div>
       </header>
-      <footer id="footer"></footer>
+      <footer id="footer" class="step" data-category="footer">
+        <h1>Resources</h1>
+      </footer>
     </div>
   </body>
 </html>
