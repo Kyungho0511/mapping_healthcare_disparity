@@ -4,7 +4,7 @@ const config = {
   GOOGLE_MAPS_API_KEY: "AIzaSyB6iI6HMX7p8WKomFZpEZj5Joi6auHQeho",
   accessToken:
     "pk.eyJ1Ijoia2xlZTA1MTEiLCJhIjoiY2xrYnFibnNjMGV4cjNrbzRqdGg1d21sYiJ9.nN0pE1qocGhTLnD_xPuYdg",
-  style: "mapbox://styles/klee0511/cls0msovj01ic01qo90okb7rf",
+  style: "mapbox://styles/klee0511/cls1bpm1u01ph01nl11te78b3",
   theme: "light",
   chapters: [
     {
@@ -69,7 +69,10 @@ const config = {
         bearing: 0,
       },
       alignment: "right",
-      onChapterEnter: [{ layer: "background-white", opacity: 1.0 }],
+      onChapterEnter: [
+        { layer: "background-white", opacity: 1 },
+        { layer: "united-states-outline", opacity: 0 },
+      ],
       onChapterExit: [],
     },
     {
@@ -134,7 +137,10 @@ const config = {
         bearing: 0,
       },
       alignment: "right",
-      onChapterEnter: [{ layer: "background-white", opacity: 0.95 }],
+      onChapterEnter: [
+        { layer: "background-white", opacity: 0.95 },
+        { layer: "united-states-outline", opacity: 1 },
+      ],
       onChapterExit: [],
     },
     {
@@ -195,7 +201,10 @@ const config = {
         bearing: 0,
       },
       alignment: "right",
-      onChapterEnter: [{ layer: "background-white", opacity: 0.95 }],
+      onChapterEnter: [
+        { layer: "background-white", opacity: 0.95 },
+        { layer: "united-states-outline", opacity: 1 },
+      ],
       onChapterExit: [],
     },
     {
@@ -225,6 +234,7 @@ const config = {
           opacity: 1.0,
         },
         { layer: "background-white", opacity: 0.95 },
+        { layer: "united-states-outline", opacity: 1 },
         { layer: "mapbox-satellite", opacity: 0 },
       ],
       onChapterExit: [
@@ -262,6 +272,7 @@ const config = {
       alignment: "right",
       onChapterEnter: [
         { layer: "background-white", opacity: 0.1 },
+        { layer: "united-states-outline", opacity: 0 },
         { layer: "mapbox-satellite", opacity: 1.0 },
         {
           layer: "medicaid-disparity-counties-filter-line-dotted-2021",

@@ -193,14 +193,14 @@ map.on("load", function () {
       // Header interaction
       if (response.element.dataset.category === "header") {
         map.flyTo({
-          center: [-93, 47.5],
-          zoom: 3.2,
+          center: [-93, 49],
+          zoom: 3.1,
           pitch: 0,
           bearing: 0,
         });
-        setLayerOpacity({ layer: "background-white", opacity: 0 });
-        setLayerOpacity({ layer: "country-boundaries-black", opacity: 0.04 });
-        setLayerOpacity({ layer: "united-states-black", opacity: 0.15 });
+        setLayerOpacity({ layer: "country-boundaries-black", opacity: 0.05 });
+        setLayerOpacity({ layer: "united-states-black-mass", opacity: 0.35 });
+        setLayerOpacity({ layer: "united-states-outline", opacity: 0.25 });
       }
 
       // Features interaction
@@ -246,6 +246,14 @@ map.on("load", function () {
       selectNavItem(selected);
     })
     .onStepExit((response) => {
+      // Header interaction
+      if (response.element.dataset.category === "header") {
+        setLayerOpacity({ layer: "country-boundaries-black", opacity: 0 });
+        setLayerOpacity({ layer: "united-states-black-mass", opacity: 0 });
+        setLayerOpacity({ layer: "united-states-outline", opacity: 0 });
+      }
+
+      // Features interaction
       const chapter = config.chapters.find(
         (chap) => chap.id === response.element.id
       );
