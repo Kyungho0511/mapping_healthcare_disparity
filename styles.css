@@ -92,7 +92,7 @@ a {
   & .container_title {
     position: absolute;
     left: 50%;
-    top: 32%;
+    top: 30%;
     transform: translate(-55%, -50%);
     text-align: left;
   }
@@ -157,7 +157,7 @@ a {
 
   & .footer_text {
     font-size: 1rem;
-    width: 50vw;
+    width: 41vw;
     margin: auto;
   }
 }

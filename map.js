@@ -193,14 +193,14 @@ map.on("load", function () {
       // Header interaction
       if (response.element.dataset.category === "header") {
         map.flyTo({
-          center: [-93, 49],
-          zoom: 3.1,
+          center: [-95, 48],
+          zoom: 3.3,
           pitch: 0,
           bearing: 0,
         });
         setLayerOpacity({ layer: "country-boundaries-black", opacity: 0.05 });
-        setLayerOpacity({ layer: "united-states-black-mass", opacity: 0.35 });
-        setLayerOpacity({ layer: "united-states-outline", opacity: 0.25 });
+        setLayerOpacity({ layer: "united-states-black-mass", opacity: 0.3 });
+        setLayerOpacity({ layer: "ocean", opacity: 0 });
       }
 
       // Features interaction
@@ -250,7 +250,6 @@ map.on("load", function () {
       if (response.element.dataset.category === "header") {
         setLayerOpacity({ layer: "country-boundaries-black", opacity: 0 });
         setLayerOpacity({ layer: "united-states-black-mass", opacity: 0 });
-        setLayerOpacity({ layer: "united-states-outline", opacity: 0 });
       }
 
       // Features interaction

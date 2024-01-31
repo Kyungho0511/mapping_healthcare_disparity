@@ -4,7 +4,7 @@ const config = {
   GOOGLE_MAPS_API_KEY: "AIzaSyB6iI6HMX7p8WKomFZpEZj5Joi6auHQeho",
   accessToken:
     "pk.eyJ1Ijoia2xlZTA1MTEiLCJhIjoiY2xrYnFibnNjMGV4cjNrbzRqdGg1d21sYiJ9.nN0pE1qocGhTLnD_xPuYdg",
-  style: "mapbox://styles/klee0511/cls1bpm1u01ph01nl11te78b3",
+  style: "mapbox://styles/klee0511/cls23dbqw01pr01qs7mmp3wxq",
   theme: "light",
   chapters: [
     {
