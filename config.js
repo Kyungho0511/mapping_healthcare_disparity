@@ -1,5 +1,3 @@
-const legendPrice = document.querySelector("#legend_price");
-
 const config = {
   GOOGLE_MAPS_API_KEY: "AIzaSyB6iI6HMX7p8WKomFZpEZj5Joi6auHQeho",
   accessToken:
@@ -72,6 +70,7 @@ const config = {
       onChapterEnter: [
         { layer: "background-white", opacity: 1 },
         { layer: "united-states-outline", opacity: 0 },
+        { layer: "country-boundaries-black", opacity: 0 },
       ],
       onChapterExit: [],
     },

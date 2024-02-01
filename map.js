@@ -25,6 +25,20 @@ const navbarHeight = navbar.getBoundingClientRect().height;
 const header = document.querySelector("#header");
 const footer = document.querySelector("#footer");
 
+// Header: Create slope charts for the landing page
+const medicaid2010 = d3.csv("data/insurance_by_states_2010.csv");
+const medicaid2022 = d3.csv("data/insurance_by_states_2022.csv");
+
+Promise.all([medicaid2010, medicaid2022]).then((data) => {
+  const domain = {
+    sourceMin: 6.2,
+    sourceMax: 25,
+    targetMin: [254, 217, 118],
+    targetMax: [0, 143, 50],
+  };
+  initSlopeChartHeader(data, 5, 30, domain);
+});
+
 /**
  * Features
  */
@@ -168,6 +182,7 @@ const scroller = scrollama();
 let prevName = null;
 
 map.on("load", function () {
+  // Set paintproperty for mapbox layer features to have thicker outlines when hovered
   setHoverPaintProperty("united-states-outline-hover");
   setHoverPaintProperty("united-states-counties-outline-hover");
   setHoverPaintProperty("medicaid-disparity-counties-filter-line-hover-2021");
@@ -199,8 +214,6 @@ map.on("load", function () {
           bearing: 0,
         });
         setLayerOpacity({ layer: "country-boundaries-black", opacity: 0.05 });
-        setLayerOpacity({ layer: "united-states-black-mass", opacity: 0.3 });
-        setLayerOpacity({ layer: "ocean", opacity: 0 });
       }
 
       // Features interaction
@@ -246,13 +259,6 @@ map.on("load", function () {
       selectNavItem(selected);
     })
     .onStepExit((response) => {
-      // Header interaction
-      if (response.element.dataset.category === "header") {
-        setLayerOpacity({ layer: "country-boundaries-black", opacity: 0 });
-        setLayerOpacity({ layer: "united-states-black-mass", opacity: 0 });
-      }
-
-      // Features interaction
       const chapter = config.chapters.find(
         (chap) => chap.id === response.element.id
       );
@@ -913,6 +919,166 @@ function setPaintPropertyCase(layer, property) {
     4,
     0,
   ]);
+}
+
+function initSlopeChartHeader(data, min, max, domain) {
+  // Set size
+  const boundingClientRect = document
+    .querySelector(".header_chart")
+    .getBoundingClientRect();
+  const chartHeight = boundingClientRect.height;
+  const chartWidth = boundingClientRect.width;
+  const margin = { top: 10, right: 40, bottom: 80, left: 40 };
+  const width = chartWidth - margin.left - margin.right;
+  const height = chartHeight - margin.top - margin.bottom;
+
+  // Set data
+  const medicaid2010 = data[0];
+  const medicaid2022 = data[1];
+  const years = [2010, 2022];
+
+  // Set svg and x,y scale
+  const svg = d3
+    .select(".header_chart")
+    .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom);
+
+  const x = d3
+    .scaleLinear()
+    .domain([0, 1]) // Two categories(years) represented by 0 and 1
+    .range([margin.left, margin.left + width]);
+
+  const y1 = d3
+    .scaleLinear()
+    .domain([max, min]) // y1 axis represents 'medicaid_percent' in 2010
+    .range([margin.top, margin.top + height]);
+
+  const y2 = d3
+    .scaleLinear()
+    .domain([max, min]) // y2 axis represents 'medicaid_percent' in 2022
+    .range([margin.top, margin.top + height]);
+
+  // Set tick values for y1 and y2 axes
+  let tickValuesY1 = [];
+  let tickValuesY2 = [];
+
+  medicaid2010.forEach((d, i) => {
+    tickValuesY1.push(d["medicaid_percent"]);
+  });
+  tickValuesY1 = [min, ...tickValuesY1, max];
+
+  medicaid2022.forEach((d, i) => {
+    tickValuesY2.push(d["medicaid_percent"]);
+  });
+
+  // Append y1 axis and style
+  svg
+    .append("g")
+    .attr("transform", `translate(${margin.left}, 0)`)
+    .attr("class", "y1_axis")
+    .call(
+      d3
+        .axisLeft(y1)
+        .tickValues([min, max])
+        .tickFormat((d) => d + "%")
+    )
+    .select(".domain")
+    .attr("stroke-dasharray", 4)
+    .attr("stroke", "grey");
+
+  d3.select(".y1_axis").selectAll("line").style("stroke", "grey");
+  d3.select(".y1_axis").selectAll("text").style("font-size", "12px");
+
+  // Append y2 axis and style
+  svg
+    .append("g")
+    .attr("transform", `translate(${width + margin.left}, 0)`)
+    .attr("class", "y2_axis")
+    .call(
+      d3
+        .axisRight(y2)
+        .tickValues([min, max])
+        .tickFormat((d) => d + "%")
+    )
+    .select(".domain")
+    .attr("stroke-dasharray", 4)
+    .attr("stroke", "grey");
+
+  d3.select(".y2_axis").selectAll("line").style("stroke", "grey");
+  d3.select(".y2_axis").selectAll("text").style("font-size", "12px");
+
+  // Add year labels
+  svg
+    .selectAll(".year-label")
+    .data(years)
+    .enter()
+    .append("text")
+    .attr("class", "year-label")
+    .attr("x", (d, i) => x(i))
+    .attr("y", height + margin.top + 30)
+    .text((d) => d)
+    .attr("text-anchor", "middle")
+    .style("font-size", "12px");
+
+  // Define gradients
+  const n = medicaid2010.length;
+  for (let i = 0; i < n; i++) {
+    defineGradient(
+      svg,
+      `lineGradientMedicaid${i}`,
+      remapToRGB(
+        Math.max(
+          medicaid2010[i]["medicaid_percent"],
+          medicaid2022[i]["medicaid_percent"]
+        ),
+        domain
+      ),
+      remapToRGB(
+        Math.min(
+          medicaid2010[i]["medicaid_percent"],
+          medicaid2022[i]["medicaid_percent"]
+        ),
+        domain
+      )
+    );
+  }
+
+  // Add geometries
+  svg
+    .selectAll(".line")
+    .data(medicaid2010)
+    .enter()
+    .append("line")
+    .attr("class", "line")
+    .attr("x1", () => x(0))
+    .attr("y1", (d, i) => y1(medicaid2010[i]["medicaid_percent"]))
+    .attr("x2", () => x(1))
+    .attr("y2", (d, i) => y2(medicaid2022[i]["medicaid_percent"]))
+    .attr("stroke", (d, i) => `url(#lineGradientMedicaid${i})`)
+    .attr("stroke-width", () => 1);
+
+  svg
+    .selectAll(".circle")
+    .data(medicaid2010)
+    .enter()
+    .append("circle")
+    .attr("class", "circle")
+    .attr("cx", () => x(0))
+    .attr("cy", (d) => y1(d["medicaid_percent"]))
+    .attr("r", 3)
+    .style("fill", (d) => remapToRGB(d["medicaid_percent"], domain));
+
+  svg
+    .selectAll(".circle2")
+    .data(medicaid2022)
+    .enter()
+    .append("circle")
+    .attr("class", "circle2")
+    .attr("cx", () => x(1))
+    .attr("cy", (d) => y2(d["medicaid_percent"]))
+    .attr("r", 3)
+    .style("fill", (d) => remapToRGB(d["medicaid_percent"], domain));
 }
 
 function initSlopeChart(data, min, max, layerIndex, domains, years) {
